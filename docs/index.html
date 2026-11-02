@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="zh-CN" data-lang="zh" data-theme="light">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Codex Squad · Codex 小队</title>
+  <meta name="description" content="A local Codex plugin that keeps direction in the main session and gives execution to one fixed Qoder / DeepSeek-Flash implementer. 一个把方向留在主会话、把执行交给固定实现成员的本机 Codex 插件。">
+  <meta property="og:title" content="Codex Squad · Codex 小队">
+  <meta property="og:description" content="Direction stays with Codex. Execution goes to one fixed Qoder / DeepSeek-Flash implementer. 方向留在主会话，执行交给固定实现成员。">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://chenchen428.github.io/codex-squad/">
+  <link rel="canonical" href="https://chenchen428.github.io/codex-squad/">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23fffcf7'/%3E%3Ccircle cx='16' cy='16' r='7' fill='%23983419'/%3E%3C/svg%3E">
+  <script>
+    (function () {
+      var root = document.documentElement;
+      var lang = null;
+      var theme = null;
+      try {
+        lang = localStorage.getItem('codex-squad-lang');
+        theme = localStorage.getItem('codex-squad-theme');
+      } catch (error) {}
+      if (lang !== 'zh' && lang !== 'en') {
+        lang = /^zh/i.test(navigator.language || '') ? 'zh' : 'en';
+      }
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      root.setAttribute('data-lang', lang);
+      root.setAttribute('lang', lang === 'zh' ? 'zh-CN' : 'en');
+      root.setAttribute('data-theme', theme);
+    }());
+  </script>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文 / Skip to content</a>
+
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#top">
+        <span class="brand-mark" aria-hidden="true"></span>
+        <span class="brand-name">Codex Squad</span>
+        <span class="brand-sub">/ CODEX 小队</span>
+      </a>
+
+      <nav class="site-nav" aria-label="页面导航 / Page navigation">
+        <a href="#responsibility"><span class="lang-zh">职责边界</span><span class="lang-en">Division of labor</span></a>
+        <a href="#loop"><span class="lang-zh">任务闭环</span><span class="lang-en">Task loop</span></a>
+        <a href="#capabilities"><span class="lang-zh">主要能力</span><span class="lang-en">Capabilities</span></a>
+        <a href="#start"><span class="lang-zh">开始使用</span><span class="lang-en">Get started</span></a>
+        <a href="#limits"><span class="lang-zh">真实限制</span><span class="lang-en">Limits</span></a>
+      </nav>
+
+      <div class="header-actions">
+        <div class="lang-switch" role="group" aria-label="语言 / Language">
+          <button type="button" data-set-lang="zh" aria-pressed="true" aria-label="中文 / Chinese">中文</button>
+          <button type="button" data-set-lang="en" aria-pressed="false" aria-label="English / 英文">EN</button>
+        </div>
+        <button class="icon-button" id="theme-toggle" type="button" aria-pressed="false" aria-label="深色主题 / Dark theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="3.5"></circle>
+            <path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M18.7 5.3l-1.4 1.4M6.7 17.3l-1.4 1.4"></path>
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20 15.2A8.2 8.2 0 0 1 8.8 4a8.2 8.2 0 1 0 11.2 11.2Z"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero" id="top">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="eyebrow"><span class="lang-zh">本机 Codex 插件 · 版本 0.12.0</span><span class="lang-en">Local Codex plugin · version 0.12.0</span></p>
+          <h1>
+            <span class="lang-zh">你把握方向，<br><em>小队接着做。</em></span>
+            <span class="lang-en">You set the direction.<br><em>Your squad carries it forward.</em></span>
+          </h1>
+          <p class="lead">
+            <span class="lang-zh">Codex 小队把可独立验收的问题交给固定的 Qoder / DeepSeek-Flash 实现成员。主 Codex 保留方案、设计、关键决策与独立验收；结果回到原会话，补充要求沿原任务继续。</span>
+            <span class="lang-en">Codex Squad hands work that can be independently reviewed to one fixed Qoder / DeepSeek-Flash implementer. Codex keeps design, key decisions, and independent acceptance; results return to the original session, and follow-ups continue the same task.</span>
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#loop"><span class="lang-zh">看任务如何闭环</span><span class="lang-en">See the task loop</span><span aria-hidden="true">↘</span></a>
+            <a class="button button-secondary" href="#start"><span class="lang-zh">从源码构建</span><span class="lang-en">Build from source</span><span aria-hidden="true">↗</span></a>
+          </div>
+          <p class="hero-note">
+            <span class="lang-zh">本机视图只读，派工与确认仍留在 Codex 对话中。</span>
+            <span class="lang-en">Local views are read-only; dispatch and approval stay in the Codex conversation.</span>
+          </p>
+        </div>
+
+        <aside class="handoff-card" aria-label="协作合同 / Working contract">
+          <div class="card-head">
+            <span class="mono"><span class="lang-zh">协作合同</span><span class="lang-en">Working contract</span></span>
+            <span class="mono">0.12.0</span>
+          </div>
+          <ol class="handoff-list">
+            <li>
+              <span class="step-no">01</span>
+              <div>
+                <span class="handoff-tag"><span class="lang-zh">方向</span><span class="lang-en">Direction</span></span>
+                <strong><span class="lang-zh">主 Codex</span><span class="lang-en">Main Codex</span></strong>
+                <p><span class="lang-zh">定义目标、范围与验收条件；做设计与关键决策；核对源码、差异和原始证据。</span><span class="lang-en">Defines the outcome, scope, and acceptance criteria; owns design and key decisions; checks source, diffs, and raw evidence.</span></p>
+              </div>
+            </li>
+            <li>
+              <span class="step-no">02</span>
+              <div>
+                <span class="handoff-tag"><span class="lang-zh">执行</span><span class="lang-en">Execution</span></span>
+                <strong><span class="lang-zh">Qoder / DeepSeek-Flash</span><span class="lang-en">Qoder / DeepSeek-Flash</span></strong>
+                <p><span class="lang-zh">完整调查、实现与自检；报告真实命令、结果、证据和未解决缺口。</span><span class="lang-en">Investigates, implements, and self-checks; reports real commands, results, evidence, and unresolved gaps.</span></p>
+              </div>
+            </li>
+            <li>
+              <span class="step-no">03</span>
+              <div>
+                <span class="handoff-tag"><span class="lang-zh">收回</span><span class="lang-en">Return</span></span>
+                <strong><span class="lang-zh">原会话继续</span><span class="lang-en">The original thread continues</span></strong>
+                <p><span class="lang-zh">主 Codex 独立核验后登记验收；补充和返工沿用原任务会话与已报用量。</span><span class="lang-en">Codex verifies independently before recording acceptance; follow-ups reuse the same task session and reported usage.</span></p>
+              </div>
+            </li>
+          </ol>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section" id="responsibility">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-index">01 / ROLE</span>
+          <div>
+            <h2><span class="lang-zh">判断留在主会话，执行真正交出去。</span><span class="lang-en">Judgment stays in the main session. Execution is actually delegated.</span></h2>
+            <p class="section-lede"><span class="lang-zh">每一方负责什么、什么算完成，都写在同一条可检查的协作线里。</span><span class="lang-en">What each side owns, and what counts as done, live on one inspectable line of work.</span></p>
+          </div>
+        </div>
+
+        <div class="role-grid">
+          <article class="role-card role-card-main">
+            <p class="role-label"><span class="lang-zh">保留判断</span><span class="lang-en">KEEPS JUDGMENT</span></p>
+            <h3><span class="lang-zh">主 Codex</span><span class="lang-en">Main Codex</span></h3>
+            <ul class="role-list">
+              <li><span class="lang-zh">把需求转成可观察完成条件、允许写入范围和验收证据。</span><span class="lang-en">Turns a request into observable outcomes, allowed write paths, and acceptance evidence.</span></li>
+              <li><span class="lang-zh">负责设计、架构取舍和关键决策，必要时直接调查关键路径。</span><span class="lang-en">Owns design, architecture trade-offs, and key decisions, investigating critical paths when needed.</span></li>
+              <li><span class="lang-zh">核对真实差异与实际结果；摘要不能代替源码和证据。</span><span class="lang-en">Checks actual diffs and results; a summary never substitutes for source and evidence.</span></li>
+              <li><span class="lang-zh">完成独立验证后才登记验收，并沿原任务处理返工。</span><span class="lang-en">Records acceptance only after independent verification, and handles rework on the same task.</span></li>
+            </ul>
+          </article>
+
+          <article class="role-card">
+            <p class="role-label"><span class="lang-zh">承担执行</span><span class="lang-en">OWNS EXECUTION</span></p>
+            <h3><span class="lang-zh">Qoder / DeepSeek-Flash</span><span class="lang-en">Qoder / DeepSeek-Flash</span></h3>
+            <ul class="role-list">
+              <li><span class="lang-zh">唯一实现成员：调查、复现、修改、自检并交付可核验的结果。</span><span class="lang-en">The single implementer: investigates, reproduces, changes, self-checks, and delivers verifiable results.</span></li>
+              <li><span class="lang-zh">在原生任务会话中工作，保留尝试记录、上下文和已报用量。</span><span class="lang-en">Works in a native task session, preserving attempts, context, and reported usage.</span></li>
+              <li><span class="lang-zh">失败时区分产品、测试和环境原因，不把未验证写成通过。</span><span class="lang-en">Distinguishes product, test, and environment failures; never turns unverified work into a pass.</span></li>
+              <li><span class="lang-zh">不创建 Codex 子会话，不递归组队，也不扩大写入授权。</span><span class="lang-en">Creates no Codex sub-sessions, no nested teams, and no expanded write authorization.</span></li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="loop">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-index">02 / LOOP</span>
+          <div>
+            <h2><span class="lang-zh">一条连续的任务线。</span><span class="lang-en">One continuous task line.</span></h2>
+            <p class="section-lede"><span class="lang-zh">从范围到证据，再到下一次补充，状态和上下文都不需要重新拼接。</span><span class="lang-en">From scope to evidence to the next follow-up, neither state nor context has to be rebuilt.</span></p>
+          </div>
+        </div>
+
+        <ol class="loop">
+          <li>
+            <span class="loop-no">01</span>
+            <h3><span class="lang-zh">范围明确</span><span class="lang-en">Define scope</span></h3>
+            <p><span class="lang-zh">先写清目标、写入范围和验收证据。范围重叠时等待，不互相覆盖。</span><span class="lang-en">State the goal, write scope, and acceptance evidence first. Overlapping scopes wait instead of overwriting each other.</span></p>
+          </li>
+          <li>
+            <span class="loop-no">02</span>
+            <h3><span class="lang-zh">执行自检</span><span class="lang-en">Execute and check</span></h3>
+            <p><span class="lang-zh">实现成员在原生会话中调查、修改并运行聚焦检查，报告实际结果。</span><span class="lang-en">The implementer investigates, changes, and runs focused checks in its native session, reporting actual results.</span></p>
+          </li>
+          <li>
+            <span class="loop-no">03</span>
+            <h3><span class="lang-zh">主 Codex 核验</span><span class="lang-en">Codex verifies</span></h3>
+            <p><span class="lang-zh">主 Codex 查看差异、执行自己的验证，再带证据登记验收。</span><span class="lang-en">Codex inspects the diff, performs its own verification, then records acceptance with evidence.</span></p>
+          </li>
+          <li>
+            <span class="loop-no">04</span>
+            <h3><span class="lang-zh">原任务续接</span><span class="lang-en">Continue the task</span></h3>
+            <p><span class="lang-zh">补充、返工和补证继续原任务；收尾时可按需保存恢复总结。</span><span class="lang-en">Follow-ups, rework, and missing evidence continue the same task; a recovery summary can be saved at closeout.</span></p>
+          </li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="section section-tinted" id="capabilities">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-index">03 / CAPABILITIES</span>
+          <div>
+            <h2><span class="lang-zh">把过程、证据和边界放在一起。</span><span class="lang-en">Process, evidence, and boundaries in one place.</span></h2>
+            <p class="section-lede"><span class="lang-zh">页面用于查看，派工和确认仍在 Codex 对话中完成。核心能力在本机运行；可选服务按你的环境接入。</span><span class="lang-en">Pages are for reading; dispatch and approval remain in the Codex conversation. Core features run locally; optional services depend on your environment.</span></p>
+          </div>
+        </div>
+
+        <div class="capability-grid">
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">01 / LOCAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">任务进展</span><span class="lang-en">Task progress</span></h3>
+              <p><span class="lang-zh">本机只读看板展示当前会话的任务、状态、公开回复和简短执行过程。</span><span class="lang-en">A local read-only board shows the session's tasks, status, public replies, and concise execution history.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">02 / LOCAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">连续对话</span><span class="lang-en">Continuous conversation</span></h3>
+              <p><span class="lang-zh">补充要求和返工复用原任务会话，保留此前尝试和已报用量，不另起一个失去上下文的替换任务。</span><span class="lang-en">Follow-ups reuse the original task session, preserving prior attempts and reported usage instead of starting a disconnected replacement.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">03 / LOCAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">真实用量</span><span class="lang-en">Reported usage</span></h3>
+              <p><span class="lang-zh">汇总任务、尝试、续接、技能访问、工具调用和已上报 Token。缺失数据保持未知，不换算金额或节省比例。</span><span class="lang-en">Summarizes tasks, attempts, continuations, skill access, tool calls, and reported tokens. Missing data stays unknown; no cost or savings ratio is derived.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">04 / LOCAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">功能验收 HTML</span><span class="lang-en">Acceptance HTML</span></h3>
+              <p><span class="lang-zh">按来源设计用例，复用目标项目已有测试，审计证据并生成可离线查看的 HTML 报告。构建不会执行项目测试。</span><span class="lang-en">Designs sourced cases, uses the target project's own tests, audits evidence, and builds an offline HTML report. Building does not execute project tests.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">05 / OPTIONAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">可选设计评审</span><span class="lang-en">Optional design review</span></h3>
+              <p><span class="lang-zh">启用后通过你自己的 Stitch MCP 和 Google 账号出稿与评审；实现前导出原始 DOM、CSS 和素材，按同状态同视口核对。</span><span class="lang-en">When enabled, uses your own Stitch MCP setup and Google account for design and review. Original DOM, CSS, and assets are exported before implementation and checked in the same state and viewport.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+
+          <article class="cap-card">
+            <div class="cap-head"><span class="mono">06 / LOCAL</span><span class="cap-mark" aria-hidden="true">↗</span></div>
+            <div class="cap-body">
+              <h3><span class="lang-zh">会话总结</span><span class="lang-en">Session summary</span></h3>
+              <p><span class="lang-zh">收尾时保存目标、已确认决定、证据和剩余问题的精简记录，供后续恢复；默认只给出链接。</span><span class="lang-en">At closeout, saves a compact record of goals, confirmed decisions, evidence, and open items for recovery; only a link is surfaced by default.</span></p>
+            </div>
+            <a class="cap-link" href="https://github.com/chenchen428/codex-squad#capabilities"><span class="lang-zh">阅读能力说明</span><span class="lang-en">Read capability notes</span><span aria-hidden="true">↗</span></a>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="start">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-index">04 / START</span>
+          <div>
+            <h2><span class="lang-zh">下载发布包，或从源码构建。</span><span class="lang-en">Download a release, or build from source.</span></h2>
+            <p class="section-lede"><span class="lang-zh">从 <a href="https://github.com/chenchen428/codex-squad/releases">GitHub Releases</a> 下载便携包，或按下面的命令从源码构建同一份包。加载方式取决于你的 Codex 宿主。</span><span class="lang-en">Download the portable package from <a href="https://github.com/chenchen428/codex-squad/releases">GitHub Releases</a>, or build the same package from source with the commands below. Loading depends on your Codex host.</span></p>
+          </div>
+        </div>
+
+        <p class="start-download"><a class="button button-secondary" href="https://github.com/chenchen428/codex-squad/releases"><span class="lang-zh">从 GitHub Releases 下载</span><span class="lang-en">Download from GitHub Releases</span><span aria-hidden="true">↗</span></a></p>
+
+        <div class="start-grid">
+          <div class="prereq-panel">
+            <p class="role-label"><span class="lang-zh">环境前提</span><span class="lang-en">PREREQUISITES</span></p>
+            <ul class="prereq-list">
+              <li><strong>Node.js</strong><span><span class="lang-zh">22.5 或更高版本；较旧的 22.x / 23.x 会带 SQLite 实验参数重启。</span><span class="lang-en">22.5 or newer; older 22.x / 23.x runs relaunch with the SQLite experimental flag.</span></span></li>
+              <li><strong>Codex</strong><span><span class="lang-zh">支持插件并保留本机会话记录的宿主。</span><span class="lang-en">A host with plugin support and local session records.</span></span></li>
+              <li><strong>Qoder CLI</strong><span><span class="lang-zh">已安装并登录，模型目录包含 DeepSeek-Flash。插件不会代为安装或登录。</span><span class="lang-en">Installed and signed in, with DeepSeek-Flash in its model catalog. The plugin does not install or authenticate it.</span></span></li>
+              <li><strong><span class="lang-zh">项目与授权</span><span class="lang-en">Project and access</span></strong><span><span class="lang-zh">一个工作目录，以及派工所需的文件写入和测试权限。</span><span class="lang-en">A working directory plus the file and test permissions needed for the work you dispatch.</span></span></li>
+            </ul>
+            <p class="prereq-note"><span class="lang-zh">可选设计评审还需要你自己的 Google 账号和 Stitch MCP 配置；使用与否由你决定。</span><span class="lang-en">Optional design review also needs your own Google account and Stitch MCP setup; it is not required for the base workflow.</span></p>
+          </div>
+
+          <div class="code-panel">
+            <div class="code-head">
+              <span class="mono">BUILD FROM SOURCE</span>
+              <button class="copy-button" type="button" id="copy-build" data-copy-target="build-command" data-status-target="copy-status">
+                <span class="lang-zh">复制命令</span><span class="lang-en">Copy commands</span>
+              </button>
+            </div>
+<pre id="build-command"><code>git clone https://github.com/chenchen428/codex-squad.git
+cd codex-squad
+npm ci
+npm run check
+npm run build
+npm run package
+npm run verify:package</code></pre>
+            <div class="code-foot">
+              <p><span class="lang-zh"><code>npm run package</code> 生成 <code>dist/plugin</code>；按你的 Codex 宿主支持的本机插件方式加载。</span><span class="lang-en"><code>npm run package</code> writes <code>dist/plugin</code>; load it through the local plugin mechanism supported by your Codex host.</span></p>
+            </div>
+            <p class="copy-status" id="copy-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section section-tinted" id="limits">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-index">05 / LIMITS</span>
+          <div>
+            <h2><span class="lang-zh">真实限制，先说清楚。</span><span class="lang-en">The real limits, stated plainly.</span></h2>
+            <p class="section-lede"><span class="lang-zh">这些边界属于当前公开源码版本，不随介绍页的宣传口径变化。</span><span class="lang-en">These boundaries belong to the current public source version; they do not change with presentation.</span></p>
+          </div>
+        </div>
+
+        <div class="limits-grid">
+          <div class="limit"><strong><span class="lang-zh">只在本机运行</span><span class="lang-en">Local only</span></strong><p><span class="lang-zh">任务、分析、评审和总结页面由绑定 127.0.0.1 的本机进程提供。URL 含会话凭据，不应外发。</span><span class="lang-en">Task, analysis, review, and summary views come from a local process bound to 127.0.0.1. URLs contain session credentials and should not be shared.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">一名固定实现成员</span><span class="lang-en">One fixed implementer</span></strong><p><span class="lang-zh">不创建 Codex 子会话或嵌套代理小队。需要兼容的 Codex 宿主和已安装、已登录的 Qoder CLI。</span><span class="lang-en">No Codex sub-sessions or nested agent teams. Requires a compatible Codex host and an installed, authenticated Qoder CLI.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">GitHub Releases 手动下载</span><span class="lang-en">Manual download from GitHub Releases</span></strong><p><span class="lang-zh">打包产物发布在 <a href="https://github.com/chenchen428/codex-squad/releases">GitHub Releases</a>；加载方式取决于你的 Codex 宿主。</span><span class="lang-en">Packaged builds are published on <a href="https://github.com/chenchen428/codex-squad/releases">GitHub Releases</a>; loading depends on your Codex host.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">未声明跨平台支持</span><span class="lang-en">No cross-platform claim</span></strong><p><span class="lang-zh">请在目标操作系统上验证构建和运行；介绍页不替代实际兼容性测试。</span><span class="lang-en">Verify the build and runtime on your target OS; this page is not a compatibility test.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">可选服务属于外部依赖</span><span class="lang-en">Optional services are external</span></strong><p><span class="lang-zh">Stitch 设计评审需要你自己的 Google 和 MCP 配置；可用性、数据处理和条款由该服务决定。</span><span class="lang-en">Stitch design review needs your own Google and MCP setup; availability, data handling, and terms are governed by that service.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">用量不是账单</span><span class="lang-en">Usage is not billing</span></strong><p><span class="lang-zh">已上报 Token 和工具活动是本机运行信号，不是账户余额、价格或经测量的节省率。</span><span class="lang-en">Reported tokens and tool activity are local operational signals, not account balances, prices, or a measured savings rate.</span></p></div>
+          <div class="limit"><strong><span class="lang-zh">报告是证据容器</span><span class="lang-en">Reports hold evidence</span></strong><p><span class="lang-zh">构建成功只证明输入结构完整且可渲染，不证明业务流程通过。构建不会执行项目测试。</span><span class="lang-en">A successful build means the input is well-formed and renderable, not that a business flow passed. Building does not run project tests.</span></p></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-inner">
+      <p><span class="brand-mark" aria-hidden="true"></span><span class="lang-zh">Codex 小队 · 本机静态介绍页</span><span class="lang-en">Codex Squad · static local overview</span></p>
+      <p class="footer-links">
+        <a href="https://github.com/chenchen428/codex-squad"><span class="lang-zh">源码仓库</span><span class="lang-en">Source repository</span><span aria-hidden="true">↗</span></a>
+        <a href="https://github.com/chenchen428/codex-squad/blob/main/README.md"><span class="lang-zh">README</span><span class="lang-en">README</span><span aria-hidden="true">↗</span></a>
+      </p>
+      <p class="footer-meta"><span class="lang-zh">版本 0.12.0 · 无统计请求 · 无远程资源</span><span class="lang-en">Version 0.12.0 · no analytics · no remote assets</span></p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
