@@ -34,7 +34,7 @@ The working contract is deliberately small:
 - **Optional design review.** When enabled, design work uses Stitch through your own MCP setup and Google account. Original DOM, CSS, and assets are exported before implementation and compared in the same state and viewport.
 - **Session summary.** At closeout, a compact summary of goals, decisions, evidence, and open items can be saved for later recovery. Only a link is surfaced by default.
 
-The [product film](https://chenchen428.github.io/codex-squad/#film) is being updated to the latest confirmed presentation.
+The [30-second product film](https://chenchen428.github.io/codex-squad/#film) is the revision 6 cut confirmed on 2026-10-25. It records a real task from 2026-10-24, not a re-shoot of the current 0.12 interface; project names and local file paths are masked.
 
 ### Requirements
 
@@ -114,7 +114,7 @@ Codex 小队是一个运行在本机的 Codex 插件，把可以独立验收的�
 - **可选设计评审。** 启用后通过你自己的 Stitch MCP 和 Google 账号完成设计；实现前导出原始 DOM、CSS 和素材，并在同状态、同视口下核对，不凭截图重画。
 - **会话总结。** 收尾时保存目标、已确认决定、证据和剩余问题的精简记录，供后续恢复；默认只给出链接。
 
-[产品短片](https://chenchen428.github.io/codex-squad/#film)正在更新为最新确认版本。
+[30秒产品短片](https://chenchen428.github.io/codex-squad/#film)是 2026-10-25 确认通过的第6版成片，记录 2026-10-24 的一次真实任务，不是按当前 0.12 界面重拍；片中项目名与本机文件路径已遮挡。
 
 ### 环境前提
 
