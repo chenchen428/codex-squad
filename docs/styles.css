@@ -473,6 +473,54 @@ h1 em {
   background: var(--surface);
 }
 
+/* Film */
+.film-frame {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+.film-video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  border: 1px solid var(--rule);
+  background: var(--inverse);
+  color: var(--on-inverse);
+}
+
+.film-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 20px;
+  margin-top: 12px;
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.film-download {
+  color: var(--rust);
+  border-bottom: 1px solid currentColor;
+  white-space: nowrap;
+}
+
+.film-fallback {
+  margin: 0;
+  padding: 20px;
+  color: var(--on-inverse);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
+.film-fallback a {
+  color: var(--on-inverse);
+  border-bottom: 1px solid currentColor;
+}
+
 .section-head {
   display: grid;
   grid-template-columns: 118px minmax(0, 1fr);

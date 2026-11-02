@@ -34,6 +34,8 @@ The working contract is deliberately small:
 - **Optional design review.** When enabled, design work uses Stitch through your own MCP setup and Google account. Original DOM, CSS, and assets are exported before implementation and compared in the same state and viewport.
 - **Session summary.** At closeout, a compact summary of goals, decisions, evidence, and open items can be saved for later recovery. Only a link is surfaced by default.
 
+Watch the [42-second demo](https://chenchen428.github.io/codex-squad/#film). The footage was captured on 2026-10-23 from UI version 0.4.0 and is an archived demo; this README describes current capabilities.
+
 ### Requirements
 
 - **Node.js 22.5 or newer.** On older 22.x and 23.x releases, the CLI adds the SQLite experimental flag when it relaunches Node.
@@ -111,6 +113,8 @@ Codex 小队是一个运行在本机的 Codex 插件，把可以独立验收的�
 - **功能验收 HTML。** 内置 `functional-acceptance` 技能按来源设计用例，复用目标项目已有测试，审计证据，再生成可离线查看的 HTML 报告。`validate` 和 `build` 只检查、渲染输入，不执行项目测试，也不替代业务验收。
 - **可选设计评审。** 启用后通过你自己的 Stitch MCP 和 Google 账号完成设计；实现前导出原始 DOM、CSS 和素材，并在同状态、同视口下核对，不凭截图重画。
 - **会话总结。** 收尾时保存目标、已确认决定、证据和剩余问题的精简记录，供后续恢复；默认只给出链接。
+
+观看[42 秒演示](https://chenchen428.github.io/codex-squad/#film)。画面采集于 2026-10-23 的界面版本 0.4.0，属于历史演示；当前能力以本 README 为准。
 
 ### 环境前提
 
