@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>画布选稿 · 多候选 - 留白 / Design Review</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Noto+Serif+SC:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      user-select: none;
+      -webkit-user-select: none;
+      background-color: #f4f4f7;
+      color: #1e2022;
+      overflow: hidden;
+    }
+    .serif-title {
+      font-family: 'Newsreader', 'Noto Serif SC', serif;
+    }
+    /* Figma-like infinite canvas dot pattern */
+    .canvas-dots {
+      background-color: #f5f5f7;
+      background-image: radial-gradient(#d5d7de 1.1px, transparent 1.1px);
+      background-size: 20px 20px;
+    }
+    /* Artboard styling */
+    .artboard-card {
+      transition: transform 0.18s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.18s ease, border-color 0.18s ease;
+    }
+    .artboard-card.active-artboard {
+      box-shadow: 0 16px 36px -10px rgba(41, 99, 82, 0.16), 0 0 0 2px #296352;
+    }
+    /* Custom scrollbars */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #c8cbd2;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="w-[1440px] h-[1000px] flex flex-col relative select-none">
+
+  <!-- 1. 顶部 56px 轻量精致白色通栏 -->
+  <header class="h-[56px] w-full bg-white/95 backdrop-blur border-b border-gray-200/80 px-6 flex items-center justify-between z-30 shrink-0">
+    <!-- 左：品牌与定位 -->
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-[#296352]"></span>
+        <span class="font-semibold text-[15px] tracking-tight serif-title text-[#1b2a26]">留白</span>
+        <span class="text-gray-300 font-light">/</span>
+        <span class="text-xs uppercase tracking-widest text-gray-400 font-medium">Design Review</span>
+      </div>
+      <div class="h-4 w-px bg-gray-200"></div>
+      <span class="text-xs text-gray-500 font-normal">阅读应用 · 界面改版</span>
+    </div>
+
+    <!-- 中：议题下拉与状态徽标 -->
+    <div class="flex items-center space-x-2.5">
+      <div class="relative group cursor-pointer">
+        <div class="flex items-center space-x-2 px-3 py-1.5 rounded-lg border border-gray-200 hover:border-gray-300 bg-white shadow-sm transition">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+          <span class="text-xs font-medium text-gray-800">01 发现与阅读</span>
+          <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+        </div>
+      </div>
+      <span class="text-[11px] px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200/60 font-medium">第 1 轮常规</span>
+      <span class="text-xs text-gray-400 hidden lg:inline-block">让封面更完整，让下一步更清楚</span>
+    </div>
+
+    <!-- 右：目标提示与选择清单 -->
+    <div class="flex items-center space-x-3">
+      <div class="flex items-center space-x-1.5 text-xs text-gray-500 bg-gray-50/80 px-2.5 py-1 rounded-md border border-gray-100">
+        <span class="text-emerald-700 font-medium">4</span>
+        <span>个画板就绪</span>
+      </div>
+      <button class="flex items-center space-x-1.5 text-xs font-medium px-3.5 py-1.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition shadow-sm">
+        <span>查看决定清单</span>
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. 二维自由画布空间 (无边界感、点阵网格、可交互平移与缩放) -->
+  <main id="viewport" class="flex-1 w-full relative overflow-hidden canvas-dots cursor-grab active:cursor-grabbing">
+    
+    <!-- 画布左上角极简目标标签 -->
+    <div class="absolute top-4 left-6 z-10 pointer-events-none">
+      <div class="flex items-center space-x-2 text-xs text-gray-500 bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-gray-200/60 shadow-xs">
+        <svg class="w-3.5 h-3.5 text-[#296352]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        <span>核心审阅目标：让封面更完整，让下一步更清楚</span>
+      </div>
+    </div>
+
+    <!-- 画布可变换层 (Transform Root) -->
+    <div id="canvas-surface" class="absolute w-[2200px] h-[1400px] left-[-380px] top-[-160px] flex items-center justify-center transition-transform duration-75 ease-out" style="transform: scale(1) translate(0px, 0px);">
+      
+      <!-- 四个画板横向工作台排列容器 -->
+      <div class="flex items-start gap-8 px-12 py-10">
+
+        <!-- ================= 画板 0: 当前线上基准 ================= -->
+        <div class="flex flex-col items-center">
+          <!-- 画板头部标头 (Figma式) -->
+          <div class="w-[300px] flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-sm bg-gray-400"></span>
+              <span class="text-[12px] font-semibold text-gray-600 tracking-tight">当前线上</span>
+              <span class="text-[11px] text-gray-400 font-mono">v1·常规</span>
+            </div>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-gray-200/70 text-gray-600">现状基准</span>
+          </div>
+
+          <!-- 画板主体 (基准 300 x 440) -->
+          <div id="board-0" class="artboard-card relative w-[300px] h-[440px] bg-white rounded-[22px] border border-gray-200 shadow-md shadow-slate-200/60 flex flex-col overflow-hidden group cursor-pointer" onclick="selectBoard('current')">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-gray-400 font-medium shrink-0 pt-1.5 bg-white">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-gray-400 relative inline-block"><span class="absolute inset-0.5 bg-gray-400 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部 -->
+            <div class="px-3.5 py-1.5 flex items-center justify-between shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              <span class="text-[11px] font-medium text-gray-700">图书详情</span>
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>
+            </div>
+
+            <!-- 现况内容：密集卡片、封面偏小被截切 -->
+            <div class="px-3.5 pt-1 pb-2 flex-1 flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="flex space-x-2.5 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                  <div class="w-16 h-20 bg-gray-400 rounded-md shrink-0 p-1.5 flex flex-col justify-between text-white text-[9px] shadow-xs">
+                    <span class="text-[7px] text-gray-200 font-mono">VOL.04</span>
+                    <span class="font-bold leading-tight">远山与行旅</span>
+                    <span class="text-[7px] text-gray-200">林栖 著</span>
+                  </div>
+                  <div class="flex-1 flex flex-col justify-center">
+                    <div class="text-[12px] font-bold text-gray-900 leading-tight">远山与行旅(修订本)</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">中文散文集 · 18.4万字</div>
+                    <div class="text-[9px] text-amber-600 mt-1 flex items-center">★ 8.7 <span class="text-gray-400 ml-1">(1,420 评价)</span></div>
+                    <p class="text-[8px] text-rose-500 mt-1 leading-snug">旧版信息密度过大，书封被局部裁切，动作层级分散。</p>
+                  </div>
+                </div>
+
+                <!-- 四格数据 -->
+                <div class="grid grid-cols-4 gap-1 text-center">
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">目录</div><div class="text-[7px] text-gray-400">18章</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">笔记</div><div class="text-[7px] text-gray-400">142条</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">书评</div><div class="text-[7px] text-gray-400">99+</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">听书</div><div class="text-[7px] text-gray-400">支持</div></div>
+                </div>
+
+                <!-- 试读片段 -->
+                <div class="p-2 bg-gray-50 rounded-lg border border-gray-100 text-[9px] text-gray-600 leading-relaxed">
+                  <span class="font-medium text-gray-800">第一章 · 晨雾中的渡口</span>
+                  <p class="line-clamp-2 text-gray-400 text-[8px] mt-0.5">江水在清晨的微风中泛起银白色的褶皱，两岸的青瓦民居在炊烟散尽后，隐约露出湿润的屋脊轮廓。</p>
+                </div>
+              </div>
+
+              <!-- 底部操作条 -->
+              <div class="flex items-center space-x-1.5 pt-1.5 border-t border-gray-100">
+                <button class="flex-1 py-1.5 rounded-lg bg-gray-800 text-white text-[10px] font-medium">开始阅读</button>
+                <button class="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 text-[10px]">试读</button>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-gray-50/90 border-t border-gray-100 px-3 py-1 flex items-center justify-between text-[9px] text-gray-400">
+              <span>现状基准 · 1170×2532 px</span>
+              <span class="text-gray-400">紧凑网格</span>
+            </div>
+          </div>
+
+          <!-- 画板底部轻量选择 Radio -->
+          <div class="mt-3 flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs text-gray-600 cursor-pointer hover:border-gray-300 shadow-xs transition" onclick="selectCandidate('current', '保留当前')">
+              <input type="radio" name="board_select" value="current" class="text-emerald-700 focus:ring-0">
+              <span class="font-medium text-[11px]">保留当前</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ================= 画板 1: 方案 A (完整封面·留白阅读) ================= -->
+        <div class="flex flex-col items-center">
+          <!-- 画板头部标头 -->
+          <div class="w-[300px] flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-sm bg-[#296352]"></span>
+              <span class="text-[12px] font-semibold text-gray-900 tracking-tight">方案 A · 留白封面</span>
+              <span class="text-[10px] px-1.5 py-0.2 rounded bg-emerald-100 text-[#1b4337] font-medium">团队推荐</span>
+            </div>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-emerald-50 text-[#296352]">v2·沉浸式</span>
+          </div>
+
+          <!-- 画板主体 (基准 300 x 440) -->
+          <div id="board-a" class="artboard-card relative w-[300px] h-[440px] bg-[#fafaf7] rounded-[22px] border-2 border-[#296352]/70 shadow-lg shadow-emerald-950/10 flex flex-col overflow-hidden group cursor-pointer" onclick="selectBoard('A')">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-gray-400 font-medium shrink-0 pt-1.5">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-gray-400 relative inline-block"><span class="absolute inset-0.5 bg-gray-500 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部 -->
+            <div class="px-3.5 py-1.5 flex items-center justify-between shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+              <div class="flex space-x-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-800"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-gray-300"></span>
+              </div>
+              <div class="flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/></svg>
+                <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01"/></svg>
+              </div>
+            </div>
+
+            <!-- 核心：优雅居中完整封面、极简呼吸空间 -->
+            <div class="px-4 flex-1 flex flex-col items-center justify-between py-1">
+              <!-- 精致立本书封，完整比例不裁剪 -->
+              <div class="w-28 h-36 bg-[#f1eeea] rounded-lg shadow-sm border border-[#e4ded5] p-3 flex flex-col justify-between items-center text-center mt-1">
+                <div class="w-6 h-1 rounded-full bg-[#296352]/30"></div>
+                <div>
+                  <h3 class="serif-title font-medium text-gray-800 text-[13px] tracking-widest">远山与行旅</h3>
+                  <p class="text-[8px] text-gray-500 mt-0.5 tracking-wider font-light">林栖 著</p>
+                </div>
+                <span class="text-[7px] text-[#296352] uppercase font-mono tracking-widest">ESSAY · 留白版</span>
+              </div>
+
+              <!-- 书籍核心信息与呼吸文字 -->
+              <div class="text-center space-y-0.5">
+                <div class="text-[13px] font-bold text-gray-900 serif-title">远山与行旅</div>
+                <div class="text-[9px] text-gray-500">林栖 · 纯享版 · 18.4 万字</div>
+              </div>
+
+              <!-- 纯享精选段落卡片 -->
+              <div class="w-full bg-white/90 backdrop-blur rounded-xl p-2.5 border border-emerald-900/10 shadow-2xs">
+                <div class="flex items-center justify-between text-[8px] text-[#296352] font-medium mb-1">
+                  <span>正文摘录 · 卷一</span>
+                  <span>第 3 节</span>
+                </div>
+                <p class="serif-title text-[9px] text-gray-700 leading-relaxed line-clamp-2">
+                  江水在晨光里舒展，山影静默如初。阅读的呼吸，本就该在无声的留白里渐次沉淀。
+                </p>
+              </div>
+
+              <!-- 底部主控行动条 -->
+              <div class="w-full flex items-center space-x-1.5 pt-1">
+                <button class="flex-1 py-1.5 rounded-lg bg-[#296352] text-white text-[10px] font-medium hover:bg-[#235345] transition flex items-center justify-center space-x-1 shadow-xs">
+                  <span>继续阅读 · 第 14 页</span>
+                </button>
+                <button class="px-2.5 py-1.5 rounded-lg bg-white border border-gray-200 text-gray-700 text-[10px] font-medium">目录</button>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-emerald-50/60 border-t border-emerald-100/60 px-3 py-1 flex items-center justify-between text-[9px] text-[#296352]">
+              <span>完整封面 · 呼吸感加强</span>
+              <span class="font-medium">主打沉浸体验</span>
+            </div>
+          </div>
+
+          <!-- 画板底部轻量选择 Radio -->
+          <div class="mt-3 flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-emerald-300 text-xs text-[#296352] cursor-pointer hover:border-emerald-400 shadow-xs transition" onclick="selectCandidate('A', '方案 A（完整封面）')">
+              <input type="radio" name="board_select" value="A" class="text-emerald-700 focus:ring-0">
+              <span class="font-medium text-[11px]">选择方案 A</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ================= 画板 2: 方案 B (目录优先·快捷跳转) ================= -->
+        <div class="flex flex-col items-center">
+          <!-- 画板头部标头 -->
+          <div class="w-[300px] flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-sm bg-blue-500"></span>
+              <span class="text-[12px] font-semibold text-gray-900 tracking-tight">方案 B · 目录优先</span>
+              <span class="text-[10px] text-gray-400 font-mono">v2·功能流</span>
+            </div>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-blue-50 text-blue-700">快速查阅</span>
+          </div>
+
+          <!-- 画板主体 (基准 300 x 440) -->
+          <div id="board-b" class="artboard-card relative w-[300px] h-[440px] bg-white rounded-[22px] border border-gray-200 shadow-md shadow-slate-200/60 flex flex-col overflow-hidden group cursor-pointer" onclick="selectBoard('B')">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-gray-400 font-medium shrink-0 pt-1.5 bg-white">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-gray-400 relative inline-block"><span class="absolute inset-0.5 bg-gray-500 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部 -->
+            <div class="px-3.5 py-1.5 flex items-center justify-between shrink-0 border-b border-gray-100">
+              <div class="flex items-center space-x-2">
+                <svg class="w-3.5 h-3.5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span class="text-[11px] font-semibold text-gray-800">章节目录与定位</span>
+              </div>
+              <span class="text-[9px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">18个章节</span>
+            </div>
+
+            <!-- 核心：目录为第一层级，封面作为轻量横条并列 -->
+            <div class="px-3 py-2 flex-1 flex flex-col justify-between">
+              <div class="space-y-1.5">
+                <!-- 紧凑书籍条 -->
+                <div class="flex items-center space-x-2.5 p-2 rounded-xl bg-gray-50 border border-gray-100">
+                  <div class="w-9 h-12 bg-stone-300 rounded shrink-0 p-1 flex flex-col justify-between text-stone-700 text-[6px]">
+                    <span>远山</span>
+                    <span>林栖</span>
+                  </div>
+                  <div class="flex-1">
+                    <div class="text-[11px] font-bold text-gray-900">远山与行旅</div>
+                    <div class="text-[8px] text-gray-400">上次停留在：第二章·古道青苔</div>
+                  </div>
+                  <span class="text-[9px] font-mono text-blue-600 font-medium">32%</span>
+                </div>
+
+                <!-- 章节快速索引列表 -->
+                <div class="space-y-1 pt-1">
+                  <div class="flex items-center justify-between p-1.5 rounded-lg bg-blue-50/50 border border-blue-100 text-[9px]">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-blue-600"></span>
+                      <span class="font-medium text-blue-900">第一章 · 晨雾中的渡口</span>
+                    </div>
+                    <span class="text-blue-500 font-mono text-[8px]">已读完</span>
+                  </div>
+                  <div class="flex items-center justify-between p-1.5 rounded-lg bg-white border border-gray-100 text-[9px]">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                      <span class="font-medium text-gray-800">第二章 · 古道青苔</span>
+                    </div>
+                    <span class="text-amber-600 font-mono text-[8px]">阅读中</span>
+                  </div>
+                  <div class="flex items-center justify-between p-1.5 rounded-lg bg-white border border-gray-100 text-[9px] text-gray-500">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-gray-200"></span>
+                      <span>第三章 · 深巷夜雨</span>
+                    </div>
+                    <span class="text-gray-400 font-mono text-[8px]">未读</span>
+                  </div>
+                  <div class="flex items-center justify-between p-1.5 rounded-lg bg-white border border-gray-100 text-[9px] text-gray-400">
+                    <div class="flex items-center space-x-1.5">
+                      <span class="w-1.5 h-1.5 rounded-full bg-gray-200"></span>
+                      <span>第四章 · 归途与余晖</span>
+                    </div>
+                    <span class="text-gray-300 font-mono text-[8px]">未读</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 底部操作条 -->
+              <div class="flex items-center space-x-1.5 pt-1 border-t border-gray-100">
+                <button class="flex-1 py-1.5 rounded-lg bg-blue-600 text-white text-[10px] font-medium">跳转至上次进度</button>
+                <button class="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-700 text-[10px]">书签</button>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-gray-50 border-t border-gray-100 px-3 py-1 flex items-center justify-between text-[9px] text-gray-500">
+              <span>直接定位章节与书签</span>
+              <span class="text-blue-600">工具导向</span>
+            </div>
+          </div>
+
+          <!-- 画板底部轻量选择 Radio -->
+          <div class="mt-3 flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs text-gray-600 cursor-pointer hover:border-gray-300 shadow-xs transition" onclick="selectCandidate('B', '方案 B（目录优先）')">
+              <input type="radio" name="board_select" value="B" class="text-emerald-700 focus:ring-0">
+              <span class="font-medium text-[11px]">选择方案 B</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- ================= 画板 3: 方案 C (正文优先·直入阅读) ================= -->
+        <div class="flex flex-col items-center">
+          <!-- 画板头部标头 -->
+          <div class="w-[300px] flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-sm bg-stone-700"></span>
+              <span class="text-[12px] font-semibold text-gray-900 tracking-tight">方案 C · 正文优先</span>
+              <span class="text-[10px] text-gray-400 font-mono">v2·纯文本</span>
+            </div>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-stone-100 text-stone-700">零干扰</span>
+          </div>
+
+          <!-- 画板主体 (基准 300 x 440) -->
+          <div id="board-c" class="artboard-card relative w-[300px] h-[440px] bg-[#fbf9f5] rounded-[22px] border border-stone-200 shadow-md shadow-slate-200/60 flex flex-col overflow-hidden group cursor-pointer" onclick="selectBoard('C')">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-stone-400 font-medium shrink-0 pt-1.5">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-stone-400 relative inline-block"><span class="absolute inset-0.5 bg-stone-500 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部极简沉浸条 -->
+            <div class="px-3.5 py-1 flex items-center justify-between shrink-0 text-stone-400 text-[9px]">
+              <div class="flex items-center space-x-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+                <span class="text-stone-600">远山与行旅</span>
+              </div>
+              <span class="font-mono">字号 Aa</span>
+            </div>
+
+            <!-- 核心：大面积真实阅读正文排版，纸书温润感 -->
+            <div class="px-4 py-2 flex-1 flex flex-col justify-between">
+              <div class="space-y-2.5">
+                <div class="border-b border-stone-200/70 pb-1">
+                  <div class="serif-title font-bold text-[14px] text-stone-900">第二章 · 古道青苔</div>
+                  <div class="text-[8px] text-stone-400 font-serif mt-0.5">林栖 / 文</div>
+                </div>
+
+                <!-- 正文流 -->
+                <div class="serif-title text-[10px] text-stone-800 leading-[1.65] text-justify space-y-2">
+                  <p class="indent-4">
+                    青石板路被几百年的脚步打磨得发亮，石缝里挤满了厚实苍绿的苔藓。雨后的湿气在树冠间凝结成轻雾。
+                  </p>
+                  <p class="indent-4">
+                    山风吹过时，有冷冽的松针香气扑面而来。行者卸下竹杖，在歇马亭的石凳上暂坐片刻，耳边只剩山涧跌落深潭的空响。
+                  </p>
+                </div>
+              </div>
+
+              <!-- 底部极简翻页与进度指示 -->
+              <div class="pt-2">
+                <div class="w-full bg-stone-200/60 h-1 rounded-full overflow-hidden mb-1.5">
+                  <div class="bg-stone-700 h-full w-[42%]"></div>
+                </div>
+                <div class="flex items-center justify-between text-[8px] text-stone-400">
+                  <span>第 42 / 188 页</span>
+                  <div class="flex space-x-2">
+                    <span class="hover:text-stone-800 cursor-pointer">上一页</span>
+                    <span class="hover:text-stone-800 cursor-pointer">下一页</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-stone-100/60 border-t border-stone-200/70 px-3 py-1 flex items-center justify-between text-[9px] text-stone-500">
+              <span>打开即读 · 纯净正文</span>
+              <span class="text-stone-700">纸书排版</span>
+            </div>
+          </div>
+
+          <!-- 画板底部轻量选择 Radio -->
+          <div class="mt-3 flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs text-gray-600 cursor-pointer hover:border-gray-300 shadow-xs transition" onclick="selectCandidate('C', '方案 C（正文优先）')">
+              <input type="radio" name="board_select" value="C" class="text-emerald-700 focus:ring-0">
+              <span class="font-medium text-[11px]">选择方案 C</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- 3. 底部左侧浮动胶囊工具栏 (Figma式缩放、手形、平移、适应全屏) -->
+    <div class="absolute bottom-6 left-6 z-20 flex items-center bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/90 shadow-lg px-2 py-1.5 space-x-1">
+      <!-- 抓手工具 -->
+      <button id="hand-tool-btn" title="手形平移画布 (空格快捷键)" onclick="toggleHandTool()" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"/></svg>
+      </button>
+
+      <div class="w-px h-3.5 bg-gray-200"></div>
+
+      <!-- 缩小 -->
+      <button title="缩小" onclick="zoomCanvas(-0.1)" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"/></svg>
+      </button>
+
+      <!-- 缩放数值 -->
+      <button id="zoom-text" onclick="resetZoom()" title="点击重置为 100%" class="px-2 py-0.5 text-xs font-mono font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded">
+        100%
+      </button>
+
+      <!-- 放大 -->
+      <button title="放大" onclick="zoomCanvas(0.1)" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+      </button>
+
+      <div class="w-px h-3.5 bg-gray-200"></div>
+
+      <!-- 适应全部 -->
+      <button onclick="fitAllBoards()" title="适应全部画板" class="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-100 transition">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"/></svg>
+        <span>适应全部</span>
+      </button>
+
+      <!-- 同宽排列 -->
+      <button onclick="alignBoards()" title="并排对齐" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
+    </div>
+
+    <!-- 4. 底部中央轻量浮动备注与决定确认条 (约 650×86px，绝不占满底边) -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-[640px] bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-xl shadow-slate-400/10 p-2.5 flex items-center justify-between gap-3">
+      <!-- 自由备注输入框 (未选也可写，支持随时自动保存) -->
+      <div class="flex-1 flex flex-col justify-center">
+        <div class="flex items-center justify-between text-[10px] text-gray-400 mb-1 px-0.5">
+          <div class="flex items-center space-x-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+            <span class="font-medium text-gray-600">审阅备注</span>
+            <span>(未选也可输入，自动本机草稿)</span>
+          </div>
+          <span id="save-status" class="text-gray-400 font-mono">已就绪</span>
+        </div>
+        <textarea id="review-note" rows="2" placeholder="填写对候选的建议、留白比率或排版细节..." oninput="autoSaveNote()" class="w-full text-xs text-gray-700 bg-gray-50/80 rounded-lg p-1.5 border border-gray-200/80 focus:bg-white focus:border-emerald-600 focus:outline-none resize-none leading-relaxed">方案 A 的书封留白比例很舒适，完全避免了裁切。但在极小字号下，正文摘录的行高建议再放大 1px，避免长句阅读疲劳。</textarea>
+      </div>
+
+      <!-- 右侧轻量决策动作组 -->
+      <div class="flex flex-col items-end justify-center shrink-0 border-l border-gray-200 pl-3 space-y-1.5">
+        <div class="flex items-center space-x-1.5">
+          <span class="text-[11px] text-gray-400">当前选择：</span>
+          <span id="selected-status-badge" class="text-[11px] font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">尚未选择</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button onclick="requestMoreDrafts()" class="text-xs text-gray-600 hover:text-gray-900 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition">
+            继续改稿
+          </button>
+          <button id="confirm-btn" onclick="submitDecision()" class="px-4 py-1.5 rounded-xl bg-gray-800 text-white text-xs font-medium hover:bg-black transition shadow-sm flex items-center space-x-1 disabled:opacity-50">
+            <span>确认选择</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. 右下角极简画布鸟瞰小总览 (MiniMap) -->
+    <div class="absolute bottom-6 right-6 z-20 bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/90 shadow-md p-2 w-[110px] h-[72px] flex flex-col justify-between pointer-events-none">
+      <div class="flex items-center justify-between text-[8px] text-gray-400 font-mono">
+        <span>MINIMAP</span>
+        <span class="text-emerald-700 font-bold">4 BOARDS</span>
+      </div>
+      <!-- 四个画板缩略点示 -->
+      <div class="w-full h-8 bg-gray-100 rounded flex items-center justify-around px-1">
+        <div class="w-3.5 h-6 bg-gray-400/80 rounded-2xs"></div>
+        <div class="w-3.5 h-6 bg-[#296352] rounded-2xs ring-1 ring-emerald-500"></div>
+        <div class="w-3.5 h-6 bg-blue-500/80 rounded-2xs"></div>
+        <div class="w-3.5 h-6 bg-stone-500/80 rounded-2xs"></div>
+      </div>
+      <div class="text-[7px] text-gray-400 text-center truncate">双击空白归正视图</div>
+    </div>
+
+  </main>
+
+  <script>
+    // 画布状态与平移缩放控制逻辑
+    let scale = 1.0;
+    let translateX = 0;
+    let translateY = 0;
+    let isPanning = false;
+    let startX = 0;
+    let startY = 0;
+    let currentSelected = null;
+
+    const canvasSurface = document.getElementById('canvas-surface');
+    const viewport = document.getElementById('viewport');
+    const zoomText = document.getElementById('zoom-text');
+    const statusBadge = document.getElementById('selected-status-badge');
+
+    function updateTransform() {
+      canvasSurface.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      zoomText.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    // 缩放函数
+    function zoomCanvas(delta) {
+      scale = Math.min(Math.max(scale + delta, 0.4), 2.2);
+      updateTransform();
+    }
+
+    function resetZoom() {
+      scale = 1.0;
+      translateX = 0;
+      translateY = 0;
+      updateTransform();
+    }
+
+    function fitAllBoards() {
+      scale = 0.95;
+      translateX = 0;
+      translateY = -10;
+      updateTransform();
+    }
+
+    function alignBoards() {
+      fitAllBoards();
+    }
+
+    // 平移鼠标事件支持
+    viewport.addEventListener('mousedown', (e) => {
+      // 排除在浮动操作栏点击时的冒泡平移
+      if (e.target.closest('.artboard-card') || e.target.closest('button') || e.target.closest('textarea') || e.target.closest('input')) {
+        return;
+      }
+      isPanning = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+      viewport.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isPanning) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      isPanning = false;
+      viewport.style.cursor = 'grab';
+    });
+
+    // 滚轮缩放与双指平移模拟
+    viewport.addEventListener('wheel', (e) => {
+      if (e.ctrlKey || e.metaKey) {
+        e.preventDefault();
+        const delta = e.deltaY > 0 ? -0.05 : 0.05;
+        zoomCanvas(delta);
+      } else {
+        translateX -= e.deltaX * 0.7;
+        translateY -= e.deltaY * 0.7;
+        updateTransform();
+      }
+    }, { passive: false });
+
+    // 画板选择逻辑
+    function selectBoard(boardId) {
+      document.querySelectorAll('.artboard-card').forEach(el => el.classList.remove('active-artboard'));
+      const idMap = { 'current': 'board-0', 'A': 'board-a', 'B': 'board-b', 'C': 'board-c' };
+      const target = document.getElementById(idMap[boardId]);
+      if (target) {
+        target.classList.add('active-artboard');
+      }
+      // 联动同步单选
+      const radio = document.querySelector(`input[name="board_select"][value="${boardId}"]`);
+      if (radio) {
+        radio.checked = true;
+      }
+      const labelMap = {
+        'current': '保留当前',
+        'A': '已选：方案 A (完整封面)',
+        'B': '已选：方案 B (目录优先)',
+        'C': '已选：方案 C (正文优先)'
+      };
+      statusBadge.textContent = labelMap[boardId];
+      statusBadge.className = 'text-[11px] font-medium text-emerald-800 bg-emerald-100 px-2 py-0.5 rounded-full';
+      currentSelected = boardId;
+    }
+
+    function selectCandidate(key, label) {
+      selectBoard(key);
+    }
+
+    // 自动保存草稿
+    function autoSaveNote() {
+      const status = document.getElementById('save-status');
+      status.textContent = '草稿已保存';
+      status.classList.add('text-emerald-700');
+      setTimeout(() => {
+        status.textContent = '随时自动暂存';
+        status.classList.remove('text-emerald-700');
+      }, 2000);
+    }
+
+    function submitDecision() {
+      if (!currentSelected) {
+        alert('请先在画布上点选任意画板或单选框（当前/方案A/方案B/方案C），再提交最终审阅决定。');
+        return;
+      }
+      alert(`已成功记录审阅决定：[${currentSelected}]，连同备注已存入项目决定清单。`);
+    }
+
+    function requestMoreDrafts() {
+      alert('已触发「继续改稿」流程：将基于当前讨论与备注在画布右侧追加新方案 D。');
+    }
+
+    function toggleHandTool() {
+      const btn = document.getElementById('hand-tool-btn');
+      btn.classList.toggle('bg-emerald-100');
+      btn.classList.toggle('text-emerald-800');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,1900 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 周期分析报告</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Noto+Serif+SC:wght@400;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:wght@400;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --bg-page: #fbf9f4;
+      --bg-surface: #ffffff;
+      --bg-subtle: #f8f5ee;
+      --bg-tag: #f2ece0;
+      --border-main: #ded5c4;
+      --border-subtle: #eae3d5;
+      --text-main: #2c2621;
+      --text-muted: #6b645b;
+      --text-light: #9a9185;
+      --accent-rust: #b84b2e;
+      --accent-rust-light: #f7ebe6;
+      --accent-rust-subtle: #faf2ee;
+      --accent-green: #2d6a4f;
+      --accent-green-light: #edf5f0;
+      --accent-amber: #b45309;
+      --accent-amber-light: #fef3c7;
+      --accent-blue: #1d4ed8;
+      --accent-blue-light: #eff6ff;
+      --font-serif: "Newsreader", "Noto Serif SC", serif;
+      --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: "Space Mono", monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-main);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 24px 12px;
+      display: flex;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .report-shell {
+      width: 100%;
+      max-width: 640px;
+      background: var(--bg-page);
+    }
+
+    /* Header & Nav */
+    .top-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border-main);
+      font-size: 12px;
+    }
+    .brand-col { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .version-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      background: var(--accent-rust-light);
+      color: var(--accent-rust);
+      padding: 1px 7px;
+      border-radius: 4px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      cursor: pointer;
+      border: 1px solid rgba(184, 75, 46, 0.2);
+    }
+    .header-links { display: flex; gap: 10px; color: var(--text-muted); font-size: 11px; align-items: center; }
+
+    .nav-tabs {
+      display: flex;
+      gap: 16px;
+      padding: 12px 0 10px;
+      border-bottom: 1px solid var(--border-subtle);
+      font-size: 13px;
+      align-items: baseline;
+    }
+    .tab-btn {
+      color: var(--text-muted);
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding-bottom: 4px;
+      font-weight: 500;
+    }
+    .tab-btn.active {
+      color: var(--accent-rust);
+      border-bottom: 2px solid var(--accent-rust);
+      font-weight: 600;
+    }
+    .report-tag {
+      font-size: 10px;
+      background: var(--accent-rust);
+      color: #fff;
+      padding: 1px 4px;
+      border-radius: 2px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+    .nav-meta { margin-left: auto; font-size: 11px; color: var(--text-light); }
+
+    /* Scope Bar */
+    .scope-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0 12px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .window-pill {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .pill-active {
+      background: var(--bg-tag);
+      color: var(--accent-rust);
+      padding: 2px 7px;
+      border-radius: 3px;
+      font-weight: 600;
+    }
+
+    /* Section Cards */
+    .card {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-main);
+      border-radius: 6px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+    .card-title {
+      font-size: 13px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .card-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+    .card-subtext {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: -4px;
+      margin-bottom: 10px;
+    }
+
+    /* Warm Editorial: Squad ROI Card (Visual Rhythm & Hierarchy) */
+    .card-roi-top {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-main);
+      border-radius: 6px;
+      padding: 16px 16px 14px;
+      margin-top: 14px;
+      position: relative;
+    }
+    .roi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 14px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .roi-title-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .roi-title {
+      font-size: 13.5px;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      color: var(--text-main);
+    }
+    .roi-sub-stamp {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--accent-rust);
+      border: 1px solid rgba(184, 75, 46, 0.25);
+      background: var(--accent-rust-subtle);
+      padding: 0 4px;
+      border-radius: 2px;
+      line-height: 1.4;
+    }
+
+    /* Subtle dev/demo state switcher */
+    .demo-state-switch {
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      padding: 1px;
+      border-radius: 4px;
+    }
+    .demo-state-btn {
+      border: none;
+      background: transparent;
+      padding: 2px 6px;
+      font-size: 10px;
+      color: var(--text-muted);
+      cursor: pointer;
+      border-radius: 3px;
+      font-family: var(--font-sans);
+    }
+    .demo-state-btn.active {
+      background: var(--bg-surface);
+      color: var(--accent-rust);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    /* Editorial Dynamic Layout for ROI Metrics */
+    .roi-editorial-stage {
+      display: grid;
+      grid-template-columns: 1.45fr 1fr;
+      gap: 12px;
+      align-items: stretch;
+      margin-bottom: 12px;
+    }
+    @media (max-width: 480px) {
+      .roi-editorial-stage {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+    }
+
+    .roi-prime-block {
+      background: #fdfaf6;
+      border: 1px solid #ebd9c8;
+      border-left: 3.5px solid var(--accent-rust);
+      border-radius: 4px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+    }
+    .roi-prime-caption {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      font-family: var(--font-sans);
+    }
+    .roi-prime-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin: 4px 0 2px;
+    }
+    .roi-prime-val {
+      font-family: var(--font-mono);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--accent-rust);
+      line-height: 1;
+      letter-spacing: -0.02em;
+    }
+    .roi-prime-tag {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--accent-green);
+      background: var(--accent-green-light);
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
+    .roi-prime-sub {
+      font-size: 10.5px;
+      color: var(--text-light);
+      font-family: var(--font-mono);
+    }
+
+    .roi-aux-block {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .roi-aux-caption {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+    .roi-aux-stat {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      margin: 4px 0 2px;
+    }
+    .roi-aux-val {
+      font-family: var(--font-mono);
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-main);
+      line-height: 1.1;
+    }
+    .roi-aux-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--accent-green);
+      background: var(--accent-green-light);
+      padding: 1px 5px;
+      border-radius: 3px;
+    }
+    .roi-aux-sub {
+      font-size: 10.5px;
+      color: var(--text-light);
+      font-family: var(--font-mono);
+    }
+
+    .roi-meta-line {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--text-muted);
+      padding-top: 4px;
+      margin-bottom: 8px;
+    }
+    .roi-quote-box {
+      padding: 8px 10px;
+      background: var(--bg-subtle);
+      border-left: 2px solid var(--border-main);
+      border-radius: 0 4px 4px 0;
+      font-size: 11.5px;
+      color: var(--text-muted);
+      line-height: 1.45;
+    }
+
+    /* Segments Switcher (Codex / Qoder / 对比) */
+    .seg-switch {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      padding: 2px;
+      border-radius: 5px;
+      border: 1px solid var(--border-subtle);
+      gap: 2px;
+    }
+    .seg-btn {
+      border: none;
+      background: transparent;
+      padding: 3px 9px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-family: var(--font-sans);
+    }
+    .seg-btn.active {
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* Metric Grid */
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .metric-cell {
+      background: var(--bg-subtle);
+      padding: 10px 12px;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+    .metric-cell-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+    .metric-cell-val {
+      font-size: 22px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+      margin: 4px 0 2px;
+    }
+    .metric-cell-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+    }
+
+    /* Breakdown Bar */
+    .ratio-bar-wrap {
+      margin: 8px 0 12px;
+    }
+    .ratio-bar {
+      height: 7px;
+      width: 100%;
+      background: #e5e0d3;
+      border-radius: 4px;
+      display: flex;
+      overflow: hidden;
+    }
+    .bar-seg { height: 100%; }
+    .bar-cache { background: var(--accent-green); }
+    .bar-input { background: #3b82f6; }
+    .bar-output { background: var(--accent-rust); }
+
+    .ratio-legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      font-family: var(--font-mono);
+    }
+    .legend-item { display: inline-flex; align-items: center; gap: 4px; }
+    .legend-dot { width: 7px; height: 7px; border-radius: 50%; display: inline-block; }
+
+    /* Tables */
+    .audit-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      text-align: left;
+    }
+    .audit-table th {
+      padding: 6px 6px;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      border-bottom: 1px solid var(--border-main);
+      background: var(--bg-subtle);
+      font-weight: 600;
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    .audit-table td {
+      padding: 7px 6px;
+      border-bottom: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+    .audit-table tr:last-child td { border-bottom: none; }
+    .audit-table tr:hover td { background: rgba(0,0,0,0.015); }
+
+    .table-scroll-container {
+      max-height: 360px;
+      overflow-y: auto;
+      overflow-x: hidden;
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      margin-top: 6px;
+    }
+
+    /* CLI Filter & Badge */
+    .cli-filter-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      gap: 8px;
+      font-size: 11px;
+    }
+    .cli-select {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-main);
+      border-radius: 4px;
+      padding: 3px 8px;
+      font-size: 11px;
+      color: var(--text-main);
+      font-family: var(--font-mono);
+      outline: none;
+    }
+    .code-cmd {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--text-main);
+      word-break: break-all;
+    }
+    .code-cmd-muted {
+      color: var(--text-muted);
+      font-size: 10px;
+      font-weight: normal;
+    }
+
+    /* Efficiency observation cards */
+    .efficiency-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+    .eff-card {
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 8px 10px;
+    }
+    .eff-val {
+      font-size: 18px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      color: var(--text-main);
+    }
+    .eff-label {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .subtask-lead-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .subtask-lead-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 8px;
+      border: 1px dashed var(--border-main);
+      border-radius: 4px;
+      font-size: 11px;
+      background: var(--bg-surface);
+    }
+    .subtask-lead-title {
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .subtask-lead-stats {
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      font-size: 11px;
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Codex Commentary */
+    .codex-note-box {
+      border: 1px solid var(--border-main);
+      background: var(--bg-subtle);
+      border-radius: 6px;
+      padding: 14px;
+      margin-top: 14px;
+    }
+    .codex-note-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .codex-badge-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-weight: 700;
+      font-size: 12px;
+      color: var(--accent-rust);
+    }
+    .codex-badge-brand span {
+      background: var(--accent-rust);
+      color: #fff;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-size: 10px;
+      font-family: var(--font-mono);
+    }
+    .codex-intro-p {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      line-height: 1.4;
+    }
+    .commentary-item {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+      padding: 10px 12px;
+      margin-bottom: 8px;
+    }
+    .commentary-item:last-child { margin-bottom: 0; }
+    .commentary-title {
+      font-weight: 600;
+      font-size: 12.5px;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .commentary-action {
+      margin-top: 4px;
+      font-size: 12px;
+      color: var(--text-main);
+      line-height: 1.45;
+    }
+    .commentary-fold {
+      margin-top: 6px;
+      font-size: 11px;
+      border-top: 1px dashed var(--border-subtle);
+      padding-top: 6px;
+    }
+    .commentary-fold summary {
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 11px;
+      user-select: none;
+    }
+    .fold-body {
+      margin-top: 4px;
+      padding: 6px 8px;
+      background: var(--bg-subtle);
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--text-muted);
+      line-height: 1.5;
+    }
+
+    /* Links & Tags */
+    .link-tag {
+      color: var(--accent-rust);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 11px;
+    }
+    .link-tag:hover { text-decoration: underline; }
+    .status-pill {
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 3px;
+      font-family: var(--font-mono);
+      display: inline-block;
+    }
+    .status-ok { background: var(--accent-green-light); color: var(--accent-green); }
+    .status-warn { background: var(--accent-amber-light); color: var(--accent-amber); }
+    .status-err { background: #fee2e2; color: #dc2626; }
+    .status-unconfirmed { background: var(--bg-tag); color: var(--text-muted); }
+
+    /* Daily Barchart */
+    .chart-box {
+      margin: 12px 0 6px;
+      padding: 12px 10px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--border-subtle);
+      border-radius: 4px;
+    }
+    .chart-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+      font-family: var(--font-mono);
+      margin-bottom: 8px;
+    }
+    .bars-wrap {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      height: 90px;
+      padding: 0 4px;
+      border-bottom: 1px solid var(--border-main);
+    }
+    .day-col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex: 1;
+    }
+    .day-stack {
+      width: 14px;
+      display: flex;
+      flex-direction: column-reverse;
+      border-radius: 2px 2px 0 0;
+      overflow: hidden;
+    }
+    .day-label {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-light);
+    }
+
+    /* Modal / Bottom Sheet */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 38, 33, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 1000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+    }
+    .modal-backdrop.open { display: flex; }
+
+    .modal-box {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-main);
+      border-radius: 8px;
+      width: 560px;
+      max-width: 90vw;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.12);
+    }
+    @media (max-width: 767px) {
+      .modal-backdrop {
+        align-items: flex-end;
+      }
+      .modal-box {
+        width: 100%;
+        max-width: 100%;
+        max-height: 85dvh;
+        border-radius: 12px 12px 0 0;
+        border-bottom: none;
+      }
+    }
+
+    .modal-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    .modal-body {
+      padding: 14px 16px;
+      overflow-y: auto;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+    .modal-foot {
+      padding: 10px 16px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg-subtle);
+    }
+
+    /* Footer */
+    .page-footer {
+      margin-top: 24px;
+      padding-top: 12px;
+      border-top: 1px solid var(--border-subtle);
+      font-size: 11px;
+      color: var(--text-light);
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+  </style>
+</head>
+<body>
+<div class="report-shell">
+<!-- 1. Top Header -->
+<header class="top-header">
+<div class="brand-col">
+<span>Codex 小队</span>
+<span style="color:var(--text-light); font-weight:normal;">/</span>
+<span style="font-weight:normal; color:var(--text-muted);">示例项目</span>
+<span class="version-badge" onclick="openUpdateModal()" title="点击查看更新说明">
+        v0.9.3-local.20261027.2 <span style="font-weight:700;">有更新</span>
+</span>
+</div>
+<div class="header-links">
+<span onclick="openUpdateModal()" style="cursor:pointer;">查看更新</span>
+<span>·</span>
+<span>周期报告制</span>
+<span>·</span>
+<span>只读演示</span>
+</div>
+</header>
+<!-- 2. Main Nav Tabs -->
+<nav class="nav-tabs">
+<a class="tab-btn" href="#squad-tasks">小队任务看板 <span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">12</span></a>
+<a class="tab-btn active" href="#report">分析 <span class="report-tag">REPORT</span></a>
+<span class="nav-meta">离线周期审计快照</span>
+</nav>
+<!-- 3. Scope Bar (大标题、时间窗口、更新时间保留于顶端) -->
+<div class="scope-bar">
+<div style="font-weight:600; font-size:13px; color:var(--text-main);">周期审计分析报告</div>
+<div class="window-pill">
+<span>时间窗口:</span>
+<span class="pill-active" style="cursor:pointer;">近 7 天</span>
+<span onclick="alert('切换至近 30 天周期报告快照');" style="cursor:pointer; color:var(--text-muted);">近 30 天</span>
+<span style="margin-left:8px; color:var(--text-light); font-size:10.5px;">更新于 14:48:10</span>
+</div>
+</div>
+<!-- 4. 【第一块置顶】：小队收益观察 (Warm Editorial 纸面风格，主次错落动感层次) -->
+<section class="card-roi-top" id="squad-roi-card">
+<div class="roi-header">
+<div class="roi-title-wrap">
+<span class="roi-title">小队收益观察</span>
+<span class="roi-sub-stamp">AUDIT EST.</span>
+</div>
+<div class="demo-state-switch" title="切换模拟状态">
+<button class="demo-state-btn active" id="roi-state-btn-positive" onclick="switchRoiState('positive')">可信估算</button>
+<button class="demo-state-btn" id="roi-state-btn-pending" onclick="switchRoiState('pending')">无法估算</button>
+<button class="demo-state-btn" id="roi-state-btn-negative" onclick="switchRoiState('negative')">负收益</button>
+</div>
+</div>
+<!-- 状态 1：有可信估算 (默认展示：主次落差构图，无外层冗余基线) -->
+<div id="roi-state-positive" style="display:block;">
+<div class="roi-editorial-stage">
+<!-- 主视觉焦点：预计少用 Codex Token -->
+<div class="roi-prime-block">
+<div>
+<div class="roi-prime-caption">
+<span>预计少用 Codex Token</span>
+<span style="font-size:10px; color:var(--accent-rust); font-weight:500;">核心节省</span>
+</div>
+<div class="roi-prime-stat">
+<div class="roi-prime-val">750K</div>
+<div class="roi-prime-tag">约 46.9%</div>
+</div>
+</div>
+<div class="roi-prime-sub">降低主模型上下文膨胀与单轮消耗</div>
+</div>
+<!-- 次级辅助焦点：预计节省处理时间 (错位落差) -->
+<div class="roi-aux-block">
+<div>
+<div class="roi-aux-caption">
+<span>预计节省处理时间</span>
+<span style="font-size:10px; color:var(--text-light);">提效推进</span>
+</div>
+<div class="roi-aux-stat">
+<div class="roi-aux-val">约 13 分钟</div>
+<div class="roi-aux-tag">约 40.0%</div>
+</div>
+</div>
+<div class="roi-aux-sub">子任务异步并发与快速反馈</div>
+</div>
+</div>
+<div class="roi-meta-line">
+<span>覆盖范围：<strong style="color:var(--text-main);">8 / 12 次</strong> 已完成交付</span>
+<button onclick="openRoiModal()" style="background:none; border:none; color:var(--accent-rust); font-size:11px; cursor:pointer; font-weight:600; padding:0; display:inline-flex; align-items:center; gap:2px;">查看计算依据 ↗</button>
+</div>
+<div class="roi-quote-box">
+      “在代码补全与单元回归任务中，Qoder 承担了高频试错与初态构建，显著减少了主 Codex 上下文膨胀与等待耗时。”
+    </div>
+</div>
+<!-- 状态 2：暂无法估算 (优雅降级，无假条) -->
+<div id="roi-state-pending" style="display:none;">
+<div class="roi-editorial-stage">
+<div class="roi-prime-block" style="border-left-color: var(--border-main); background: var(--bg-subtle);">
+<div>
+<div class="roi-prime-caption">
+<span>预计少用 Codex Token</span>
+<span class="status-pill status-unconfirmed">缺少基线</span>
+</div>
+<div class="roi-prime-stat">
+<div class="roi-prime-val" style="color:var(--text-light); font-size:24px;">— 待积累</div>
+</div>
+</div>
+<div class="roi-prime-sub">历史纯 Codex 同类交付样本不足</div>
+</div>
+<div class="roi-aux-block">
+<div>
+<div class="roi-aux-caption">
+<span>预计节省处理时间</span>
+<span class="status-pill status-unconfirmed">暂无测算</span>
+</div>
+<div class="roi-aux-stat">
+<div class="roi-aux-val" style="color:var(--text-light); font-size:16px;">— 待积累</div>
+</div>
+</div>
+<div class="roi-aux-sub">需补充等量单一上下文基准样本</div>
+</div>
+</div>
+<div class="roi-meta-line">
+<span>暂无法估算收益：<strong style="color:var(--text-main);">0 / 12 次</strong> 交付具备历史可比基线</span>
+<button onclick="openRoiModal()" style="background:none; border:none; color:var(--accent-rust); font-size:11px; cursor:pointer; font-weight:600; padding:0;">查看计算依据 ↗</button>
+</div>
+<div class="roi-quote-box">
+      “缺少历史可比交付基线或基准速度样本，待小队积累更多同类纯 Codex 交付数据后自动生成核验。”
+    </div>
+</div>
+<!-- 状态 3：负收益 -->
+<div id="roi-state-negative" style="display:none;">
+<div class="roi-editorial-stage">
+<div class="roi-prime-block" style="border-left-color: var(--accent-amber); background: #fffcf5; border-color:#edd8ba;">
+<div>
+<div class="roi-prime-caption">
+<span style="color:#b45309;">预计多用 Codex Token</span>
+<span style="font-size:10px; color:#b45309; font-weight:500;">协同开销上升</span>
+</div>
+<div class="roi-prime-stat">
+<div class="roi-prime-val" style="color:#b45309;">+120K</div>
+<div class="roi-prime-tag" style="background:var(--accent-amber-light); color:#b45309;">约 +18.0%</div>
+</div>
+</div>
+<div class="roi-prime-sub">上下文交互轮次多于预期</div>
+</div>
+<div class="roi-aux-block">
+<div>
+<div class="roi-aux-caption">
+<span style="color:#b45309;">预计多投入处理时间</span>
+<span style="font-size:10px; color:#b45309;">协同损耗</span>
+</div>
+<div class="roi-aux-stat">
+<div class="roi-aux-val" style="color:#b45309;">约 +4 分钟</div>
+<div class="roi-aux-tag" style="background:var(--accent-amber-light); color:#b45309;">约 +15.0%</div>
+</div>
+</div>
+<div class="roi-aux-sub">跨模型协议调度产生等待延迟</div>
+</div>
+</div>
+<div class="roi-meta-line">
+<span>覆盖范围：<strong style="color:var(--text-main);">6 / 12 次</strong> 交付测算呈现负向偏离</span>
+<button onclick="openRoiModal()" style="background:none; border:none; color:var(--accent-rust); font-size:11px; cursor:pointer; font-weight:600; padding:0;">查看计算依据 ↗</button>
+</div>
+<div class="roi-quote-box" style="background:var(--accent-amber-light); border-left-color:#b45309; color:#92400e;">
+      “多轮协议对接与跨模型指令对齐增加了额外上下文开销，目前协同交互损耗略高于单模型直出。”
+    </div>
+</div>
+</section>
+<!-- 5. 【第二块】：已记录的 Token 消耗与来源透视 (实际投入卡，保留切换器) -->
+<section class="card" id="token-usage-card">
+<div class="card-header">
+<div class="card-title">
+<span>已记录的 Token 消耗与来源透视</span>
+</div>
+<div class="seg-switch">
+<button class="seg-btn active" id="btn-tab-codex" onclick="switchUsageView('codex')">Codex</button>
+<button class="seg-btn" id="btn-tab-qoder" onclick="switchUsageView('qoder')">Qoder</button>
+<button class="seg-btn" id="btn-tab-compare" onclick="switchUsageView('compare')">对比</button>
+</div>
+</div>
+<div class="card-subtext" id="usage-view-caption">
+      当前视图：Codex 宿主模型消耗 · 本机执行记录 (更新于 14:48:10 · 示例)
+    </div>
+<!-- View A: Codex 独立 -->
+<div id="view-codex" style="display:block;">
+<div class="metric-row">
+<div class="metric-cell">
+<div class="metric-cell-label">
+<span>Codex 记录总量</span>
+<span class="status-pill status-ok">覆盖 84 会话</span>
+</div>
+<div class="metric-cell-val">382.4K</div>
+<div class="metric-cell-sub">含输入 294.0K · 输出 88.4K</div>
+</div>
+<div class="metric-cell">
+<div class="metric-cell-label">
+<span>输入中命中缓存</span>
+<span style="color:var(--accent-green); font-weight:600;">61.9% 命中</span>
+</div>
+<div class="metric-cell-val">182.0K</div>
+<div class="metric-cell-sub">已包含在输入内，不与输入相加</div>
+</div>
+</div>
+<div style="font-size:11px; color:var(--text-muted); margin-bottom:4px; display:flex; justify-content:space-between;">
+<span>Codex 模型分布：gpt-6.1-sol (84%) / gpt-6-astra (16%)</span>
+<span>按已记录 Token 排序</span>
+</div>
+<div class="ratio-bar-wrap">
+<div class="ratio-bar">
+<div class="bar-seg bar-cache" style="width: 61.9%;" title="缓存 182.0K"></div>
+<div class="bar-seg bar-input" style="width: 14.9%;" title="非缓存输入 112.0K"></div>
+<div class="bar-seg bar-output" style="width: 23.2%;" title="输出 88.4K"></div>
+</div>
+<div class="ratio-legend">
+<span class="legend-item"><span class="legend-dot" style="background:var(--accent-green);"></span>输入内缓存 182.0K</span>
+<span class="legend-item"><span class="legend-dot" style="background:#3b82f6;"></span>输入增量 112.0K</span>
+<span class="legend-item"><span class="legend-dot" style="background:var(--accent-rust);"></span>生成输出 88.4K</span>
+</div>
+</div>
+<!-- Codex Top 3 会话列表 -->
+<table class="audit-table" style="margin-top:6px;">
+<thead>
+<tr>
+<th>会话名称 / 归属</th>
+<th>调用模型</th>
+<th style="text-align:right;">消耗 Token</th>
+<th style="text-align:right;">占比</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div style="font-weight:600;">#01 订单链路排查</div>
+<div style="font-size:10px; color:var(--text-muted);">小队主工作流 · <a class="link-tag" href="#squad-tasks">查看小队</a></div>
+</td>
+<td><span class="status-pill status-unconfirmed">gpt-6.1-sol</span></td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">168.2K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">44.0%</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#02 窄屏布局适配</div>
+<div style="font-size:10px; color:var(--text-muted);">小队主工作流 · <a class="link-tag" href="#squad-tasks">查看小队</a></div>
+</td>
+<td><span class="status-pill status-unconfirmed">gpt-6-astra</span></td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">94.6K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">24.7%</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#03 筛选状态重置自检</div>
+<div style="font-size:10px; color:var(--text-muted);">小队主工作流 · <a class="link-tag" href="#squad-tasks">查看小队</a></div>
+</td>
+<td><span class="status-pill status-unconfirmed">gpt-6.1-sol</span></td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">62.1K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">16.2%</td>
+</tr>
+</tbody>
+</table>
+<!-- 另列：分析报告与未关联小队消耗 -->
+<div style="margin-top:8px; padding:6px 8px; background:var(--bg-subtle); border-radius:4px; font-size:11px; display:flex; justify-content:space-between; color:var(--text-muted);">
+<span>• 分析报告自消耗：<strong style="color:var(--text-main);">38.5K</strong> (10.1%)</span>
+<span>• 未关联小队独立会话：<strong style="color:var(--text-main);">19.0K</strong> (5.0%)</span>
+</div>
+<!-- 折叠：查看全部已记录 Codex 会话 -->
+<details style="margin-top:8px; font-size:11.5px;">
+<summary style="cursor:pointer; color:var(--accent-rust); font-weight:500;">查看全部已记录 Codex 会话消耗 (共 84 个会话) ▾</summary>
+<div class="table-scroll-container">
+<table class="audit-table">
+<thead>
+<tr>
+<th>会话名称</th>
+<th>归属分类</th>
+<th>使用模型</th>
+<th style="text-align:right;">已记 Token</th>
+<th style="text-align:right;">操作</th>
+</tr>
+</thead>
+<tbody>
+<tr><td>#01 订单链路排查</td><td>小队任务</td><td>gpt-6.1-sol</td><td style="text-align:right; font-family:var(--font-mono);">168.2K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>#02 窄屏布局适配</td><td>小队任务</td><td>gpt-6-astra</td><td style="text-align:right; font-family:var(--font-mono);">94.6K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>#03 筛选状态重置自检</td><td>小队任务</td><td>gpt-6.1-sol</td><td style="text-align:right; font-family:var(--font-mono);">62.1K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>周期分析生成 #2026-R04</td><td>分析报告</td><td>gpt-6.1-sol</td><td style="text-align:right; font-family:var(--font-mono);">38.5K</td><td style="text-align:right;"><span style="color:var(--text-light);">本报告</span></td></tr>
+<tr><td>临时代码格式化咨询</td><td>未关联</td><td>gpt-6-astra</td><td style="text-align:right; font-family:var(--font-mono);">11.2K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>API 契约类型草稿</td><td>未关联</td><td>gpt-6.1-sol</td><td style="text-align:right; font-family:var(--font-mono);">7.8K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>#04 资料整理与 AST 解析</td><td>小队任务</td><td>gpt-6.1-sol</td><td style="text-align:right; font-family:var(--font-mono);">5.4K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+<tr><td>构建失败日志检索</td><td>未关联</td><td>gpt-6-astra</td><td style="text-align:right; font-family:var(--font-mono);">3.2K</td><td style="text-align:right;"><a class="link-tag" href="#session">打开</a></td></tr>
+</tbody>
+</table>
+</div>
+</details>
+</div>
+<!-- View B: Qoder 独立 -->
+<div id="view-qoder" style="display:none;">
+<div class="metric-row">
+<div class="metric-cell">
+<div class="metric-cell-label">
+<span>Qoder 执行端总已报</span>
+<span class="status-pill status-ok">54/62 会话已回报</span>
+</div>
+<div class="metric-cell-val">1.28M</div>
+<div class="metric-cell-sub">含输入 1.14M · 输出 140.0K</div>
+</div>
+<div class="metric-cell">
+<div class="metric-cell-label">
+<span>输入中命中缓存</span>
+<span style="color:var(--accent-green); font-weight:600;">54.4% 命中</span>
+</div>
+<div class="metric-cell-val">620.0K</div>
+<div class="metric-cell-sub">已在输入中，避免重复开销</div>
+</div>
+</div>
+<div style="font-size:11px; color:var(--text-muted); margin-bottom:4px; display:flex; justify-content:space-between;">
+<span>Qoder 模型分布：DeepSeek-Flash (100% 专职执行轮)</span>
+<span>未回报会话：8 个次要排队中</span>
+</div>
+<table class="audit-table">
+<thead>
+<tr>
+<th>Qoder 承接会话</th>
+<th>关联任务数</th>
+<th>尝试执行次数</th>
+<th style="text-align:right;">已报 Token</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>#01 订单工作台</strong></td>
+<td>16 任务</td>
+<td>21 尝试</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">420.0K</td>
+</tr>
+<tr>
+<td><strong>#02 分析布局与自适应</strong></td>
+<td>10 任务</td>
+<td>14 尝试</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">286.0K</td>
+</tr>
+<tr>
+<td><strong>#03 Codex 小队当前分支</strong></td>
+<td>12 任务</td>
+<td>12 尝试</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">186.4K</td>
+</tr>
+<tr>
+<td><strong>#04 资料整理与 AST 缓存</strong></td>
+<td>5 任务</td>
+<td>6 尝试</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">147.6K</td>
+</tr>
+<tr>
+<td><strong>#05 其它 3 会话累计</strong></td>
+<td>5 任务</td>
+<td>9 尝试</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">240.0K</td>
+</tr>
+</tbody>
+</table>
+<div style="font-size:10.5px; color:var(--text-muted); margin-top:6px;">
+        * 说明：Qoder 为独立执行端，模型与上下文缓存口径独立上报，不与 Codex 宿主日志合并折算。
+      </div>
+</div>
+<!-- View C: 对比模式 -->
+<div id="view-compare" style="display:none;">
+<div style="padding:8px 10px; background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:4px; font-size:11px; margin-bottom:10px;">
+<strong>对照口径提示：</strong> 同一时间窗口内已记录的 Token 结构对照。两端采用不同模型（Codex 使用 gpt-6.1-sol / gpt-6-astra；Qoder 使用 DeepSeek-Flash），执行范围与上下文承载各异。仅作执行量审计对比，不作为云端账单或费用核算结论。
+</div>
+<div class="table-scroll-container" style="max-height:280px;">
+<table class="audit-table">
+<thead>
+<tr>
+<th>小队与任务范畴</th>
+<th style="text-align:right;">Codex 记录 (gpt-6.x)</th>
+<th style="text-align:right;">Qoder 已报 (DeepSeek)</th>
+<th style="text-align:right;">查看</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div style="font-weight:600;">#01 订单链路与工作台</div>
+<div style="font-size:10px; color:var(--text-muted);">主要业务流 · 16 个子任务</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">168.2K</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:var(--accent-rust);">420.0K</td>
+<td style="text-align:right;"><a class="link-tag" href="#squad-tasks">对齐详情</a></td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#02 布局适配与前端用例</div>
+<div style="font-size:10px; color:var(--text-muted);">界面交互 · 10 个子任务</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">94.6K</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:var(--accent-rust);">286.0K</td>
+<td style="text-align:right;"><a class="link-tag" href="#squad-tasks">对齐详情</a></td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#03 状态管理与组件回归</div>
+<div style="font-size:10px; color:var(--text-muted);">核心状态 · 12 个子任务</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">62.1K</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:var(--accent-rust);">186.4K</td>
+<td style="text-align:right;"><a class="link-tag" href="#squad-tasks">对齐详情</a></td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#04 资料整理与用例生成</div>
+<div style="font-size:10px; color:var(--text-muted);">文档工程 · 5 个子任务</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600;">5.4K</td>
+<td style="text-align:right; font-family:var(--font-mono); font-weight:600; color:var(--accent-rust);">147.6K</td>
+<td style="text-align:right;"><a class="link-tag" href="#squad-tasks">对齐详情</a></td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">其他未对齐会话 / 独立报告</div>
+<div style="font-size:10px; color:var(--text-muted);">自消耗与临时任务</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">52.1K (报告+未关联)</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-muted);">240.0K (未合并会话)</td>
+<td style="text-align:right;"><span style="color:var(--text-light);">独立列</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="margin-top:8px; font-size:10.5px; color:var(--text-muted); line-height:1.4;">
+        * 注：其他 CLI 进程仅返回 exit code，当前无独立 Token 回执，在此不虚构编造消耗。
+      </div>
+</div>
+<!-- 审计事实说明 -->
+<div style="margin-top:10px; padding-top:8px; border-top:1px dashed var(--border-subtle); font-size:11px; color:var(--text-muted);">
+      口径说明：本机记录（已读 84 / 2,957 个会话）反映本地执行日志采样，不代表全量云端账单，不折算现金或额度。
+    </div>
+</section>
+<!-- 6. 交付效率观察 -->
+<section class="card" id="delivery-efficiency-card">
+<div class="card-header">
+<div class="card-title"><span>交付效率观察</span></div>
+<div class="card-meta">48 项子任务实测</div>
+</div>
+<!-- 事实指标两列 -->
+<div class="efficiency-grid">
+<div class="eff-card">
+<div class="eff-val" style="color:var(--accent-green);">68.2% <span style="font-size:12px; font-weight:normal;">(15/22)</span></div>
+<div class="eff-label">已核验任务中「一次执行完成」比例</div>
+<div style="font-size:10.5px; color:var(--text-light); margin-top:2px;">首轮交付即通过 Codex 闭环核验，无附加轮次</div>
+</div>
+<div class="eff-card">
+<div class="eff-val" style="color:var(--accent-amber);">31.8% <span style="font-size:12px; font-weight:normal;">(7/22)</span></div>
+<div class="eff-label">已核验任务中「多轮执行」比例</div>
+<div style="font-size:10.5px; color:var(--text-light); margin-top:2px;">经 2~3 轮正常上下文推进，续接不等于返工</div>
+</div>
+</div>
+<!-- 投入/轮次高而仍未核验的任务 -->
+<div style="font-size:11.5px; font-weight:600; margin-bottom:4px; display:flex; justify-content:space-between;">
+<span>高轮次 / 高投入仍未核验任务 (重点关注排查，最多展示 3 项)</span>
+<span style="font-size:10.5px; color:var(--text-muted); font-weight:normal;">基于当前执行事实，无推测原因</span>
+</div>
+<div class="subtask-lead-list">
+<!-- Item 1 -->
+<div class="subtask-lead-item">
+<div>
+<div class="subtask-lead-title">
+<span class="status-pill status-warn">待核验</span>
+<span>修复报表多维联动筛选异常</span>
+</div>
+<div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+            归属：#01 订单工作台 · <a class="link-tag" href="#squad-tasks">查看小队任务 ↗</a>
+</div>
+</div>
+<div class="subtask-lead-stats">
+<span>执行 3 轮</span>
+<span>1 次失败</span>
+<span style="color:var(--accent-rust); font-weight:600;">504.8K Token</span>
+<span>耗时 21m40s</span>
+</div>
+</div>
+<!-- Item 2 -->
+<div class="subtask-lead-item">
+<div>
+<div class="subtask-lead-title">
+<span class="status-pill status-err">需关注</span>
+<span>Qoder 子任务连接心跳超时断开</span>
+</div>
+<div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+            归属：#01 订单工作台 · <a class="link-tag" href="#squad-tasks">查看小队任务 ↗</a>
+</div>
+</div>
+<div class="subtask-lead-stats">
+<span>尝试 2 轮</span>
+<span style="color:#dc2626;">2 次超时</span>
+<span style="color:var(--accent-rust); font-weight:600;">19.2K Token</span>
+<span>挂起中</span>
+</div>
+</div>
+<!-- Item 3 -->
+<div class="subtask-lead-item">
+<div>
+<div class="subtask-lead-title">
+<span class="status-pill status-unconfirmed">处理中</span>
+<span>Markdown 极长表格增量渲染</span>
+</div>
+<div style="font-size:10px; color:var(--text-muted); margin-top:2px;">
+            归属：#02 分析布局适配 · <a class="link-tag" href="#squad-tasks">查看小队任务 ↗</a>
+</div>
+</div>
+<div class="subtask-lead-stats">
+<span>执行 2 轮</span>
+<span>0 次报错</span>
+<span style="font-weight:600;">48.5K Token</span>
+<span>正在进行</span>
+</div>
+</div>
+</div>
+<div style="font-size:10.5px; color:var(--text-light); margin-top:8px;">
+      * 审计事实说明：仅基于真实 exit code、轮次与已报 Token。不凭空断言“交付质量差”或编造推测原因，续接为正常工程推进。
+    </div>
+</section>
+<!-- 7. 周期按日离散分布 (日常柱状图) -->
+<section class="card">
+<div class="card-header">
+<div class="card-title">周期按日离散分布与尝试点</div>
+<div class="card-meta">05-08 ~ 05-14 (7日累计)</div>
+</div>
+<div class="chart-box">
+<div class="chart-header">
+<span>■ 输入 Token   ■ 输出 Token   ▨ 缺失点   ○ 尝试点</span>
+<span>单日最高 422.0K</span>
+</div>
+<div class="bars-wrap">
+<div class="day-col">
+<div class="day-stack" style="height: 48px;"><div style="height:38px; background:#2c2621;"></div><div style="height:10px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-08</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 32px; background: repeating-linear-gradient(45deg, #ded5c4, #ded5c4 2px, #fbf9f4 2px, #fbf9f4 4px); border:1px dashed var(--border-main);"></div>
+<span class="day-label">05-09</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 58px;"><div style="height:46px; background:#2c2621;"></div><div style="height:12px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-10</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 40px;"><div style="height:32px; background:#2c2621;"></div><div style="height:8px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-11</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 84px;"><div style="height:66px; background:#2c2621;"></div><div style="height:18px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-12</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 62px;"><div style="height:50px; background:#2c2621;"></div><div style="height:12px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-13</span>
+</div>
+<div class="day-col">
+<div class="day-stack" style="height: 72px;"><div style="height:58px; background:#2c2621;"></div><div style="height:14px; background:var(--accent-rust);"></div></div>
+<span class="day-label">05-14</span>
+</div>
+</div>
+<div style="font-size:10px; color:var(--text-light); margin-top:4px; font-family:var(--font-mono);">
+        * 05-09 缺失为本地沙箱离线无日志回执，不作平滑插值。
+      </div>
+</div>
+</section>
+<!-- 8. 具体 CLI 表 (保留筛选、完整子命令、内联未归类、展开限高内部滚动) -->
+<section class="card" id="cli-tools-card">
+<div class="card-header">
+<div class="card-title">
+<span>CLI 与工具表现</span>
+<span style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono); font-weight:normal;">总计 640 次调用</span>
+</div>
+<div class="card-meta">基于 exit code &amp; 回执</div>
+</div>
+<!-- 筛选下拉与统计 -->
+<div class="cli-filter-bar">
+<div style="display:flex; align-items:center; gap:6px;">
+<label for="cli-select-filter" style="color:var(--text-muted);">筛选命令:</label>
+<select class="cli-select" id="cli-select-filter" onchange="filterCliRows()">
+<option value="all">全部 CLI (共 294 条子命令/脚本)</option>
+<option value="node">node 相关 (含测试与构建脚本)</option>
+<option value="python">python3 相关 (含 pytest/工具)</option>
+<option value="lgb">lgb (服务能力/模型)</option>
+<option value="sf">sf (日志与调试)</option>
+<option value="a1">a1 (代码仓与分支)</option>
+<option value="inline">内联脚本 (未归类用途)</option>
+</select>
+</div>
+<span id="cli-count-indicator" style="color:var(--text-light); font-size:10.5px;">显示 8 / 294 项</span>
+</div>
+<!-- 表格容器 -->
+<div class="table-scroll-container" id="cli-table-wrapper" style="max-height: 280px;">
+<table class="audit-table" id="cli-audit-table">
+<thead>
+<tr>
+<th>完整 CLI / 子命令</th>
+<th style="text-align:right;">调用</th>
+<th style="text-align:right;">执行成功率</th>
+<th style="text-align:right;">业务成功率</th>
+<th style="text-align:right;">失败</th>
+</tr>
+</thead>
+<tbody id="cli-tbody">
+<tr data-type="node">
+<td>
+<div class="code-cmd">node --test foo.test.mjs</div>
+<div class="code-cmd-muted">单元自检 · 测试运行器</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">112</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">99.1%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">98.2%</td>
+<td style="text-align:right; font-family:var(--font-mono);">1</td>
+</tr>
+<tr data-type="python">
+<td>
+<div class="code-cmd">python3 -m pytest tests/unit/</div>
+<div class="code-cmd-muted">后端用例自测 · 契约回归</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">86</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">97.7%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">94.2%</td>
+<td style="text-align:right; font-family:var(--font-mono);">2</td>
+</tr>
+<tr data-type="node">
+<td>
+<div class="code-cmd">node build.mjs --target=production</div>
+<div class="code-cmd-muted">本地资源构建 · 打包校验</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">48</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">100.0%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">100.0%</td>
+<td style="text-align:right; font-family:var(--font-mono);">0</td>
+</tr>
+<tr data-type="lgb">
+<td>
+<div class="code-cmd">lgb capability invoke</div>
+<div class="code-cmd-muted">模型及辅助能力调起</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">248</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">98.4%</td>
+<td style="text-align:right; font-family:var(--font-mono);">91.5%</td>
+<td style="text-align:right; font-family:var(--font-mono);">4</td>
+</tr>
+<tr data-type="sf">
+<td>
+<div class="code-cmd">sf log query --service=billing</div>
+<div class="code-cmd-muted">远程日志查询 · 无明确回执</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">186</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">99.5%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-light);">— (未确认)</td>
+<td style="text-align:right; font-family:var(--font-mono);">1</td>
+</tr>
+<tr data-type="a1">
+<td>
+<div class="code-cmd">a1 repo view --commit=HEAD</div>
+<div class="code-cmd-muted">代码仓检视 · 权限易失效</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">142</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-amber); font-weight:600;">95.8%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-amber);">88.0%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:#dc2626; font-weight:700;">6</td>
+</tr>
+<tr data-type="inline">
+<td>
+<div class="code-cmd">bash -c "eval $RUNNER_HOOK"</div>
+<div class="code-cmd-muted">内联脚本 (未归类用途) · 无法判定语义</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">36</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">94.4%</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--text-light);">— (未归类)</td>
+<td style="text-align:right; font-family:var(--font-mono);">2</td>
+</tr>
+<tr data-type="a1">
+<td>
+<div class="code-cmd">a1 branch diff origin/main</div>
+<div class="code-cmd-muted">分支差异比较</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">22</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">95.5%</td>
+<td style="text-align:right; font-family:var(--font-mono);">90.9%</td>
+<td style="text-align:right; font-family:var(--font-mono);">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 展开全部控制文本按钮 -->
+<div style="display:flex; justify-content:space-between; align-items:center; margin-top:8px;">
+<span style="font-size:11px; color:var(--text-muted);"></span>
+<button id="toggle-cli-expand-btn" onclick="toggleCliTableHeight()" style="background:none; border:none; color:var(--accent-rust); font-size:11px; cursor:pointer; font-weight:600;">展开全部 294 条子命令 ▾</button>
+</div>
+<!-- 高频失败归因排查 -->
+<div style="margin-top:10px; padding:8px 10px; background:var(--bg-subtle); border-left:3px solid var(--accent-rust); font-size:11px; border-radius:0 4px 4px 0;">
+<div style="display:flex; justify-content:space-between;">
+<strong style="color:var(--accent-rust);">● 高频失败诊断：a1 repo view (失败 6 次)</strong>
+<a class="link-tag" href="#squad-tasks">查看相关小队 #squad-tasks ↗</a>
+</div>
+<div style="color:var(--text-muted); margin-top:2px;">
+        已脱敏错误分类：权限上下文失效 × 4 次 · 上游响应超时 408 × 2 次
+      </div>
+<div style="color:var(--text-light); font-size:10px; margin-top:1px;">
+        关联任务：#01 订单链路排查、#04 资料整理 (无原始敏感参数或凭据暴露)
+      </div>
+</div>
+</section>
+<!-- 9. Codex 的观察与建议 -->
+<section class="codex-note-box" id="codex-review-section">
+<div class="codex-note-head">
+<div class="codex-badge-brand">
+<span>CODEX</span>
+<span>Codex 的观察与建议</span>
+</div>
+<div style="font-size:11px; color:var(--text-muted); font-family:var(--font-mono);">
+        基于 7 天周期真实执行日志
+      </div>
+</div>
+<div class="codex-intro-p">
+      “小队在多项任务中保持了良好的单轮完成度，但两处特定工具重试与上下文膨胀拉长了总交付周期。以下是针对当前工程链路的针对性观察与优化建议：”
+    </div>
+<!-- 条目 1 -->
+<div class="commentary-item">
+<div class="commentary-title">
+<span class="status-pill status-warn">观察 01</span>
+<span>提前在系统提示词前置预置工具规范，避免 codex-squad 技能被重复全量读取</span>
+</div>
+<div class="commentary-action">
+<strong>建议动作：</strong> 将 `codex-squad` 与 `ued-designer` 技能契约移入系统提示前置，在每次执行前使用 CLI dry-run 验证，消除子任务的重复工具探测时间。
+      </div>
+<div style="font-size:11px; margin-top:4px;">
+        关联任务：<a class="link-tag" href="#squad-tasks">#02 分析布局适配</a>、<a class="link-tag" href="#squad-tasks">#03 Codex 小队</a>
+</div>
+<details class="commentary-fold">
+<summary>展开查看执行审计证据与验证方式 ▾</summary>
+<div class="fold-body">
+          【审计证据】两项技能累计被重复读取 23 次，占副工具读取总量的 16.2%，消耗非业务 Token 约 38.0K。<br/>
+          【验证方式】执行本地 CLI dry-run，确认子任务首轮上下文已注入规则，读取次数降为 0。
+        </div>
+</details>
+</div>
+<!-- 条目 2 -->
+<div class="commentary-item">
+<div class="commentary-title">
+<span class="status-pill status-err">观察 02</span>
+<span>在派发前补充参数校验守卫，排查单点工具异常拦截并拦截 422 失败</span>
+</div>
+<div class="commentary-action">
+<strong>建议动作：</strong> 在执行集成回归套件前，对入参进行预先 schema 校验，防止在第 2 轮交付时因参数格式错误导致 Qoder 中断。
+      </div>
+<div style="font-size:11px; margin-top:4px;">
+        关联任务：<a class="link-tag" href="#squad-tasks">#01 订单工作台 (订单链路排查)</a>
+</div>
+<details class="commentary-fold">
+<summary>展开查看执行审计证据与验证方式 ▾</summary>
+<div class="fold-body">
+          【审计证据】16 次工具失败中有 11 次集中于参数类型校验，导致对应子任务陷入等待状态。<br/>
+          【验证方式】执行集成回归套件，确保参数在派发前被静态 schema 校验捕获，不再产生下游 422 报错。
+        </div>
+</details>
+</div>
+<!-- 条目 3 -->
+<div class="commentary-item">
+<div class="commentary-title">
+<span class="status-pill status-warn">观察 03</span>
+<span>对超过 3 轮交互的长任务强制执行交付草稿节点截断</span>
+</div>
+<div class="commentary-action">
+<strong>建议动作：</strong> 当子任务轮次达 3 轮时，自动生成当前草稿快照并切断等待，避免因长悬挂而空耗心跳与监听。
+      </div>
+<div style="font-size:11px; margin-top:4px;">
+        关联任务：<a class="link-tag" href="#squad-tasks">#01 订单工作台</a>、<a class="link-tag" href="#squad-tasks">#08 报表导出排查</a>
+</div>
+<details class="commentary-fold">
+<summary>展开查看执行审计证据与验证方式 ▾</summary>
+<div class="fold-body">
+          【审计证据】任务 #08 累计尝试耗时达 21m40s，由于未设定心跳超时造成进程序空等 90s。<br/>
+          【验证方式】单向回放会话日志，确认在 60s 无输出时主动触发 ACK 探针，避免僵尸进程。
+        </div>
+</details>
+</div>
+<!-- 条目 4 -->
+<div class="commentary-item">
+<div class="commentary-title">
+<span class="status-pill status-ok">观察 04</span>
+<span>提升子任务独立工作区的文件切片精度，避免全量 AST 代码重复投递</span>
+</div>
+<div class="commentary-action">
+<strong>建议动作：</strong> 针对资料整理与排版用例，仅发送变更函数切片而不是全量文件，进一步将输入缓存命中率拉升至 65% 以上。
+      </div>
+<div style="font-size:11px; margin-top:4px;">
+        关联任务：<a class="link-tag" href="#squad-tasks">#04 资料整理</a>
+</div>
+<details class="commentary-fold">
+<summary>展开查看执行审计证据与验证方式 ▾</summary>
+<div class="fold-body">
+          【审计证据】总量 1.14M 输入中缓存命中部分为 380.0K，为未变更的公共声明。<br/>
+          【验证方式】对比下轮分析报告中 Cache 命中率是否从 48.4% 提升至 65% 以上。
+        </div>
+</details>
+</div>
+</section>
+<!-- 10. Footer -->
+<footer class="page-footer">
+<div>Codex 小队 · 周期分析报告快照 (#2026-R05)</div>
+<div>
+<span style="color:var(--accent-rust);">● v0.9.3-local.20261027.2</span>
+<span>· 导出已物化完整 HTML</span>
+</div>
+<div>2026-10-27 15:10:00 CST</div>
+</footer>
+</div>
+<!-- 11. 小队收益计算依据与基线核验弹层 (支持>=768px居中，<768px底部抽屉，完整保留所有对比基线) -->
+<div class="modal-backdrop" id="roi-modal" onclick="handleRoiBackdropClick(event)">
+<div class="modal-box">
+<div class="modal-head">
+<div style="font-weight:600; display:flex; align-items:center; gap:6px;">
+<span>小队收益计算依据与基线核验</span>
+<span style="font-size:10px; background:var(--accent-rust-light); color:var(--accent-rust); padding:1px 5px; border-radius:3px;">历史基线推导</span>
+</div>
+<button onclick="closeRoiModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted); line-height:1;">×</button>
+</div>
+<div class="modal-body">
+<div style="font-size:11px; color:var(--text-muted); margin-bottom:10px; line-height:1.5;">
+        本数据基于当前周期内 8 次具备历史纯 Codex 基线记录的真实交付采样测算。各模型输出速度按本机统一环境实测基准 (gpt-6.x 约 42 tps，Qoder DeepSeek-Flash 约 58 tps) 进行时间归一化推导。
+      </div>
+<!-- 纳入核算的完整交付项对比列表 -->
+<div style="font-size:11.5px; font-weight:600; margin-bottom:4px;">已纳入估算的交付项对照 (8 项)</div>
+<div class="table-scroll-container" style="max-height:200px; margin-bottom:12px;">
+<table class="audit-table">
+<thead>
+<tr>
+<th>交付任务 / 归属会话</th>
+<th style="text-align:right;">纯 Codex 基线</th>
+<th style="text-align:right;">实际协同投入</th>
+<th style="text-align:right;">预计少用</th>
+<th style="text-align:right;">耗时差</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>
+<div style="font-weight:600;">#01 订单链路排查</div>
+<div style="font-size:10px; color:var(--text-muted);"><a class="link-tag" href="#squad-tasks">查看主会话 ↗</a></div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">320.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">168.2K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-151.8K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-3.2m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#02 窄屏布局适配</div>
+<div style="font-size:10px; color:var(--text-muted);"><a class="link-tag" href="#squad-tasks">查看主会话 ↗</a></div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">180.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">94.6K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-85.4K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-1.8m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">#03 筛选状态重置自检</div>
+<div style="font-size:10px; color:var(--text-muted);"><a class="link-tag" href="#squad-tasks">查看主会话 ↗</a></div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">140.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">62.1K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-77.9K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-1.5m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">单元回归套件执行 (Node.js)</div>
+<div style="font-size:10px; color:var(--text-muted);">测试运行器专项</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">210.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">98.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-112.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-2.1m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">契约回归用例补齐 (pytest)</div>
+<div style="font-size:10px; color:var(--text-muted);">后端接口测试</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">260.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">135.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-125.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-2.4m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">构建脚本生产环境校验</div>
+<div style="font-size:10px; color:var(--text-muted);">打包流水线验证</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">90.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">45.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-45.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-0.6m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">服务能力调起验证 (lgb)</div>
+<div style="font-size:10px; color:var(--text-muted);">辅助能力交互</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">230.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">142.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-88.0K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-0.9m</td>
+</tr>
+<tr>
+<td>
+<div style="font-weight:600;">远程日志格式解析 (sf)</div>
+<div style="font-size:10px; color:var(--text-muted);">日志查询规范化</div>
+</td>
+<td style="text-align:right; font-family:var(--font-mono);">170.0K</td>
+<td style="text-align:right; font-family:var(--font-mono);">105.1K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green); font-weight:600;">-64.9K</td>
+<td style="text-align:right; font-family:var(--font-mono); color:var(--accent-green);">-0.5m</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 覆盖缺口说明与基准速度依据 -->
+<div style="background:var(--bg-subtle); border:1px solid var(--border-subtle); border-radius:4px; padding:8px 10px; font-size:11px; color:var(--text-muted); line-height:1.5;">
+<div style="font-weight:600; color:var(--text-main); margin-bottom:2px;">覆盖缺口与口径说明：</div>
+<div>• <strong>4 项未纳入交付：</strong>#04 资料整理与 AST 解析、临时格式化咨询等 4 次会话因在历史样本中无单一纯 Codex 执行的同等规模基线，实事求是不作盲目推算。</div>
+<div>• <strong>不作为云端计费：</strong>计算指标仅反映小队工程提效与上下文协同推导，不作为云端费用核算依据。</div>
+</div>
+</div>
+<div class="modal-foot">
+<span style="font-size:11px; color:var(--text-muted);">已物化周期快照 (#2026-R05)</span>
+<button onclick="closeRoiModal()" style="padding:4px 12px; background:var(--accent-rust); color:#fff; border:none; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">关闭 [Esc]</button>
+</div>
+</div>
+</div>
+<!-- 12. 版本更新说明弹层 -->
+<div class="modal-backdrop" id="update-modal" onclick="handleBackdropClick(event)">
+<div class="modal-box">
+<div class="modal-head">
+<div style="font-weight:600; display:flex; align-items:center; gap:6px;">
+<span>这次更新对你有什么用</span>
+<span style="font-size:10px; background:var(--accent-rust-light); color:var(--accent-rust); padding:1px 5px; border-radius:3px;">版本更新</span>
+</div>
+<button onclick="closeUpdateModal()" style="background:none; border:none; font-size:18px; cursor:pointer; color:var(--text-muted);">×</button>
+</div>
+<div class="modal-body">
+<div style="margin-bottom:8px; font-family:var(--font-mono); font-size:11px; color:var(--text-muted);">
+        当前版本: <span style="font-weight:600; color:var(--text-main);">v0.9.3-local.20261027.2</span> → 最新版本: <span style="font-weight:700; color:var(--accent-rust);">v0.9.4</span>
+</div>
+<div style="font-size:11px; color:var(--text-light); margin-bottom:12px;">
+        正式产品仅读取官方版本记录。功能说明如下：
+      </div>
+<div style="border:1px solid var(--border-subtle); border-radius:4px; padding:10px; margin-bottom:10px; background:var(--bg-subtle);">
+<strong style="color:var(--text-main);">[ 核心更新收益 · 3 项改进事实 ]</strong>
+<div style="margin-top:6px;">
+<div style="font-weight:600; font-size:11.5px;">01 统计直接快照</div>
+<div style="color:var(--text-muted); font-size:11px;">周期分析不再阻塞主交互线程等待重度实时汇总，瞬间拉取离线已审计快照，大幅缩短首屏展现时间。</div>
+</div>
+<div style="margin-top:8px;">
+<div style="font-weight:600; font-size:11.5px;">02 执行停止与联动机制</div>
+<div style="color:var(--text-muted); font-size:11px;">点击 Codex 停止当前执行时，停止本轮关联且仍运行的 Qoder 任务；Codex 正常回复结束或等待子任务时，Qoder 继续运行。</div>
+</div>
+<div style="margin-top:8px;">
+<div style="font-weight:600; font-size:11.5px;">03 账户额度与事实核验</div>
+<div style="color:var(--text-muted); font-size:11px;">面板顶部透视 7 天滑动窗口全局余量与重置周期，标记离线记录与缺失项真实情况，排查更明确。</div>
+</div>
+</div>
+<div style="padding:8px 10px; background:var(--accent-green-light); border-radius:4px; font-size:11px; color:var(--accent-green);">
+        ✓ 平滑更新策略：当前正在执行的任务不受干扰继续运行，更新完成后后续新建或派发任务自动使用新版。
+      </div>
+</div>
+<div class="modal-foot">
+<div style="font-size:11px; color:var(--text-muted);">
+        可立即就绪更新 · 任务平稳过渡
+      </div>
+<div style="display:flex; gap:8px;">
+<button onclick="closeUpdateModal()" style="padding:4px 10px; background:var(--bg-surface); border:1px solid var(--border-main); border-radius:4px; font-size:11px; cursor:pointer;">关闭 [Esc]</button>
+<button onclick="alert('已模拟更新至最新版！当前任务将平稳过渡。'); closeUpdateModal();" style="padding:4px 12px; background:var(--accent-rust); color:#fff; border:none; border-radius:4px; font-size:11px; font-weight:600; cursor:pointer;">更新到 v0.9.4</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // 1. 小队收益卡：状态切换 (可信估算 / 无法估算 / 负收益)
+  function switchRoiState(state) {
+    const btnPos = document.getElementById('roi-state-btn-positive');
+    const btnPen = document.getElementById('roi-state-btn-pending');
+    const btnNeg = document.getElementById('roi-state-btn-negative');
+    const boxPos = document.getElementById('roi-state-positive');
+    const boxPen = document.getElementById('roi-state-pending');
+    const boxNeg = document.getElementById('roi-state-negative');
+
+    btnPos.classList.remove('active');
+    btnPen.classList.remove('active');
+    btnNeg.classList.remove('active');
+    boxPos.style.display = 'none';
+    boxPen.style.display = 'none';
+    boxNeg.style.display = 'none';
+
+    if (state === 'positive') {
+      btnPos.classList.add('active');
+      boxPos.style.display = 'block';
+    } else if (state === 'pending') {
+      btnPen.classList.add('active');
+      boxPen.style.display = 'block';
+    } else if (state === 'negative') {
+      btnNeg.classList.add('active');
+      boxNeg.style.display = 'block';
+    }
+  }
+
+  // 2. 用量卡多视图切换
+  function switchUsageView(view) {
+    const btnCodex = document.getElementById('btn-tab-codex');
+    const btnQoder = document.getElementById('btn-tab-qoder');
+    const btnCompare = document.getElementById('btn-tab-compare');
+    const viewCodex = document.getElementById('view-codex');
+    const viewQoder = document.getElementById('view-qoder');
+    const viewCompare = document.getElementById('view-compare');
+    const caption = document.getElementById('usage-view-caption');
+
+    btnCodex.classList.remove('active');
+    btnQoder.classList.remove('active');
+    btnCompare.classList.remove('active');
+    viewCodex.style.display = 'none';
+    viewQoder.style.display = 'none';
+    viewCompare.style.display = 'none';
+
+    if (view === 'codex') {
+      btnCodex.classList.add('active');
+      viewCodex.style.display = 'block';
+      caption.textContent = '当前视图：Codex 宿主模型消耗 · 本机执行记录 (更新于 14:48:10 · 示例)';
+    } else if (view === 'qoder') {
+      btnQoder.classList.add('active');
+      viewQoder.style.display = 'block';
+      caption.textContent = '当前视图：Qoder 执行端独立已报用量 (DeepSeek-Flash 模型 · 54/62 会话)';
+    } else if (view === 'compare') {
+      btnCompare.classList.add('active');
+      viewCompare.style.display = 'block';
+      caption.textContent = '当前视图：同一时间窗口按小队对齐的两列已记录 Token 对照 (仅作审计参考，非费用账单)';
+    }
+  }
+
+  // 3. CLI 表格过滤
+  function filterCliRows() {
+    const filterVal = document.getElementById('cli-select-filter').value;
+    const rows = document.querySelectorAll('#cli-tbody tr');
+    let visibleCount = 0;
+
+    rows.forEach(row => {
+      const type = row.getAttribute('data-type');
+      if (filterVal === 'all' || type === filterVal) {
+        row.style.display = '';
+        visibleCount++;
+      } else {
+        row.style.display = 'none';
+      }
+    });
+
+    const indicator = document.getElementById('cli-count-indicator');
+    if (filterVal === 'all') {
+      indicator.textContent = `显示 ${visibleCount} / 294 项`;
+    } else {
+      indicator.textContent = `筛选出 ${visibleCount} 项`;
+    }
+  }
+
+  // 4. CLI 表格限高滚动切换
+  let isCliExpanded = false;
+  function toggleCliTableHeight() {
+    const wrapper = document.getElementById('cli-table-wrapper');
+    const btn = document.getElementById('toggle-cli-expand-btn');
+    isCliExpanded = !isCliExpanded;
+    if (isCliExpanded) {
+      wrapper.style.maxHeight = '360px';
+      btn.textContent = '收起高度 ▴';
+    } else {
+      wrapper.style.maxHeight = '280px';
+      btn.textContent = '展开全部 294 条子命令 ▾';
+    }
+  }
+
+  // 5. 弹层 Modal 控制
+  function openRoiModal() {
+    document.getElementById('roi-modal').classList.add('open');
+  }
+  function closeRoiModal() {
+    document.getElementById('roi-modal').classList.remove('open');
+  }
+  function handleRoiBackdropClick(e) {
+    if (e.target.id === 'roi-modal') {
+      closeRoiModal();
+    }
+  }
+
+  function openUpdateModal() {
+    document.getElementById('update-modal').classList.add('open');
+  }
+  function closeUpdateModal() {
+    document.getElementById('update-modal').classList.remove('open');
+  }
+  function handleBackdropClick(e) {
+    if (e.target.id === 'update-modal') {
+      closeUpdateModal();
+    }
+  }
+
+  window.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeRoiModal();
+      closeUpdateModal();
+    }
+  });
+</script>
+</body></html>

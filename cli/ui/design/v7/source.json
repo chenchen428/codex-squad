@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "status": "implementation-authorized-consistency-redesign",
+  "project": "14906138420656377633",
+  "screen": "0fdbc685be2f46238252fe67ef1134ed",
+  "htmlFile": "02881dd89c8f4172a74d6caa95d3d279",
+  "imageFile": "a173edc849bf4c57bf67ed6399f721b5",
+  "originalViewport": [
+    640,
+    1070
+  ],
+  "exportedHtmlSha256": "1a3746c3edab7ea876fd056eeaafc36edc5cfd0a3a4c78d78062561da8300720",
+  "scope": "Shared navigation, analysis scope/range controls, detail breadcrumb and loading. Demo content is illustrative only and is not migrated as business data.",
+  "adaptations": [
+    "Remove export-only dashed outer reference border and demo controls",
+    "Replace inline demo actions with typed app navigation and observed facts",
+    "Preserve existing task lanes, metrics and public conversation",
+    "Keep independent brand WIP excluded",
+    "Rebase analysis content palette and font classes onto the exported shared shell; preserve existing charts and observed metrics"
+  ],
+  "files": {
+    "shell-original.html": "6a88b43eb81e0077a88add60e8b2d32bc478706e5551394219809ce6db759173",
+    "shell-original.css": "9eb3b2a1ea00af534aec9bf6c50db14e88067264586ccb54ae2af94545c1d47a",
+    "analytics-session.css": "cd266b6ef2cd745110cd3f774a0802785888f2b57a815077fa7e28f52c2ad266",
+    "analytics-global.css": "f73416cbed42473a1c06f021579c71e94c793149878bd249b7a416148d232538"
+  }
+}

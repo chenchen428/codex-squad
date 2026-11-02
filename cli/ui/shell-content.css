@@ -1,0 +1,34 @@
+/* Layout slots for the exported v7 shell. Business content keeps its owned stylesheet. */
+body.squad-app{margin:0;padding:0;display:block;background:var(--squad-bg);background-image:none;color:var(--squad-text-main);font-family:var(--squad-font-sans);-webkit-font-smoothing:antialiased}
+.squad-app #root{display:block}
+.squad-page-content{min-width:0;flex:1 1 auto}
+.squad-board-toolbar{display:flex;flex-direction:column;gap:8px;padding:12px var(--squad-gutter);border-bottom:1px solid var(--squad-border-subtle)}
+.squad-analysis-content{width:100%;max-width:640px;min-width:0;margin:0 auto;padding:16px var(--squad-gutter) 40px;display:flex;flex-direction:column;background:var(--squad-bg);font-family:var(--squad-font-sans);color:var(--squad-text-main)}
+.squad-analysis-content[data-analysis-page="global"]{padding:16px 0 40px}
+.squad-app.session-page-body .squad-shell-root{height:100vh;height:100dvh;min-height:0;display:flex;flex-direction:column}
+.squad-app.session-page-body .squad-page-content{display:flex;flex-direction:column;min-height:0;overflow:hidden}
+.squad-app.session-page-body .session-page{height:auto;flex:1 1 auto;min-height:0}
+.squad-app.session-page-body .squad-meta-bar,.squad-app.session-page-body .squad-main-nav,.squad-app.session-page-body .squad-breadcrumb-bar,.squad-app.session-page-body .squad-progress-rail{flex-shrink:0}
+.squad-kpi-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.squad-kpi-card{padding:14px;min-width:0;background:var(--squad-bg-alt);border:1px solid var(--squad-border);border-radius:4px}
+.squad-kpi-label{font:12px/18px var(--squad-font-sans);color:var(--squad-text-muted);margin-bottom:4px}
+.squad-kpi-value{font:600 32px/40px var(--squad-font-sans);letter-spacing:-.02em;color:var(--squad-text-main)}
+.squad-analysis-highlight{margin-top:0}
+.squad-analysis-heading{margin:0 0 16px}
+.squad-analysis-heading h1{margin:0;font:600 24px/32px var(--squad-font-sans);letter-spacing:-.01em;color:var(--squad-text-main)}
+.squad-analysis-heading p{margin:2px 0 0;font:13px/20px var(--squad-font-sans);color:var(--squad-text-muted)}
+.squad-analysis-content[data-analysis-page="global"]>.squad-analysis-heading{margin-left:var(--squad-gutter);margin-right:var(--squad-gutter)}
+/* Runtime chart columns are populated after the static Stitch export. */
+.squad-trend-columns{position:relative;display:flex;align-items:flex-end;justify-content:space-between;gap:8px;padding:0 4px;height:100%;min-width:100%;width:max-content}
+.squad-trend-points{display:contents}
+.squad-trend-column{position:relative;z-index:10;flex:none;width:48px;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;cursor:default}
+.squad-status-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px;padding-top:10px;text-align:center}
+@media(min-width:640px){.squad-status-stats{grid-template-columns:repeat(5,minmax(0,1fr))}}
+.squad-tool-counts{display:flex;flex:1 1 0;min-width:0;flex-wrap:wrap;align-items:center;justify-content:flex-end;gap:4px;font:10px/15px var(--squad-font-mono)}
+.squad-verification-records{margin:12px 0;border:1px solid var(--squad-border);border-radius:6px;background:var(--squad-bg-alt);color:var(--squad-text-main)}
+.squad-verification-records>summary{cursor:pointer;padding:8px 10px;font:600 12px/18px var(--squad-font-sans);color:var(--squad-text-muted)}
+.squad-verification-records>summary:focus-visible{outline:2px solid var(--squad-accent,var(--squad-text-main));outline-offset:-2px}
+.squad-record-list{display:flex;flex-direction:column;gap:8px;padding:0 10px 10px}
+.squad-record-row{padding-top:8px;border-top:1px solid var(--squad-border-subtle)}
+.squad-record-title{margin:0;font:600 12px/18px var(--squad-font-sans)}
+.squad-record-line{margin:2px 0 0;font:11px/17px var(--squad-font-sans);color:var(--squad-text-muted);white-space:pre-wrap}

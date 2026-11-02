@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+
+<html class="light" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 分析面板</title>
+<!-- Google Fonts: Space Grotesk, Space Mono, Newsreader -->
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400..600&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<!-- Material Symbols Outlined (Exact link mandatory) -->
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<!-- Tailwind CSS v3 -->
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<!-- Verbatim Tailwind Config from Design System -->
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "surface-tint": "#a43c21",
+            "on-tertiary-fixed": "#2a1800",
+            "on-secondary-fixed": "#002114",
+            "on-primary-container": "#ffede9",
+            "secondary": "#2c694e",
+            "inverse-on-surface": "#f8f0e3",
+            "on-background": "#1f1b14",
+            "primary-fixed-dim": "#ffb4a1",
+            "surface-container-highest": "#eae1d5",
+            "on-surface-variant": "#57423c",
+            "surface-container": "#f5ede0",
+            "surface-container-lowest": "#ffffff",
+            "secondary-fixed-dim": "#95d4b3",
+            "outline-variant": "#dec0b9",
+            "on-secondary-container": "#316e52",
+            "error-container": "#ffdad6",
+            "tertiary": "#774c00",
+            "tertiary-fixed": "#ffddb5",
+            "primary": "#983419",
+            "on-tertiary-container": "#ffefdf",
+            "surface-variant": "#eae1d5",
+            "surface-dim": "#e1d9cd",
+            "inverse-surface": "#343028",
+            "on-error-container": "#93000a",
+            "surface": "#fff8f1",
+            "on-error": "#ffffff",
+            "secondary-fixed": "#b1f0ce",
+            "on-tertiary-fixed-variant": "#643f00",
+            "primary-fixed": "#ffdbd2",
+            "on-tertiary": "#ffffff",
+            "inverse-primary": "#ffb4a1",
+            "error": "#ba1a1a",
+            "on-surface": "#1f1b14",
+            "primary-container": "#b84b2e",
+            "outline": "#8a716b",
+            "surface-container-high": "#f0e7db",
+            "surface-container-low": "#fbf2e6",
+            "on-primary": "#ffffff",
+            "on-secondary": "#ffffff",
+            "secondary-container": "#aeeecb",
+            "tertiary-container": "#94641a",
+            "on-secondary-fixed-variant": "#0e5138",
+            "on-primary-fixed-variant": "#84250b",
+            "tertiary-fixed-dim": "#f8bb6a",
+            "background": "#fff8f1",
+            "surface-bright": "#fff8f1",
+            "on-primary-fixed": "#3c0800"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "space-lg": "1.5rem",
+            "margin": "3rem",
+            "space-xs": "0.25rem",
+            "space-md": "1rem",
+            "margin-tablet": "2rem",
+            "margin-mobile": "1.25rem",
+            "gutter": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem"
+          },
+          "fontFamily": {
+            "body-sans": ["Space Grotesk", "sans-serif"],
+            "annotation-cue": ["Space Mono", "monospace"],
+            "display-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "display-lg": ["Space Grotesk", "sans-serif"],
+            "body-prose-lg": ["Newsreader", "serif"],
+            "headline-scene": ["Newsreader", "serif"],
+            "headline-act": ["Space Grotesk", "sans-serif"],
+            "caption-footnote": ["Newsreader", "serif"],
+            "body-prose-md": ["Newsreader", "serif"],
+            "headline-act-mobile": ["Space Grotesk", "sans-serif"],
+            "label-stamp": ["Space Mono", "monospace"]
+          },
+          "fontSize": {
+            "body-sans": ["0.9375rem", { "lineHeight": "1.5rem", "letterSpacing": "0", "fontWeight": "400" }],
+            "annotation-cue": ["0.8125rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "400" }],
+            "display-lg-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "display-lg": ["3.25rem", { "lineHeight": "3.75rem", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-prose-lg": ["1.25rem", { "lineHeight": "2rem", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "headline-scene": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "0", "fontWeight": "500" }],
+            "headline-act": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "caption-footnote": ["0.8125rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "body-prose-md": ["1rem", { "lineHeight": "1.65rem", "letterSpacing": "0", "fontWeight": "400" }],
+            "headline-act-mobile": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "label-stamp": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.08em", "fontWeight": "700" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    /* Manuscript aesthetics & hairline details */
+    .border-hairline {
+      border-color: #e5dcce;
+    }
+    .divide-hairline > * + * {
+      border-color: #e5dcce;
+    }
+    .paper-stamp-badge {
+      letter-spacing: 0.08em;
+      border: 1px solid rgba(44, 105, 78, 0.25);
+      background: rgba(44, 105, 78, 0.06);
+    }
+    /* Tab active toggle helper */
+    .tab-btn[aria-selected="true"] {
+      border-bottom: 2px solid #b84b2e;
+      color: #983419;
+      font-weight: 700;
+    }
+    .tab-btn[aria-selected="false"] {
+      border-bottom: 2px solid transparent;
+      color: #57423c;
+    }
+  </style>
+</head>
+<body class="bg-background text-on-surface antialiased min-h-screen flex justify-center py-0 sm:py-6 selection:bg-primary-fixed selection:text-on-primary-fixed">
+<!-- Main Panel Container (Fixed 640px native width with fluid responsiveness down to 480px / 320px) -->
+<main class="w-full max-w-[640px] bg-surface flex flex-col relative px-4 sm:px-6 py-5 border-l border-r border-hairline min-h-[1780px]">
+<!-- PREVIEW WATERMARK & SCOPE BANNER -->
+<header class="flex items-center justify-between pb-3 mb-3 border-b border-hairline">
+<div class="flex items-center space-x-2">
+<span class="inline-flex items-center px-1.5 py-0.5 rounded text-label-stamp font-label-stamp bg-surface-container-high text-on-surface-variant border border-hairline">
+          示例数据 · 设计预览
+        </span>
+<span class="text-caption-footnote font-caption-footnote text-on-surface-variant italic">
+          主 Codex 会话不计入
+        </span>
+</div>
+<div class="flex items-center space-x-1.5 text-secondary text-annotation-cue font-annotation-cue">
+<span class="relative flex h-2 w-2">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-secondary opacity-75"></span>
+<span class="relative inline-flex rounded-full h-2 w-2 bg-secondary"></span>
+</span>
+<span class="text-xs">3秒自动同步</span>
+</div>
+</header>
+<!-- 1. TOP NAV & MAIN SWITCHER -->
+<section class="mb-5">
+<!-- Level 1 Navigation Tabs: 小队 vs 分析 -->
+<div class="flex items-center justify-between border-b border-hairline pb-2 mb-3">
+<nav aria-label="一级模块导航" class="flex space-x-6">
+<a class="pb-1 text-body-sans font-body-sans text-on-surface-variant hover:text-on-surface transition-colors" href="#squad">
+            小队
+          </a>
+<a class="pb-1 text-body-sans font-body-sans font-bold text-primary border-b-2 border-primary-container flex items-center space-x-1" href="#analysis">
+<span>分析</span>
+<span class="text-[9px] px-1 bg-primary-fixed text-on-primary-fixed rounded font-annotation-cue">ACTIVE</span>
+</a>
+</nav>
+<button class="inline-flex items-center space-x-1 px-2 py-1 text-annotation-cue font-annotation-cue text-on-surface-variant hover:text-primary transition-colors hover:bg-surface-container-low rounded border border-transparent hover:border-hairline" type="button">
+<span class="material-symbols-outlined text-sm" data-icon="refresh">refresh</span>
+<span>刷新</span>
+</button>
+</div>
+<!-- Level 2 Sub-tabs: 当前会话 vs 整体 -->
+<div class="flex items-center space-x-3 mb-4">
+<div class="inline-flex p-0.5 bg-surface-container rounded border border-hairline text-annotation-cue font-annotation-cue">
+<button class="px-3 py-1 bg-surface shadow-xs text-primary font-bold rounded" type="button">
+            当前会话
+          </button>
+<button class="px-3 py-1 text-on-surface-variant hover:text-on-surface transition-colors" type="button">
+            整体
+          </button>
+</div>
+<span class="text-caption-footnote font-caption-footnote text-on-surface-variant">
+          执行分支 #04 · 对应任务阶段 II
+        </span>
+</div>
+<!-- Panel Title & Subtitle -->
+<div class="mb-4">
+<h1 class="text-headline-act-mobile font-headline-act-mobile text-on-surface font-semibold tracking-tight">
+          看清投入，调整下一步
+        </h1>
+<p class="text-body-prose-md font-body-prose-md text-on-surface-variant mt-0.5">
+          从真实执行记录，找到值得关注的工作
+        </p>
+</div>
+<!-- Editorial Highlight Banner -->
+<div class="p-3.5 bg-surface-container-low border-l-2 border-primary-container border-t border-r border-b border-hairline flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+<div class="flex items-start space-x-2">
+<span class="material-symbols-outlined text-primary text-base mt-0.5 shrink-0" data-icon="lightbulb">lightbulb</span>
+<p class="text-body-sans font-body-sans text-on-surface text-sm">
+            高消耗集中在公开对话回归，占已报Token <strong>60.5%</strong>，可先缩小验证范围
+          </p>
+</div>
+<a class="text-annotation-cue font-annotation-cue text-primary hover:text-primary-container font-bold text-xs shrink-0 flex items-center space-x-0.5" href="#task-01">
+<span>查看对应任务</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_forward">arrow_forward</span>
+</a>
+</div>
+</section>
+<!-- 2. CORE METRICS 2x2 MATRIX (KPI RAIL) -->
+<section class="mb-7">
+<div class="flex items-center justify-between mb-2">
+<h2 class="text-label-stamp font-label-stamp text-on-surface-variant uppercase">
+          [ 核心指标 · CURRENT SESSION KPI ]
+        </h2>
+<span class="text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+          周期内统计
+        </span>
+</div>
+<div class="grid grid-cols-2 gap-2.5">
+<!-- Metric 1 -->
+<div class="p-3.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-caption-footnote font-caption-footnote text-on-surface-variant mb-1">
+            成员已报 Token
+          </div>
+<div class="flex items-baseline space-x-1">
+<span class="text-headline-act font-headline-act text-on-surface tracking-tight">834.2</span>
+<span class="text-annotation-cue font-annotation-cue text-primary font-bold text-sm">k</span>
+</div>
+<div class="text-annotation-cue font-annotation-cue text-[11px] text-on-surface-variant mt-1.5 flex items-center space-x-1">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary"></span>
+<span>输入 821.3k · 输出 12.9k</span>
+</div>
+</div>
+<!-- Metric 2 -->
+<div class="p-3.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-caption-footnote font-caption-footnote text-on-surface-variant mb-1">
+            已验收任务
+          </div>
+<div class="flex items-baseline space-x-1">
+<span class="text-headline-act font-headline-act text-secondary tracking-tight">1</span>
+<span class="text-headline-scene font-headline-scene text-on-surface-variant">/ 2</span>
+</div>
+<div class="text-annotation-cue font-annotation-cue text-[11px] text-on-surface-variant mt-1.5">
+            50% 完成 · 1 个待交接验收
+          </div>
+</div>
+<!-- Metric 3 -->
+<div class="p-3.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-caption-footnote font-caption-footnote text-on-surface-variant mb-1">
+            续接次数
+          </div>
+<div class="flex items-baseline space-x-1">
+<span class="text-headline-act font-headline-act text-on-surface tracking-tight">4</span>
+<span class="text-annotation-cue font-annotation-cue text-on-surface-variant text-xs">次</span>
+</div>
+<div class="text-annotation-cue font-annotation-cue text-[11px] text-on-surface-variant mt-1.5">
+            标准上下文推进 · 正常移交
+          </div>
+</div>
+<!-- Metric 4 -->
+<div class="p-3.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-caption-footnote font-caption-footnote text-on-surface-variant mb-1">
+            失败尝试
+          </div>
+<div class="flex items-baseline space-x-1">
+<span class="text-headline-act font-headline-act text-primary-container tracking-tight">1</span>
+<span class="text-annotation-cue font-annotation-cue text-on-surface-variant text-xs">次</span>
+</div>
+<div class="text-annotation-cue font-annotation-cue text-[11px] text-primary-container mt-1.5">
+            422 参数校验异常 (任务 #01)
+          </div>
+</div>
+</div>
+<!-- Strict Editorial Footnote (No fictitious savings) -->
+<div class="mt-2 px-1 text-caption-footnote font-caption-footnote text-on-surface-variant flex items-start space-x-1.5">
+<span class="material-symbols-outlined text-xs mt-0.5" data-icon="info">info</span>
+<span>主 Codex 未计入；成员 6/6 已报。数据仅统计当前会话执行节点。</span>
+</div>
+</section>
+<!-- 3. INVESTMENTS & PROGRESS -->
+<section class="mb-7 pb-6 border-b border-hairline">
+<div class="flex items-center justify-between mb-3">
+<div>
+<h2 class="text-label-stamp font-label-stamp text-on-surface-variant uppercase">
+            [ 投入与进展 · INVESTMENTS &amp; PROGRESS ]
+          </h2>
+<p class="text-caption-footnote font-caption-footnote text-on-surface-variant">
+            按子任务拆解消耗比重与尝试状态
+          </p>
+</div>
+<span class="text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+          2 项活跃任务
+        </span>
+</div>
+<!-- Task Distribution Breakdown Items -->
+<div class="space-y-3 mb-4">
+<!-- Task Item 1 -->
+<article class="p-3 bg-surface border-b border-hairline hover:bg-surface-container-low transition-colors" id="task-01">
+<div class="flex items-start justify-between gap-2 mb-1.5">
+<div class="flex items-center space-x-2">
+<span class="font-annotation-cue text-xs px-1.5 py-0.5 bg-surface-container text-on-surface-variant rounded">#01</span>
+<h3 class="text-body-sans font-body-sans font-medium text-on-surface text-sm">
+                修复报表筛选多维联动异常
+              </h3>
+</div>
+<span class="px-2 py-0.5 text-label-stamp font-label-stamp text-tertiary-container bg-surface-container-high rounded border border-hairline">
+              待验收
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+<span class="text-primary font-bold">504.8k (占已报 60.5%)</span>
+<span>3 次尝试</span>
+<span class="text-primary-container font-semibold">1 次失败</span>
+<span class="text-caption-footnote font-caption-footnote italic text-on-surface-variant">耗时约 21分40秒</span>
+</div>
+<!-- Progress Bar Representation -->
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-2 overflow-hidden flex">
+<div class="bg-primary-container h-full" style="width: 60.5%"></div>
+<div class="bg-outline-variant h-full opacity-40" style="width: 39.5%"></div>
+</div>
+</article>
+<!-- Task Item 2 -->
+<article class="p-3 bg-surface border-b border-hairline hover:bg-surface-container-low transition-colors" id="task-02">
+<div class="flex items-start justify-between gap-2 mb-1.5">
+<div class="flex items-center space-x-2">
+<span class="font-annotation-cue text-xs px-1.5 py-0.5 bg-surface-container text-on-surface-variant rounded">#02</span>
+<h3 class="text-body-sans font-body-sans font-medium text-on-surface text-sm">
+                补充空状态与边界自检用例
+              </h3>
+</div>
+<span class="px-2 py-0.5 text-label-stamp font-label-stamp text-secondary paper-stamp-badge rounded">
+              已验收
+            </span>
+</div>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+<span class="text-on-surface font-bold">329.4k (占已报 39.5%)</span>
+<span>3 次尝试</span>
+<span class="text-secondary font-semibold">0 次失败</span>
+<span class="text-caption-footnote font-caption-footnote italic text-on-surface-variant">耗时约 10分38秒</span>
+</div>
+<!-- Progress Bar Representation -->
+<div class="w-full bg-surface-container h-1.5 rounded-full mt-2 overflow-hidden flex">
+<div class="bg-secondary h-full" style="width: 39.5%"></div>
+<div class="bg-outline-variant h-full opacity-40" style="width: 60.5%"></div>
+</div>
+</article>
+</div>
+<!-- Token Composition Breakdown -->
+<div class="p-3 bg-surface-container-low border border-hairline rounded mb-3">
+<div class="text-label-stamp font-label-stamp text-on-surface-variant uppercase mb-2">
+          用量构成细分 (TOKEN COMPOSITION)
+        </div>
+<div class="grid grid-cols-3 gap-2 text-center">
+<div class="p-1.5 bg-surface border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-annotation-cue">输入</div>
+<div class="text-body-sans font-body-sans font-bold text-on-surface">821.3k</div>
+<div class="text-[10px] text-on-surface-variant font-annotation-cue">98.45%</div>
+</div>
+<div class="p-1.5 bg-surface border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-annotation-cue">输出</div>
+<div class="text-body-sans font-body-sans font-bold text-on-surface">12.9k</div>
+<div class="text-[10px] text-on-surface-variant font-annotation-cue">1.55%</div>
+</div>
+<div class="p-1.5 bg-surface border border-dashed border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-annotation-cue">缓存</div>
+<div class="text-body-sans font-body-sans font-bold text-on-surface-variant">未上报</div>
+<div class="text-[10px] text-on-surface-variant font-annotation-cue">待上游支持</div>
+</div>
+</div>
+</div>
+<!-- Explicit Cache Explanation Note -->
+<div class="p-2.5 bg-surface-container border-l-2 border-outline-variant text-caption-footnote font-caption-footnote text-on-surface-variant leading-relaxed text-xs">
+<strong>说明：</strong>缓存属于输入（对长上下文与代码的复用），若接入将包含在输入之内，不重复累加。
+      </div>
+<!-- Timeline & Discrete Tick Histogram (Pure Native SVG / HTML) -->
+<div class="mt-4 pt-3 border-t border-hairline">
+<div class="flex items-center justify-between mb-2">
+<span class="text-annotation-cue font-annotation-cue text-xs text-on-surface-variant font-semibold">
+            执行时间轴切片脉冲 (TIMELINE TICKS)
+          </span>
+<span class="text-[11px] font-annotation-cue text-on-surface-variant">真实离散采样 · 无平滑插值</span>
+</div>
+<div class="bg-surface-container-low p-3 border border-hairline rounded">
+<div class="flex items-end justify-between h-14 gap-1.5 pt-2 px-1">
+<!-- T+00:00 Initial dispatch -->
+<div class="flex-1 flex flex-col items-center gap-1 group">
+<div class="w-full bg-secondary-fixed-dim rounded-t h-4"></div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+00</span>
+</div>
+<!-- T+00:10 Milestone 1 -->
+<div class="flex-1 flex flex-col items-center gap-1 group">
+<div class="w-full bg-secondary rounded-t h-8"></div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+10</span>
+</div>
+<!-- T+00:20 (Missing tick / no run) -->
+<div class="flex-1 flex flex-col items-center gap-1 opacity-40">
+<div class="w-full border-b border-dashed border-outline-variant h-1 mb-1"></div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+20</span>
+</div>
+<!-- T+00:25 Task 1 retry & error -->
+<div class="flex-1 flex flex-col items-center gap-1 group">
+<div class="w-full bg-primary-container rounded-t h-12 relative">
+<span class="absolute -top-3.5 left-1/2 -translate-x-1/2 text-[9px] text-primary-container font-bold font-annotation-cue">ERR</span>
+</div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+25</span>
+</div>
+<!-- T+00:35 Gap -->
+<div class="flex-1 flex flex-col items-center gap-1 opacity-40">
+<div class="w-full border-b border-dashed border-outline-variant h-1 mb-1"></div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+35</span>
+</div>
+<!-- T+00:45 Task 2 completed -->
+<div class="flex-1 flex flex-col items-center gap-1 group">
+<div class="w-full bg-secondary rounded-t h-7"></div>
+<span class="text-[10px] font-annotation-cue text-on-surface-variant">T+45</span>
+</div>
+<!-- End state (Unreported gap) -->
+<div class="flex-1 flex flex-col items-center gap-1">
+<div class="w-full bg-surface-variant rounded-t h-2 border border-hairline"></div>
+<span class="text-[9px] font-annotation-cue text-on-surface-variant italic">未上报</span>
+</div>
+</div>
+<div class="mt-2 text-center text-[11px] text-on-surface-variant font-annotation-cue border-t border-hairline pt-1.5 flex justify-center items-center space-x-3">
+<span class="flex items-center space-x-1"><span class="w-2 h-2 rounded bg-secondary inline-block"></span><span>正常交付</span></span>
+<span class="flex items-center space-x-1"><span class="w-2 h-2 rounded bg-primary-container inline-block"></span><span>失败尝试 (T+25)</span></span>
+<span class="flex items-center space-x-1"><span class="w-2 h-0.5 border-t border-dashed border-outline-variant inline-block"></span><span>空闲 / 未上报</span></span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. EXECUTION QUALITY -->
+<section class="mb-7 pb-6 border-b border-hairline">
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-label-stamp font-label-stamp text-on-surface-variant uppercase">
+          [ 执行质量 · EXECUTION QUALITY ]
+        </h2>
+<span class="text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+          稳定性与效率基线
+        </span>
+</div>
+<!-- Quality Metrics Horizontal Row -->
+<div class="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-3">
+<div class="p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-caption-footnote">首次返回即验收</div>
+<div class="text-headline-scene font-headline-scene font-bold text-on-surface">1 / 2</div>
+<div class="text-[10px] text-on-surface-variant font-annotation-cue">比率 50%</div>
+</div>
+<div class="p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-caption-footnote">工具调用总量</div>
+<div class="text-headline-scene font-headline-scene font-bold text-on-surface">126</div>
+<div class="text-[10px] text-on-surface-variant font-annotation-cue">已知覆盖 100%</div>
+</div>
+<div class="p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-caption-footnote">工具调用失败</div>
+<div class="text-headline-scene font-headline-scene font-bold text-primary-container">3</div>
+<div class="text-[10px] text-primary-container font-annotation-cue">失败率 2.38%</div>
+</div>
+<div class="p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="text-[11px] text-on-surface-variant font-caption-footnote">尝试累计耗时</div>
+<div class="text-body-sans font-body-sans font-bold text-on-surface pt-1">32分18秒</div>
+<div class="text-[9px] text-on-surface-variant font-caption-footnote leading-tight mt-0.5">多成员执行和</div>
+</div>
+</div>
+<!-- Wall-clock vs Cumulative clarification -->
+<div class="p-2 bg-surface-container-high rounded text-[11px] font-caption-footnote text-on-surface-variant mb-2.5">
+<strong>口径注记：</strong>上述耗时为各成员执行耗时总和（含等待重试），非会话整体墙钟流逝时间（Wall-clock Time）。
+      </div>
+<!-- Quality Boundary Stance -->
+<div class="flex items-center justify-between text-xs font-annotation-cue py-1 px-1 border-t border-hairline">
+<span class="text-on-surface-variant">续接本身属于正常上下文推进，不视为返工或错误。</span>
+<a class="text-primary hover:text-primary-container font-semibold flex items-center space-x-0.5 shrink-0 ml-2" href="#task-01">
+<span>定位包含 1 次失败尝试的任务 #01</span>
+<span class="material-symbols-outlined text-xs" data-icon="open_in_new">open_in_new</span>
+</a>
+</div>
+</section>
+<!-- 5. SKILLS & TOOLS -->
+<section class="mb-7 pb-6 border-b border-hairline">
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-label-stamp font-label-stamp text-on-surface-variant uppercase">
+          [ 技能与工具 · SKILLS &amp; TOOLS ]
+        </h2>
+<span class="text-caption-footnote font-caption-footnote text-on-surface-variant">
+          纯只读调用审计
+        </span>
+</div>
+<!-- Mini Inset Tab Toggle -->
+<div class="flex border-b border-hairline mb-3">
+<button aria-selected="true" class="tab-btn px-4 py-1.5 text-xs font-annotation-cue transition-colors" id="tab-skills-btn" onclick="switchSkillTab('skills')" type="button">
+          技能访问
+        </button>
+<button aria-selected="false" class="tab-btn px-4 py-1.5 text-xs font-annotation-cue transition-colors" id="tab-tools-btn" onclick="switchSkillTab('tools')" type="button">
+          工具调用
+        </button>
+</div>
+<!-- TAB PANEL 1: 技能访问 -->
+<div class="block" id="panel-skills">
+<div class="space-y-2 mb-3 font-annotation-cue text-xs">
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="psychology">psychology</span>
+<span class="font-medium text-on-surface">codex-squad</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-on-surface font-bold">3 次读取</span>
+<span class="text-[10px] text-on-surface-variant px-1.5 py-0.2 bg-surface-container rounded border border-hairline">规则组</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="psychology">psychology</span>
+<span class="font-medium text-on-surface">stitch-review</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-on-surface font-bold">2 次读取</span>
+<span class="text-[10px] text-on-surface-variant px-1.5 py-0.2 bg-surface-container rounded border border-hairline">审查模版</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-secondary" data-icon="psychology">psychology</span>
+<span class="font-medium text-on-surface">ued-designer</span>
+</div>
+<div class="flex items-center space-x-2">
+<span class="text-on-surface font-bold">1 次读取</span>
+<span class="text-[10px] text-on-surface-variant px-1.5 py-0.2 bg-surface-container rounded border border-hairline">设计规约</span>
+</div>
+</div>
+</div>
+<!-- Strict Audit Disclaimer (Honest truth: reading is not guaranteed success) -->
+<div class="p-2.5 bg-surface-container border border-hairline rounded text-[11px] font-caption-footnote text-on-surface-variant leading-relaxed">
+<strong class="text-on-surface">边界说明：</strong>仅为可确认的技能文件本地读取记录 · 激活状态及成功率未接入。不推断文件载入后的执行充分度。
+        </div>
+</div>
+<!-- TAB PANEL 2: 工具调用 (Initially Hidden) -->
+<div class="hidden" id="panel-tools">
+<div class="space-y-2 mb-3 font-annotation-cue text-xs">
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="terminal">terminal</span>
+<span class="font-medium text-on-surface">execute</span>
+</div>
+<div class="flex items-center space-x-3">
+<span class="text-on-surface font-bold">68 次</span>
+<span class="text-primary-container font-semibold">失败 2 次</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="description">description</span>
+<span class="font-medium text-on-surface">read</span>
+</div>
+<div class="flex items-center space-x-3">
+<span class="text-on-surface font-bold">42 次</span>
+<span class="text-secondary font-semibold">失败 0 次</span>
+</div>
+</div>
+<div class="flex items-center justify-between p-2.5 bg-surface-container-low border border-hairline rounded">
+<div class="flex items-center space-x-2">
+<span class="material-symbols-outlined text-sm text-on-surface-variant" data-icon="edit_note">edit_note</span>
+<span class="font-medium text-on-surface">edit</span>
+</div>
+<div class="flex items-center space-x-3">
+<span class="text-on-surface font-bold">16 次</span>
+<span class="text-primary-container font-semibold">失败 1 次</span>
+</div>
+</div>
+</div>
+<div class="flex items-center justify-between p-2 text-xs font-annotation-cue text-on-surface-variant border-t border-hairline">
+<span>已知状态覆盖率：<strong>126 / 126 次 (100%)</strong></span>
+<span class="text-[11px] text-secondary">所有调用记录均有完整返回码</span>
+</div>
+</div>
+</section>
+<!-- 6. ACTIONABLE NEXT STEPS -->
+<section class="mb-7 pb-6 border-b border-hairline">
+<div class="flex items-center justify-between mb-3">
+<h2 class="text-label-stamp font-label-stamp text-on-surface-variant uppercase">
+          [ 下一步建议 · ACTIONABLE NEXT STEPS ]
+        </h2>
+<span class="text-annotation-cue font-annotation-cue text-xs text-on-surface-variant">
+          基于当前指标推导
+        </span>
+</div>
+<div class="space-y-3">
+<!-- Item 1 -->
+<article class="p-3 bg-surface-container-low border border-hairline rounded hover:border-outline-variant transition-colors">
+<div class="flex items-baseline space-x-2 mb-1">
+<span class="text-label-stamp font-label-stamp text-primary font-bold">01</span>
+<h3 class="text-body-sans font-body-sans font-semibold text-on-surface text-sm">
+              聚焦最高消耗任务
+            </h3>
+</div>
+<p class="text-body-prose-md font-body-prose-md text-on-surface-variant text-xs leading-relaxed mb-2">
+            公开对话回归耗用 504.8k Token（占 60.5%），建议缩减验证范围或拆解验证用例。
+          </p>
+<a class="inline-flex items-center space-x-1 text-annotation-cue font-annotation-cue text-xs text-primary font-bold hover:underline" href="#action-scope">
+<span>在主会话中缩小范围</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</article>
+<!-- Item 2 -->
+<article class="p-3 bg-surface-container-low border border-hairline rounded hover:border-outline-variant transition-colors">
+<div class="flex items-baseline space-x-2 mb-1">
+<span class="text-label-stamp font-label-stamp text-primary-container font-bold">02</span>
+<h3 class="text-body-sans font-body-sans font-semibold text-on-surface text-sm">
+              排查 1 次执行失败
+            </h3>
+</div>
+<p class="text-body-prose-md font-body-prose-md text-on-surface-variant text-xs leading-relaxed mb-2">
+            发生在任务 #01 的第 2 次尝试中（422 参数校验），建议明确请求异常处理规则。
+          </p>
+<a class="inline-flex items-center space-x-1 text-annotation-cue font-annotation-cue text-xs text-primary font-bold hover:underline" href="#action-failed-ctx">
+<span>定位至失败上下文</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</article>
+<!-- Item 3 -->
+<article class="p-3 bg-surface-container-low border border-hairline rounded hover:border-outline-variant transition-colors">
+<div class="flex items-baseline space-x-2 mb-1">
+<span class="text-label-stamp font-label-stamp text-tertiary-container font-bold">03</span>
+<h3 class="text-body-sans font-body-sans font-semibold text-on-surface text-sm">
+              优化 4 次续接的交办边界
+            </h3>
+</div>
+<p class="text-body-prose-md font-body-prose-md text-on-surface-variant text-xs leading-relaxed mb-2">
+            子任务交接存在 4 次上下文传递，可预先补充输入格式约定以减少往返确认。
+          </p>
+<a class="inline-flex items-center space-x-1 text-annotation-cue font-annotation-cue text-xs text-primary font-bold hover:underline" href="#action-handover">
+<span>复核交办约定</span>
+<span class="material-symbols-outlined text-xs" data-icon="arrow_outward">arrow_outward</span>
+</a>
+</article>
+</div>
+</section>
+<!-- 7. COLLAPSIBLE DATA BOUNDARIES & TIMESTAMPS -->
+<footer class="mt-auto pt-3 pb-8">
+<!-- Native HTML <details> for strict data methodologies -->
+<details class="group bg-surface-container-low border border-hairline rounded mb-4 overflow-hidden">
+<summary class="p-3 text-annotation-cue font-annotation-cue text-xs text-on-surface-variant cursor-pointer flex items-center justify-between select-none hover:text-on-surface">
+<span class="flex items-center space-x-1.5 font-medium">
+<span class="material-symbols-outlined text-sm" data-icon="shield">shield</span>
+<span>数据口径与统计边界说明</span>
+</span>
+<span class="material-symbols-outlined text-sm group-open:rotate-180 transition-transform duration-200" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="p-3 border-t border-hairline text-caption-footnote font-caption-footnote text-on-surface-variant text-xs space-y-2 bg-surface">
+<p>
+<strong>1. Token 汇总范围：</strong>仅统计已接入 IPC 回传协议的 6 位活跃小队成员进程。主 Codex 宿主会话与编排器基础 Prompt 未纳入计量。
+          </p>
+<p>
+<strong>2. 未接入指标：</strong>Prompt 缓存命中数、会话全量墙钟闲置时间、外部网络延迟由于各成员底层模型运行时差异，当前标记为「未上报」，不进行猜测拟合。
+          </p>
+<p>
+<strong>3. IPC 采样限制：</strong>每 3 秒做一次心跳聚合更新，微小短瞬执行可能在下一个采样窗口合并上报。
+          </p>
+</div>
+</details>
+<!-- Timestamp & Readonly Declaration -->
+<div class="text-center font-annotation-cue text-xs text-on-surface-variant">
+        最后刷新时间：<span class="font-bold text-on-surface">14:38:02</span> · 纯只读设计预览
+      </div>
+</footer>
+</main>
+<!-- Interactive Scripts for Tab Switching -->
+<script>
+    function switchSkillTab(tab) {
+      const skillsBtn = document.getElementById('tab-skills-btn');
+      const toolsBtn = document.getElementById('tab-tools-btn');
+      const panelSkills = document.getElementById('panel-skills');
+      const panelTools = document.getElementById('panel-tools');
+
+      if (tab === 'skills') {
+        skillsBtn.setAttribute('aria-selected', 'true');
+        toolsBtn.setAttribute('aria-selected', 'false');
+        panelSkills.classList.remove('hidden');
+        panelSkills.classList.add('block');
+        panelTools.classList.remove('block');
+        panelTools.classList.add('hidden');
+      } else {
+        skillsBtn.setAttribute('aria-selected', 'false');
+        toolsBtn.setAttribute('aria-selected', 'true');
+        panelSkills.classList.remove('block');
+        panelSkills.classList.add('hidden');
+        panelTools.classList.remove('hidden');
+        panelTools.classList.add('block');
+      }
+    }
+  </script>
+</body></html>

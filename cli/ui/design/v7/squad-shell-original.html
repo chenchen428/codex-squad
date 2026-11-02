@@ -1,0 +1,984 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex 小队 · 统一导航与加载外壳规范 (squad-shell)</title>
+<!-- Google Fonts: Space Grotesk, Space Mono, Noto Serif SC -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<!-- Tailwind Play CDN for immediate layout support -->
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+/* ==========================================================================
+   squad-shell · 纯净统一样式表 (Warm Editorial Craft v1.0)
+   严格执行：640px 原生面板、480px 自适应、无全局外大框、无侧栏
+   ========================================================================== */
+:root {
+  /* Warm Editorial 配色变量 */
+  --squad-bg: #fffcf7;
+  --squad-bg-alt: #fbf7ee;
+  --squad-surface: #ffffff;
+  --squad-surface-card: #fdfbf7;
+  --squad-text-main: #2c2621;
+  --squad-text-muted: #6b645b;
+  --squad-text-dim: #9c9489;
+  --squad-terracotta: #b84b2e;
+  --squad-terracotta-bg: #faeee9;
+  --squad-border: #e8e1d5;
+  --squad-border-subtle: #f0eade;
+  --squad-border-dark: #cfc6b6;
+  --squad-green: #2a8356;
+  --squad-green-bg: #eaf5ee;
+  --squad-blue: #2762a4;
+  --squad-blue-bg: #edf3fa;
+  --squad-warn: #c2691b;
+  --squad-warn-bg: #fdf3e9;
+  --squad-error: #c93b2b;
+  --squad-error-bg: #faebea;
+
+  /* 尺度与间距基准 */
+  --squad-header-h: 38px;
+  --squad-nav-h: 46px;
+  --squad-gutter: 20px;
+  --squad-font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+  --squad-font-serif: 'Noto Serif SC', serif;
+  --squad-font-mono: 'Space Mono', monospace;
+}
+
+/* 基础重置与排版 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3efe6; /* 预览外衬背景，实际导出面板为 .squad-shell-root */
+  color: var(--squad-text-main);
+  font-family: var(--squad-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 核心容器：原生 640px 宽度，居中平铺，480px 自适应，无侧边框 */
+.squad-shell-root {
+  width: 100%;
+  max-width: 640px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: var(--squad-bg);
+  position: relative;
+  overflow-x: hidden;
+  border-left: 1px dashed rgba(207, 198, 182, 0.4); /* 仅在设计演示时作参考对齐线 */
+  border-right: 1px dashed rgba(207, 198, 182, 0.4);
+}
+
+/* 1. 顶部细进度加载条（网络请求时滑出） */
+.squad-progress-rail {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  z-index: 100;
+  pointer-events: none;
+}
+.squad-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--squad-terracotta);
+  transition: width 0.25s ease;
+}
+.squad-progress-bar.active {
+  width: 65%;
+  animation: squad-pulse-load 1.4s ease-in-out infinite;
+}
+@keyframes squad-pulse-load {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { width: 75%; }
+  100% { transform: translateX(200%); width: 30%; }
+}
+
+/* 2. 统一顶部上下文行 (Context Meta Bar) - 高度严格 38px */
+.squad-meta-bar {
+  height: var(--squad-header-h);
+  padding: 0 var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--squad-border-subtle);
+  background: var(--squad-bg);
+  font-size: 11px;
+  color: var(--squad-text-muted);
+  user-select: none;
+}
+.squad-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.squad-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  background: var(--squad-bg-alt);
+  border: 1px solid var(--squad-border);
+  border-radius: 2px;
+  font-family: var(--squad-font-mono);
+  font-size: 10.5px;
+  color: var(--squad-text-main);
+  letter-spacing: 0.02em;
+}
+.squad-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.squad-sync-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--squad-font-mono);
+  font-size: 11px;
+  color: var(--squad-text-muted);
+}
+.squad-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--squad-green);
+  box-shadow: 0 0 0 2px var(--squad-green-bg);
+}
+.squad-pulse-dot.syncing {
+  background-color: var(--squad-terracotta);
+  box-shadow: 0 0 0 2px var(--squad-terracotta-bg);
+  animation: squad-pulse-dot 1s infinite;
+}
+@keyframes squad-pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* 3. 统一全局主导航 (Main Nav) - 高度 46px */
+.squad-main-nav {
+  height: var(--squad-nav-h);
+  padding: 0 var(--squad-gutter);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--squad-border);
+  background: var(--squad-bg);
+  position: sticky;
+  top: 2px;
+  z-index: 50;
+}
+.squad-nav-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  height: 100%;
+}
+.squad-nav-tab {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--squad-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  position: relative;
+  top: 1px; /* 对齐底部分割线 */
+}
+.squad-nav-tab:hover {
+  color: var(--squad-text-main);
+}
+.squad-nav-tab.active {
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  border-bottom-color: var(--squad-terracotta);
+}
+.squad-nav-tab .squad-tab-count {
+  font-family: var(--squad-font-mono);
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: var(--squad-bg-alt);
+  color: var(--squad-text-muted);
+}
+.squad-nav-tab.active .squad-tab-count {
+  background: var(--squad-terracotta-bg);
+  color: var(--squad-terracotta);
+}
+
+.squad-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.squad-btn-refresh {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--squad-border);
+  border-radius: 4px;
+  color: var(--squad-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.squad-btn-refresh:hover {
+  color: var(--squad-text-main);
+  background: var(--squad-bg-alt);
+  border-color: var(--squad-border-dark);
+}
+.squad-btn-refresh.spinning svg {
+  animation: squad-spin 0.8s linear infinite;
+}
+
+@keyframes squad-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 4. 二级统一控制栏：分析页 Segmented Control 与时间切片 */
+.squad-sub-bar {
+  padding: 12px var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--squad-bg);
+  border-bottom: 1px solid var(--squad-border-subtle);
+  flex-wrap: wrap;
+}
+/* 统一双段胶囊切换 */
+.squad-segment-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--squad-bg-alt);
+  border: 1px solid var(--squad-border);
+  border-radius: 4px;
+  padding: 2px;
+}
+.squad-segment-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--squad-text-muted);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.squad-segment-btn.active {
+  background: var(--squad-surface);
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(44, 38, 33, 0.08);
+}
+/* 范围切换（近7天 / 近30天 / 全部） */
+.squad-range-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+}
+.squad-range-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-family: var(--squad-font-sans);
+  color: var(--squad-text-muted);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.squad-range-btn:hover {
+  color: var(--squad-text-main);
+}
+.squad-range-btn.active {
+  background: var(--squad-terracotta-bg);
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  border-color: rgba(184, 75, 46, 0.2);
+}
+
+/* 5. 统一面包屑导航栏 (用于子任务详情、账簿页返回) */
+.squad-breadcrumb-bar {
+  padding: 10px var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--squad-bg);
+  border-bottom: 1px solid var(--squad-border-subtle);
+  font-size: 12px;
+}
+.squad-breadcrumb-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--squad-text-muted);
+}
+.squad-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--squad-terracotta);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.squad-back-link:hover {
+  background: var(--squad-terracotta-bg);
+}
+.squad-breadcrumb-separator {
+  color: var(--squad-text-dim);
+}
+.squad-breadcrumb-current {
+  color: var(--squad-text-main);
+  font-weight: 500;
+}
+
+/* 6. 统一加载反馈态 (Loading States) */
+/* (A) 全局/局部卡片加载微提示 (保持旧内容，不遮挡) */
+.squad-loading-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--squad-gutter);
+  background: var(--squad-terracotta-bg);
+  border-bottom: 1px solid rgba(184, 75, 46, 0.2);
+  font-size: 11.5px;
+  color: var(--squad-terracotta);
+}
+.squad-loading-banner-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.squad-spinner {
+  width: 13px;
+  height: 13px;
+  border: 1.75px solid rgba(184, 75, 46, 0.3);
+  border-top-color: var(--squad-terracotta);
+  border-radius: 50%;
+  animation: squad-spin 0.7s linear infinite;
+}
+
+/* (B) 详情执行中对话末尾流光与细微虚线旋转圆 (无需大卡片) */
+.squad-subtask-steamer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  margin: 12px 0;
+  background: var(--squad-bg-alt);
+  border: 1px dashed var(--squad-border-dark);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--squad-text-muted);
+}
+.squad-spinner-dashed {
+  width: 14px;
+  height: 14px;
+  border: 1.5px dashed var(--squad-terracotta);
+  border-radius: 50%;
+  animation: squad-spin 2s linear infinite;
+}
+.squad-streaming-text {
+  background: linear-gradient(90deg, var(--squad-text-main) 0%, var(--squad-terracotta) 50%, var(--squad-text-main) 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: squad-shimmer 2.2s linear infinite;
+  font-weight: 500;
+}
+@keyframes squad-shimmer {
+  to { background-position: 200% center; }
+}
+
+/* (C) 错误重试浮条 */
+.squad-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--squad-gutter);
+  background: var(--squad-error-bg);
+  border-bottom: 1px solid rgba(201, 59, 43, 0.25);
+  font-size: 12px;
+  color: var(--squad-error);
+}
+.squad-btn-retry {
+  border: 1px solid var(--squad-error);
+  background: #fff;
+  color: var(--squad-error);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.squad-btn-retry:hover {
+  background: var(--squad-error);
+  color: #fff;
+}
+
+/* 7. 面板内容区统一样式基准 */
+.squad-content-body {
+  padding: 16px var(--squad-gutter) 40px var(--squad-gutter);
+}
+
+/* 演示切换控制（仅设计工作台演示用，不污染核心样式） */
+.demo-control-bar {
+  max-width: 640px;
+  margin: 16px auto 10px auto;
+  padding: 8px 12px;
+  background: #2c2621;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.demo-btn-pill {
+  background: #443c35;
+  color: #fff;
+  border: 1px solid #5a5148;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.demo-btn-pill.active {
+  background: var(--squad-terracotta);
+  border-color: var(--squad-terracotta);
+}
+
+/* 响应式断点适配 480px 窄视口 */
+@media (max-width: 520px) {
+  :root {
+    --squad-gutter: 14px;
+  }
+  .squad-sub-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .squad-range-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- 开发者与评审交互体验控制栏 (仅用于即时切换 4 种界面状态验证) -->
+<div class="demo-control-bar">
+  <div class="flex items-center gap-2">
+    <span class="font-bold text-amber-200">SQUAD-SHELL 交互切片测试器:</span>
+    <span class="text-xs text-stone-300">点击切换真实页面骨架</span>
+  </div>
+  <div class="flex items-center gap-1.5 flex-wrap">
+    <button class="demo-btn-pill active" onclick="switchView('board')">1. 看板页外壳</button>
+    <button class="demo-btn-pill" onclick="switchView('analytics-current')">2. 分析(当前会话)</button>
+    <button class="demo-btn-pill" onclick="switchView('analytics-all')">3. 分析(整体)</button>
+    <button class="demo-btn-pill" onclick="switchView('subtask-detail')">4. 子任务详情</button>
+    <button class="demo-btn-pill" onclick="toggleLoadingState()">⚡ 切换加载/执行态</button>
+    <button class="demo-btn-pill" onclick="toggleErrorState()">⚠️ 切换错误重试</button>
+  </div>
+</div>
+
+<!-- ==========================================================================
+     可直接导出的统一外壳容器 (原生 640px / 适配 480px)
+     ========================================================================== -->
+<div class="squad-shell-root" id="squadShellRoot">
+
+  <!-- A. 顶部细进度指示 (加载时激活) -->
+  <div class="squad-progress-rail">
+    <div class="squad-progress-bar" id="squadProgressBar"></div>
+  </div>
+
+  <!-- B. 统一顶部上下文元信息行 (38px 恒定高度) -->
+  <header class="squad-meta-bar">
+    <div class="squad-meta-left">
+      <span class="squad-meta-badge" id="squadContextBadge">Codex 小队</span>
+      <span class="text-stone-400">/</span>
+      <span class="font-medium text-stone-700" id="squadSessionTitle">codex-squad · 修复报表筛选异常</span>
+    </div>
+    <div class="squad-meta-right">
+      <div class="squad-sync-indicator">
+        <span class="squad-pulse-dot" id="squadPulseDot"></span>
+        <span id="squadSyncText">3秒自动同步</span>
+      </div>
+      <span class="squad-meta-badge bg-white text-stone-500">只读演示</span>
+    </div>
+  </header>
+
+  <!-- C. 统一加载提示条 (非阻塞保留旧内容) -->
+  <div class="squad-loading-banner" id="squadLoadingBanner" style="display: none;">
+    <div class="squad-loading-banner-inner">
+      <div class="squad-spinner"></div>
+      <span id="squadLoadingLabel">正在从本机守护进程同步执行增量数据…</span>
+    </div>
+    <span class="text-[10.5px] opacity-75 font-mono">14:38:02 LIVE</span>
+  </div>
+
+  <!-- D. 错误重试状态条 (网络/本地 IPC 异常) -->
+  <div class="squad-error-banner" id="squadErrorBanner" style="display: none;">
+    <div class="flex items-center gap-2">
+      <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+      <span>无法获取本机 Qoder 增量数据 (超时)</span>
+    </div>
+    <button class="squad-btn-retry" onclick="retrySync()">重试同步</button>
+  </div>
+
+  <!-- E. 统一全局主导航 (46px 高度，小队任务看板 / 分析，陶土色底线) -->
+  <nav class="squad-main-nav">
+    <div class="squad-nav-tabs">
+      <a class="squad-nav-tab active" id="navTabBoard" onclick="switchView('board')">
+        <span>小队任务看板</span>
+        <span class="squad-tab-count">16</span>
+      </a>
+      <a class="squad-nav-tab" id="navTabAnalytics" onclick="switchView('analytics-current')">
+        <span>分析</span>
+        <span class="squad-tab-count">28.0m</span>
+      </a>
+    </div>
+
+    <div class="squad-nav-actions">
+      <!-- 汇总状态指示 -->
+      <div class="hidden sm:flex items-center gap-2 text-[11px] text-stone-500 font-mono">
+        <span>运行 <b class="text-emerald-700 font-semibold">3</b></span>
+        <span>待验收 <b class="text-amber-700 font-semibold">4</b></span>
+      </div>
+      <!-- 刷新按钮 -->
+      <button class="squad-btn-refresh" id="squadRefreshBtn" title="立刻刷新数据" onclick="triggerManualRefresh()">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- F. 二级插槽：分析页专用 Segmented Control & 时间筛选 (仅在分析视图激活) -->
+  <div class="squad-sub-bar" id="analyticsSubBar" style="display: none;">
+    <!-- 双段范围切换 -->
+    <div class="squad-segment-group">
+      <button class="squad-segment-btn active" id="segCurrentSession" onclick="switchAnalyticsScope('current')">当前会话</button>
+      <button class="squad-segment-btn" id="segAllAggregate" onclick="switchAnalyticsScope('all')">
+        <span>整体</span>
+        <span class="text-[9.5px] px-1 py-0.5 rounded bg-stone-200/60 text-stone-600 font-mono">12</span>
+      </button>
+    </div>
+
+    <!-- 时间粒度切换与口径信息 -->
+    <div class="flex items-center gap-3">
+      <div class="squad-range-group">
+        <button class="squad-range-btn" onclick="setRange(this)">近7天</button>
+        <button class="squad-range-btn" onclick="setRange(this)">近30天</button>
+        <button class="squad-range-btn active" onclick="setRange(this)">全部</button>
+      </div>
+      <span class="text-[10px] text-stone-400 font-mono hidden sm:inline" id="cutoffTimeLabel">截至 14:38</span>
+    </div>
+  </div>
+
+  <!-- G. 二级插槽：详情页专属 Breadcrumb 导航 (沿看板分支，返回看板与总览) -->
+  <div class="squad-breadcrumb-bar" id="subtaskBreadcrumbBar" style="display: none;">
+    <div class="squad-breadcrumb-left">
+      <a class="squad-back-link" onclick="switchView('board')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        <span>返回看板</span>
+      </a>
+      <span class="squad-breadcrumb-separator">/</span>
+      <span class="text-stone-500">子任务 #02</span>
+      <span class="squad-breadcrumb-separator">·</span>
+      <span class="squad-breadcrumb-current truncate max-w-[200px]">保留报错前的输入</span>
+    </div>
+    <div class="flex items-center gap-2 font-mono text-[11px] text-stone-500">
+      <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200/50">Qoder</span>
+      <span>30.8k tok</span>
+    </div>
+  </div>
+
+  <!-- ==========================================================================
+       H. 业务内容装配区 (示范统一规范下的 4 种原汁原味内容排版，统一字体、间距与背景)
+       ========================================================================== -->
+  <main class="squad-content-body" id="squadContentBody">
+
+    <!-- 1. 看板页视图模拟 -->
+    <div id="viewBoardContent">
+      <!-- 搜索与筛选小条 (Warm Editorial 标准) -->
+      <div class="flex items-center justify-between gap-3 mb-4">
+        <div class="relative flex-1">
+          <input type="text" placeholder="搜索任务标题、编号或命令..." class="w-full bg-white border border-[#e8e1d5] rounded px-3 py-1.5 text-xs text-stone-800 focus:outline-none focus:border-[#b84b2e] font-sans">
+        </div>
+        <div class="flex items-center gap-1.5 text-[11px] font-mono text-stone-500">
+          <span class="px-2 py-1 rounded bg-[#fbf7ee] border border-[#e8e1d5]">待执行 2</span>
+          <span class="px-2 py-1 rounded bg-[#eaf5ee] text-emerald-800 border border-emerald-200">处理中 3</span>
+          <span class="px-2 py-1 rounded bg-[#edf3fa] text-blue-800 border border-blue-200">已验收 5</span>
+        </div>
+      </div>
+
+      <!-- 泳道卡片示意 (真实保留原有业务层，绝不假造乱改) -->
+      <div class="space-y-3">
+        <div class="bg-white border border-[#e8e1d5] rounded p-3.5 shadow-sm hover:border-stone-400 transition-colors">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-mono text-[#b84b2e] font-semibold">#01 修复清空后的页码</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-emerald-100 text-emerald-800 font-mono">已完成</span>
+          </div>
+          <p class="text-xs text-stone-600 mb-2 font-serif">清空筛选后会回到第一页，已通过单测自检与断言。</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-stone-400 pt-2 border-t border-stone-100">
+            <span>执行人: Qoder</span>
+            <span>12.4k tok · 耗时 01:20</span>
+          </div>
+        </div>
+
+        <div class="bg-white border-2 border-[#b84b2e]/60 rounded p-3.5 shadow-sm relative cursor-pointer" onclick="switchView('subtask-detail')">
+          <div class="absolute -top-2.5 right-3 bg-[#b84b2e] text-white text-[9.5px] px-1.5 py-0.5 rounded font-mono">点击查看详情</div>
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-mono text-[#b84b2e] font-bold">#02 保留报错前的输入</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-blue-100 text-blue-800 font-mono animate-pulse">● 处理中</span>
+          </div>
+          <p class="text-xs text-stone-800 font-medium mb-2 font-serif">正在检查失败后能否恢复草稿，避免 422 异常时清空表单。</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-stone-500 pt-2 border-t border-stone-100">
+            <span class="text-[#b84b2e] font-semibold">Qoder 正在执行</span>
+            <span>30.8k tok · 尝试 2</span>
+          </div>
+        </div>
+
+        <div class="bg-white border border-[#e8e1d5] rounded p-3.5 shadow-sm">
+          <div class="flex items-center justify-between text-xs mb-1.5">
+            <span class="font-mono text-stone-600">#03 检查筛选和报错分支</span>
+            <span class="px-1.5 py-0.5 rounded text-[10px] bg-amber-100 text-amber-800 font-mono">等待修改</span>
+          </div>
+          <p class="text-xs text-stone-600 mb-2 font-serif">等待子任务2完成后继续检查交接断点契约。</p>
+          <div class="flex items-center justify-between text-[11px] font-mono text-stone-400 pt-2 border-t border-stone-100">
+            <span>负责: Codex 哨兵</span>
+            <span>25.6k tok</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. 分析 (当前会话) 视图模拟 -->
+    <div id="viewAnalyticsCurrent" style="display: none;">
+      <!-- 洞察提示条 -->
+      <div class="bg-[#fdf3e9] border border-[#f0cbb0] rounded p-2.5 mb-4 flex items-center justify-between text-xs text-[#c2691b]">
+        <div class="flex items-center gap-2">
+          <span class="font-bold">高消耗集中：</span>
+          <span>公开对话回归占用当前 60.5% Token，可先缩减自检范围。</span>
+        </div>
+        <span class="underline cursor-pointer font-mono text-[11px]">查看详情</span>
+      </div>
+
+      <!-- 核心 KPI 四格 (统一 Warm Editorial 规格) -->
+      <div class="grid grid-cols-2 gap-2.5 mb-4">
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">成员已报 Token</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">834.2<span class="text-xs font-normal text-stone-500 ml-0.5">k</span></div>
+          <div class="text-[10.5px] text-stone-400 font-mono mt-1">输入 821.3k · 输出 12.9k</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">已验收任务</div>
+          <div class="text-2xl font-bold text-emerald-800 font-mono tracking-tight">1 <span class="text-xs font-normal text-stone-400">/ 2</span></div>
+          <div class="text-[10.5px] text-stone-400 font-mono mt-1">50% 完成 · 1 个待交接</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">续接次数</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">4<span class="text-xs font-normal text-stone-500 ml-0.5">次</span></div>
+          <div class="text-[10.5px] text-stone-400 font-mono mt-1">标准上下文推进</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">失败尝试</div>
+          <div class="text-2xl font-bold text-[#c93b2b] font-mono tracking-tight">1<span class="text-xs font-normal text-stone-500 ml-0.5">次</span></div>
+          <div class="text-[10.5px] text-[#c93b2b]/80 font-mono mt-1">422 参数校验异常</div>
+        </div>
+      </div>
+
+      <!-- 任务投入与进展条 -->
+      <div class="bg-white border border-[#e8e1d5] rounded p-3.5 mb-3">
+        <div class="text-xs font-semibold text-stone-800 mb-2">[ 投入与进展 · INVESTMENTS ]</div>
+        <div class="space-y-2 text-xs">
+          <div>
+            <div class="flex justify-between font-mono text-[11px] text-stone-600 mb-1">
+              <span>#01 修复报表筛选多维联动异常</span>
+              <span class="text-[#b84b2e] font-semibold">504.8k (60.5%)</span>
+            </div>
+            <div class="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+              <div class="h-full bg-[#b84b2e] w-[60.5%]"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between font-mono text-[11px] text-stone-600 mb-1">
+              <span>#02 补充空状态与边界自检用例</span>
+              <span class="text-stone-600">329.4k (39.5%)</span>
+            </div>
+            <div class="w-full h-1.5 bg-stone-100 rounded-full overflow-hidden">
+              <div class="h-full bg-stone-400 w-[39.5%]"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. 分析 (整体 Aggregate) 视图模拟 -->
+    <div id="viewAnalyticsAll" style="display: none;">
+      <!-- 整体口径说明标签 -->
+      <div class="flex items-center justify-between text-xs text-stone-600 mb-3 pb-2 border-b border-stone-200 font-mono">
+        <span>统计范围：本机绑定的全部 12 个小队会话</span>
+        <span class="text-emerald-700 font-semibold">已报 16/22 尝试</span>
+      </div>
+
+      <!-- 4 个 Aggregate KPI -->
+      <div class="grid grid-cols-2 gap-2.5 mb-4">
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">已报总 Token</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">28.0<span class="text-xs font-normal text-stone-500 ml-0.5">m</span></div>
+          <div class="text-[10.5px] text-stone-400 font-mono mt-1">缓存命中率 72.4%</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">绑定会话总数</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">12<span class="text-xs font-normal text-stone-500 ml-0.5">个</span></div>
+          <div class="text-[10.5px] text-stone-400 font-mono mt-1">活跃 3 · 归档 9</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">子任务总况</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">45<span class="text-xs font-normal text-stone-500 ml-0.5">个</span></div>
+          <div class="text-[10.5px] text-emerald-800 font-mono mt-1">已验收 18 · 进行中 14</div>
+        </div>
+        <div class="bg-white border border-[#e8e1d5] rounded p-3">
+          <div class="text-[11px] text-stone-500 font-mono mb-1">执行尝试总计</div>
+          <div class="text-2xl font-bold text-stone-900 font-mono tracking-tight">79<span class="text-xs font-normal text-stone-500 ml-0.5">次</span></div>
+          <div class="text-[10.5px] text-[#c93b2b] font-mono mt-1">续接 34 · 失败 5</div>
+        </div>
+      </div>
+
+      <!-- 会话排行简化列表 -->
+      <div class="bg-white border border-[#e8e1d5] rounded p-3.5">
+        <div class="flex items-center justify-between text-xs font-semibold text-stone-800 mb-2">
+          <span>[ 会话排行 · SESSIONS ]</span>
+          <span class="font-mono text-[10.5px] text-stone-400">仅按已报 Token 排序</span>
+        </div>
+        <div class="divide-y divide-stone-100 text-xs">
+          <div class="py-2 flex items-center justify-between bg-[#faeee9]/50 -mx-2 px-2 rounded">
+            <div>
+              <span class="font-medium text-stone-900">修复报表筛选异常</span>
+              <span class="ml-1 text-[9.5px] px-1 bg-[#b84b2e] text-white rounded font-mono">当前</span>
+            </div>
+            <span class="font-mono text-[#b84b2e] font-semibold">6.4m</span>
+          </div>
+          <div class="py-2 flex items-center justify-between">
+            <span class="text-stone-700">统一CLI模块构建</span>
+            <span class="font-mono text-stone-600">5.2m</span>
+          </div>
+          <div class="py-2 flex items-center justify-between">
+            <span class="text-stone-700">Markdown长代码渲染自检</span>
+            <span class="font-mono text-stone-600">4.1m</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. 子任务详情 (带流光状态与思考折叠) 视图模拟 -->
+    <div id="viewSubtaskDetail" style="display: none;">
+      <!-- 任务元信息卡 -->
+      <div class="bg-white border border-[#e8e1d5] rounded p-4 mb-4 shadow-sm">
+        <div class="flex items-center justify-between mb-2">
+          <h2 class="text-base font-bold text-stone-900 font-serif">保留报错前的输入</h2>
+          <span class="px-2 py-0.5 text-xs font-mono rounded bg-blue-50 text-blue-800 border border-blue-200">处理中</span>
+        </div>
+        <p class="text-xs text-stone-600 mb-3 leading-relaxed">任务要求：请求失败时保留用户已填写的内容，并给出失败提示。不要直接清空输入表单。</p>
+        <div class="flex items-center gap-4 text-xs font-mono text-stone-500 pt-2 border-t border-stone-100">
+          <span>执行者: <b>Qoder</b></span>
+          <span>用量: <b>30.8k Token</b></span>
+          <span>轮次: <b>第 2 轮推进</b></span>
+        </div>
+      </div>
+
+      <!-- 连续对话流正文 -->
+      <div class="space-y-3">
+        <!-- 较早轮次思考折叠 (原生 details/summary) -->
+        <details class="bg-[#fbf7ee] border border-[#e8e1d5] rounded p-2.5 text-xs">
+          <summary class="font-medium text-stone-700 cursor-pointer select-none font-mono flex items-center justify-between">
+            <span>↳ 思考摘要：先确认草稿在请求前后的变化 (已收起)</span>
+            <span class="text-[10px] text-stone-400">展开 2 句概述</span>
+          </summary>
+          <div class="mt-2 text-stone-600 pt-2 border-t border-stone-200/60 leading-relaxed font-serif">
+            已排查当前表单提交链路，确认在捕获到 422 接口异常时触发了 clearState()。下一步将把重置移至 resolve 内部。
+          </div>
+        </details>
+
+        <!-- Qoder 回复正文 -->
+        <div class="bg-white border border-[#e8e1d5] rounded p-3 text-xs leading-relaxed">
+          <div class="flex items-center justify-between text-[11px] font-mono text-stone-400 mb-1.5">
+            <span class="font-bold text-stone-800">Qoder 回复</span>
+            <span>14:08</span>
+          </div>
+          <p class="text-stone-800 font-serif">目前请求发出后就会清空输入。我会把清空放到成功之后，失败时保留草稿并抛出错误事件。</p>
+        </div>
+
+        <!-- 主会话指引 -->
+        <div class="bg-[#fbf7ee] border-l-2 border-[#b84b2e] p-2.5 text-xs text-stone-700">
+          <span class="font-bold text-[#b84b2e] font-mono mr-1">[主会话要求]</span>
+          <span>失败时提示“请求失败，请重试”，输入框内容务必保持原样。</span>
+        </div>
+
+        <!-- 关键核心要求：详情在执行时，末尾细小虚线旋转圆 + 流光文字（绝不要大卡片！） -->
+        <div class="squad-subtask-steamer" id="squadDetailSteamer">
+          <div class="squad-spinner-dashed"></div>
+          <span class="squad-streaming-text">Qoder 正在补齐自检用例与状态分支拦截… (执行第 2 轮)</span>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- 底部固定只读标记与口径声明 (32px 高度，整洁收尾) -->
+  <footer class="px-5 py-3 border-t border-[#f0eade] bg-[#fffcf7] text-[10.5px] font-mono text-stone-400 flex items-center justify-between">
+    <span>Codex Squad · 本机工作环境分析与编排</span>
+    <span>v1.0.4-unified-shell</span>
+  </footer>
+
+</div>
+
+<!-- 交互脚本与视图切换控制器 -->
+<script>
+// 视图切换逻辑
+function switchView(viewName) {
+  // 重置主导航 Tab
+  const navTabBoard = document.getElementById('navTabBoard');
+  const navTabAnalytics = document.getElementById('navTabAnalytics');
+  const analyticsSubBar = document.getElementById('analyticsSubBar');
+  const subtaskBreadcrumbBar = document.getElementById('subtaskBreadcrumbBar');
+
+  // 内容板块
+  const viewBoardContent = document.getElementById('viewBoardContent');
+  const viewAnalyticsCurrent = document.getElementById('viewAnalyticsCurrent');
+  const viewAnalyticsAll = document.getElementById('viewAnalyticsAll');
+  const viewSubtaskDetail = document.getElementById('viewSubtaskDetail');
+
+  // 控制台高亮
+  document.querySelectorAll('.demo-btn-pill').forEach(btn => btn.classList.remove('active'));
+
+  // 隐藏所有内容与二级栏
+  viewBoardContent.style.display = 'none';
+  viewAnalyticsCurrent.style.display = 'none';
+  viewAnalyticsAll.style.display = 'none';
+  viewSubtaskDetail.style.display = 'none';
+  analyticsSubBar.style.display = 'none';
+  subtaskBreadcrumbBar.style.display = 'none';
+
+  if (viewName === 'board') {
+    navTabBoard.classList.add('active');
+    navTabAnalytics.classList.remove('active');
+    viewBoardContent.style.display = 'block';
+  } else if (viewName === 'analytics-current') {
+    navTabBoard.classList.remove('active');
+    navTabAnalytics.classList.add('active');
+    analyticsSubBar.style.display = 'flex';
+    viewAnalyticsCurrent.style.display = 'block';
+    document.getElementById('segCurrentSession').classList.add('active');
+    document.getElementById('segAllAggregate').classList.remove('active');
+  } else if (viewName === 'analytics-all') {
+    navTabBoard.classList.remove('active');
+    navTabAnalytics.classList.add('active');
+    analyticsSubBar.style.display = 'flex';
+    viewAnalyticsAll.style.display = 'block';
+    document.getElementById('segCurrentSession').classList.remove('active');
+    document.getElementById('segAllAggregate').classList.add('active');
+  } else if (viewName === 'subtask-detail') {
+    navTabBoard.classList.add('active'); // 详情沿看板分支
+    navTabAnalytics.classList.remove('active');
+    subtaskBreadcrumbBar.style.display = 'flex';
+    viewSubtaskDetail.style.display = 'block';
+  }
+}
+
+// 分析页二级 Segment 切换
+function switchAnalyticsScope(scope) {
+  if (scope === 'current') {
+    switchView('analytics-current');
+  } else {
+    switchView('analytics-all');
+  }
+}
+
+// 时间范围点击切换
+function setRange(btn) {
+  document.querySelectorAll('.squad-range-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+}
+
+// 模拟加载态切换
+let isLoading = false;
+function toggleLoadingState() {
+  isLoading = !isLoading;
+  const bar = document.getElementById('squadProgressBar');
+  const banner = document.getElementById('squadLoadingBanner');
+  const dot = document.getElementById('squadPulseDot');
+  const syncText = document.getElementById('squadSyncText');
+  const refreshBtn = document.getElementById('squadRefreshBtn');
+
+  if (isLoading) {
+    bar.classList.add('active');
+    banner.style.display = 'flex';
+    dot.classList.add('syncing');
+    syncText.innerText = '同步中…';
+    refreshBtn.classList.add('spinning');
+  } else {
+    bar.classList.remove('active');
+    banner.style.display = 'none';
+    dot.classList.remove('syncing');
+    syncText.innerText = '3秒自动同步';
+    refreshBtn.classList.remove('spinning');
+  }
+}
+
+// 手动触发刷新模拟
+function triggerManualRefresh() {
+  toggleLoadingState();
+  setTimeout(() => {
+    if (isLoading) toggleLoadingState();
+  }, 1200);
+}
+
+// 模拟错误重试态
+let hasError = false;
+function toggleErrorState() {
+  hasError = !hasError;
+  const errBanner = document.getElementById('squadErrorBanner');
+  errBanner.style.display = hasError ? 'flex' : 'none';
+}
+
+function retrySync() {
+  const errBanner = document.getElementById('squadErrorBanner');
+  errBanner.style.display = 'none';
+  hasError = false;
+  triggerManualRefresh();
+}
+</script>
+
+</body>
+</html>
+

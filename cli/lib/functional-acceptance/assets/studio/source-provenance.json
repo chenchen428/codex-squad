@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "viewerId": "studio",
+  "provider": "stitch",
+  "projectId": "10475661171135559703",
+  "baseScreenId": "a498f41032d841dcaaf7ed6afab2ac1b",
+  "componentsScreenId": "8193e5205d6a4f5ebb48250c81889e91",
+  "componentsHtmlSha256": "9eb9a706358655f1fb3a6489941c85d391b9e8b7f1f563cde8690561c425f359",
+  "lightboxScreenId": "4cb4e2231dce44728a8c8e600a4cf25c",
+  "lightboxHtmlSha256": "fdde39f0fa3cd18cdd135af1dcde6ad55a1058036bb95503cd39c9b1406a862b",
+  "scope": "保留固定视口三栏与浅色主题；移植分组选择、关注格说明、行详情、参数入口、用例设计依据和统一图片灯箱；示例数据不进入模板",
+  "dataEntry": "acceptance-data",
+  "externalResources": false,
+  "containsBusinessEvidence": false
+}

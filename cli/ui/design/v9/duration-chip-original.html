@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Codex 小队 · 耗时徽标组件规范标本 (Time Chip Specimen)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Noto+Serif+SC:wght@500;600&family=Space+Grotesk:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ==========================================================================
+   Codex 小队 · 耗时徽标组件规范 (Warm Editorial Craft)
+   独立物化样式表：可直接移植至看板与任务卡片系统
+   ========================================================================== */
+
+:root {
+  --specimen-bg: #fff8f1;
+  --specimen-paper: #fbf9f4;
+  --specimen-ink: #2c2621;
+  --specimen-ink-secondary: #6b645b;
+  --specimen-ink-muted: #8c8275;
+  --specimen-border: #ded5c4;
+  --specimen-border-subtle: #ebdcb5;
+  --specimen-rust: #b84b2e;
+
+  /* 5 档耗时配色变量 */
+  --chip-t1-bg: #edf7f0;
+  --chip-t1-border: #c2e5cf;
+  --chip-t1-text: #246d43;
+
+  --chip-t2-bg: #fcf6e8;
+  --chip-t2-border: #ebdcb5;
+  --chip-t2-text: #8a651a;
+
+  --chip-t3-bg: #fdf1e8;
+  --chip-t3-border: #f3d4be;
+  --chip-t3-text: #a65825;
+
+  --chip-t4-bg: #faece8;
+  --chip-t4-border: #f0c8bd;
+  --chip-t4-text: #b84b2e;
+
+  --chip-tn-bg: #f5f2eb;
+  --chip-tn-border: #ded7c6;
+  --chip-tn-text: #7d7568;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--specimen-bg);
+  color: var(--specimen-ink);
+  font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans SC', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  padding: 48px 24px;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+}
+
+.specimen-canvas {
+  width: 100%;
+  max-width: 680px;
+  margin: 0 auto;
+}
+
+/* 标本页眉 */
+.specimen-header {
+  border-bottom: 1px solid var(--specimen-border);
+  padding-bottom: 16px;
+  margin-bottom: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+
+.specimen-title-row {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+
+.specimen-title {
+  font-family: 'Noto Serif SC', serif;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--specimen-ink);
+}
+
+.specimen-tag {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--specimen-rust);
+  font-weight: 500;
+}
+
+.specimen-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  color: var(--specimen-ink-muted);
+}
+
+/* 区块与网格 */
+.specimen-section {
+  background: var(--specimen-paper);
+  border: 1px solid var(--specimen-border);
+  border-radius: 6px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.section-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--specimen-ink-muted);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.section-label::before {
+  content: "§";
+  color: var(--specimen-rust);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   [核心物化组件] .time-chip 及 5 档样式规则
+   ========================================================================== */
+
+.time-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  transition: opacity 0.15s ease;
+}
+
+.time-chip svg {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex: none;
+}
+
+/* 档位 1: < 10分钟 (浅森林绿) */
+.time-chip-tier1 {
+  background-color: var(--chip-t1-bg);
+  border-color: var(--chip-t1-border);
+  color: var(--chip-t1-text);
+}
+
+/* 档位 2: 10–30分钟 (浅古铜金) */
+.time-chip-tier2 {
+  background-color: var(--chip-t2-bg);
+  border-color: var(--chip-t2-border);
+  color: var(--chip-t2-text);
+}
+
+/* 档位 3: 30–60分钟 (浅暖赭) */
+.time-chip-tier3 {
+  background-color: var(--chip-t3-bg);
+  border-color: var(--chip-t3-border);
+  color: var(--chip-t3-text);
+}
+
+/* 档位 4: ≥ 60分钟 (浅陶土红) */
+.time-chip-tier4 {
+  background-color: var(--chip-t4-bg);
+  border-color: var(--chip-t4-border);
+  color: var(--chip-t4-text);
+}
+
+/* 档位 5: 未记录 (中性暖灰) */
+.time-chip-tier-none {
+  background-color: var(--chip-tn-bg);
+  border-color: var(--chip-tn-border);
+  color: var(--chip-tn-text);
+}
+
+/* 徽标矩阵排布展示 */
+.chips-matrix {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px 20px;
+}
+
+.chip-specimen-unit {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.specimen-caption {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  color: var(--specimen-ink-muted);
+}
+
+/* ==========================================================================
+   [验证容器] 240px 宽任务卡片底部行无重叠排布
+   ========================================================================== */
+
+.card-specimen-wrapper {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.task-card-specimen {
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid var(--specimen-border);
+  border-radius: 6px;
+  padding: 12px;
+  box-shadow: 0 1px 2px rgba(44, 38, 33, 0.03);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.task-card-mock-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px dashed #efe9dc;
+  padding-bottom: 6px;
+}
+
+.task-card-mock-id {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--specimen-rust);
+}
+
+.task-card-mock-status {
+  font-size: 10px;
+  color: #246d43;
+  background: #edf7f0;
+  padding: 1px 4px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+
+.task-card-mock-title {
+  font-size: 12px;
+  line-height: 16px;
+  font-weight: 500;
+  color: var(--specimen-ink);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* 240px 底部行契约 (Chip在左，Token在右，互不重叠) */
+.task-card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #f2ede2;
+  width: 100%;
+  min-width: 0;
+}
+
+.task-card-token-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 14px;
+  color: var(--specimen-ink-secondary);
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+}
+
+/* 契约代码盒展示 */
+.code-block {
+  background: #ffffff;
+  border: 1px solid var(--specimen-border);
+  border-radius: 4px;
+  padding: 14px 16px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 18px;
+  color: var(--specimen-ink-secondary);
+  overflow-x: auto;
+  white-space: pre;
+}
+
+.code-keyword { color: #b84b2e; }
+.code-prop { color: #246d43; }
+.code-val { color: #8a651a; }
+</style>
+</head>
+<body>
+
+<main class="specimen-canvas">
+
+  <!-- 规范页眉 -->
+  <header class="specimen-header">
+    <div class="specimen-title-row">
+      <h1 class="specimen-title">Codex 小队 · 耗时徽标组件规范标本</h1>
+      <span class="specimen-tag">time-chip-v1</span>
+    </div>
+    <div class="specimen-meta">Warm Editorial Craft · 独立物化</div>
+  </header>
+
+  <!-- § 01: 5 档真实着色紧凑 Chip 示例 -->
+  <section class="specimen-section">
+    <div class="section-label">01 真实着色 5 档徽标示例 (Inline-Flex Tabular)</div>
+    
+    <div class="chips-matrix">
+      <!-- 档位 1: < 10分钟 -->
+      <div class="chip-specimen-unit">
+        <span class="specimen-caption">&lt; 10m (Tier 1)</span>
+        <span class="time-chip time-chip-tier1" title="执行耗时：< 10分钟区间" aria-label="执行耗时 08分15秒，小于10分钟">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          08:15
+        </span>
+      </div>
+
+      <!-- 档位 2: 10–30分钟 -->
+      <div class="chip-specimen-unit">
+        <span class="specimen-caption">10–30m (Tier 2)</span>
+        <span class="time-chip time-chip-tier2" title="执行耗时：10–30分钟区间" aria-label="执行耗时 21分40秒，10至30分钟">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          21:40
+        </span>
+      </div>
+
+      <!-- 档位 3: 30–60分钟 -->
+      <div class="chip-specimen-unit">
+        <span class="specimen-caption">30–60m (Tier 3)</span>
+        <span class="time-chip time-chip-tier3" title="执行耗时：30–60分钟区间" aria-label="执行耗时 44分12秒，30至60分钟">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          44:12
+        </span>
+      </div>
+
+      <!-- 档位 4: ≥ 60分钟 -->
+      <div class="chip-specimen-unit">
+        <span class="specimen-caption">≥ 60m (Tier 4)</span>
+        <span class="time-chip time-chip-tier4" title="执行耗时：≥ 60分钟区间" aria-label="执行耗时 2小时15分30秒，大于等于60分钟">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <polyline points="12 6 12 12 16 14"></polyline>
+          </svg>
+          2:15:30
+        </span>
+      </div>
+
+      <!-- 档位 5: 未记录 -->
+      <div class="chip-specimen-unit">
+        <span class="specimen-caption">未记录 (None)</span>
+        <span class="time-chip time-chip-tier-none" title="执行耗时：未记录" aria-label="执行耗时未记录">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+          </svg>
+          未记录
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <!-- § 02: 240px 宽任务卡底部行真实容纳验证 -->
+  <section class="specimen-section">
+    <div class="section-label">02 240px 宽任务卡底部行容纳验证 (极限长值无重叠)</div>
+
+    <div class="card-specimen-wrapper">
+      
+      <!-- 样本 A：极限长值验证 (2:35:50 耗时 + 114.62M tok，无长前缀挤占) -->
+      <article class="task-card-specimen" aria-label="240px 极限长值容纳测试卡片">
+        <div class="task-card-mock-header">
+          <span class="task-card-mock-id">#05 · 运行中</span>
+          <span class="task-card-mock-status">尝试 2</span>
+        </div>
+        <div class="task-card-mock-title">
+          原生会话后续验证与本地持久化缓存一致性回归测试
+        </div>
+        
+        <!-- 底部行：左侧 2:35:50 徽标，右侧 114.62M tok，自然平铺不重叠 -->
+        <div class="task-card-footer-row">
+          <span class="time-chip time-chip-tier4" title="执行耗时：≥ 60分钟区间 (累计执行 2:35:50)" aria-label="累计执行 2小时35分50秒">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            2:35:50
+          </span>
+          <span class="task-card-token-val" title="总计消耗 Token: 114.62M tok" aria-label="消耗 114.62M Token">
+            114.62M tok
+          </span>
+        </div>
+      </article>
+
+      <!-- 样本 B：典型中等耗时卡片对照 (21:40 耗时 + 14.2k tok) -->
+      <article class="task-card-specimen" aria-label="240px 典型耗时卡片">
+        <div class="task-card-mock-header">
+          <span class="task-card-mock-id">#01 · 进行中</span>
+          <span class="task-card-mock-status">尝试 1</span>
+        </div>
+        <div class="task-card-mock-title">
+          核对需求差异并收敛参数边界与 AST 校验
+        </div>
+        
+        <div class="task-card-footer-row">
+          <span class="time-chip time-chip-tier2" title="执行耗时：10–30分钟区间" aria-label="执行耗时 21分40秒">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <circle cx="12" cy="12" r="10"></circle>
+              <polyline points="12 6 12 12 16 14"></polyline>
+            </svg>
+            21:40
+          </span>
+          <span class="task-card-token-val" title="总计消耗 Token: 14.2k tok" aria-label="消耗 14.2k Token">
+            14.2k tok
+          </span>
+        </div>
+      </article>
+
+    </div>
+  </section>
+
+  <!-- § 03: 移植 CSS 代码契约备忘 -->
+  <section class="specimen-section">
+    <div class="section-label">03 导出 CSS 代码契约 (直接复制复用)</div>
+    <pre class="code-block"><span class="code-keyword">.time-chip</span> { <span class="code-prop">display</span>: inline-flex; <span class="code-prop">align-items</span>: center; <span class="code-prop">gap</span>: 4px; <span class="code-prop">padding</span>: 2px 5px; <span class="code-prop">border</span>: 1px solid; <span class="code-prop">border-radius</span>: 4px; <span class="code-prop">font-size</span>: 10px; <span class="code-prop">line-height</span>: 14px; <span class="code-prop">white-space</span>: nowrap; <span class="code-prop">flex-shrink</span>: 0; <span class="code-prop">font-variant-numeric</span>: tabular-nums; }
+<span class="code-keyword">.time-chip svg</span> { <span class="code-prop">display</span>: block; <span class="code-prop">width</span>: 10px; <span class="code-prop">height</span>: 10px; <span class="code-prop">flex</span>: none; }
+<span class="code-keyword">.time-chip-tier1</span> { <span class="code-prop">background</span>: <span class="code-val">#edf7f0</span>; <span class="code-prop">border-color</span>: <span class="code-val">#c2e5cf</span>; <span class="code-prop">color</span>: <span class="code-val">#246d43</span>; } <span class="code-keyword">/* &lt;10m */</span>
+<span class="code-keyword">.time-chip-tier2</span> { <span class="code-prop">background</span>: <span class="code-val">#fcf6e8</span>; <span class="code-prop">border-color</span>: <span class="code-val">#ebdcb5</span>; <span class="code-prop">color</span>: <span class="code-val">#8a651a</span>; } <span class="code-keyword">/* 10–30m */</span>
+<span class="code-keyword">.time-chip-tier3</span> { <span class="code-prop">background</span>: <span class="code-val">#fdf1e8</span>; <span class="code-prop">border-color</span>: <span class="code-val">#f3d4be</span>; <span class="code-prop">color</span>: <span class="code-val">#a65825</span>; } <span class="code-keyword">/* 30–60m */</span>
+<span class="code-keyword">.time-chip-tier4</span> { <span class="code-prop">background</span>: <span class="code-val">#faece8</span>; <span class="code-prop">border-color</span>: <span class="code-val">#f0c8bd</span>; <span class="code-prop">color</span>: <span class="code-val">#b84b2e</span>; } <span class="code-keyword">/* ≥60m */</span>
+<span class="code-keyword">.time-chip-tier-none</span> { <span class="code-prop">background</span>: <span class="code-val">#f5f2eb</span>; <span class="code-prop">border-color</span>: <span class="code-val">#ded7c6</span>; <span class="code-prop">color</span>: <span class="code-val">#7d7568</span>; } <span class="code-keyword">/* 未记录 */</span></pre>
+  </section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,9 @@
+{
+  "source": "historical private local snapshot of the Agent Bridge conversation runtime (not a public upstream)",
+  "files": {
+    "conversation/event-normalizer.mjs": "4c2df15b43fb07039ab083b2a96f2a199a6b3b64ad374c57f3c2cbb2f9904c1c",
+    "conversation/native-events.mjs": "9b0e232719faf96b249471cbc86d94bafd3f324ddc30b6aa551e4041160bd1a0",
+    "agent-server-events.mjs": "9ee91cde663418e93b3cf77958deef641d502b0768611a6d1ad73f340dae7f61"
+  },
+  "policy": "Unmodified source snapshot. Update from Agent Bridge; do not fork protocol rules."
+}

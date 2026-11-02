@@ -1,0 +1,236 @@
+{
+  "source": {
+    "schemaVersion": 1,
+    "status": "human-submitted-adoption",
+    "submittedAt": "2026-10-22T14:51:41.334924+00:00",
+    "projectUrl": "https://stitch.withgoogle.com/projects/14906138420656377633",
+    "selectionReceipt": {
+      "path": "selection/submitted.json",
+      "sha256": "484e1087fb71ee03f6546d08afbbeef1e27205734dcfbaad8a05f3351e0fc9dc"
+    },
+    "reviewRoundByPage": {
+      "overview": 4,
+      "session": 5,
+      "usage": 4
+    },
+    "pages": [
+      {
+        "id": "overview",
+        "selectionId": "dialog-r5",
+        "generatedRound": 4,
+        "title": "任务与子任务总览 (Task & Subtasks Overview)",
+        "screen": "projects/14906138420656377633/screens/5746b34f8ecd42c584c4a3d4a3434fae",
+        "htmlFile": "projects/14906138420656377633/files/95809a7bd31a4798b72171fa7cf389dc",
+        "imageFile": "projects/14906138420656377633/files/c4f95207444542af83dc7c920192435c",
+        "rawHtml": {
+          "path": "designs/dialog-r5/raw/task-overview.html",
+          "sha256": "a6cc465fb4cff04c960c04d35fbec930c24a2eb47928c12550199b60b5f071fe"
+        },
+        "localHtml": {
+          "path": "designs/dialog-r5/task-overview.html",
+          "sha256": "39f9651b07b9c7091c14ff04e72ff71028cf2e7e2d10c18b684a819164e85d8e"
+        },
+        "originalPng": {
+          "path": "designs/dialog-r5/raw/task-overview.png",
+          "sha256": "9872bdf33cab7f9fa58b5a37292c08928a22e0c4328e263806a0bdf843e4d5e0",
+          "pixelSize": [
+            2560,
+            2048
+          ]
+        },
+        "resourceReplacements": [
+          [
+            "https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&amp;family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap",
+            "../../assets/creative-r3/00af8518ac9514ddc481.css"
+          ],
+          [
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap",
+            "../../assets/creative-r3/85b88de6c127390064ec.css"
+          ],
+          [
+            "https://cdn.tailwindcss.com?plugins=forms,container-queries",
+            "../../assets/creative-r3/5bff49eb5fe8201e5a37.js"
+          ]
+        ]
+      },
+      {
+        "id": "session",
+        "selectionId": "dialog-r5",
+        "generatedRound": 5,
+        "title": "子任务详情：保留报错前的输入 (极简对话流版)",
+        "screen": "projects/14906138420656377633/screens/9476cc4c6fe3480387c2747254923419",
+        "htmlFile": "projects/14906138420656377633/files/f032b928262e4447aa0b3e202b6292ff",
+        "imageFile": "projects/14906138420656377633/files/115bfb9f8a2b4b138212dbc13c116ed0",
+        "rawHtml": {
+          "path": "designs/dialog-r5/raw/task-session.html",
+          "sha256": "88e1e0f8bc2513b9511ecf7f6ef53caa3a5a184e5fa335ecd36aa5b286a473bc"
+        },
+        "localHtml": {
+          "path": "designs/dialog-r5/task-session.html",
+          "sha256": "c25d881d1043b11bfa4b96d6725b2499688528c2f916624946e143a9b70eabef"
+        },
+        "originalPng": {
+          "path": "designs/dialog-r5/raw/task-session.png",
+          "sha256": "fc53da53a4aa7a8cae0476b3e38973d52668dd9905e8fe99927ec7f780b230ab",
+          "pixelSize": [
+            2560,
+            2048
+          ]
+        },
+        "resourceReplacements": [
+          [
+            "https://cdn.tailwindcss.com",
+            "../../assets/creative-r3/3f13e7495584e13deb5e.js"
+          ],
+          [
+            "https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&amp;family=Space+Grotesk:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap",
+            "../../assets/creative-r3/1d7a0b663a566e6ff530.css"
+          ],
+          [
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200",
+            "../../assets/creative-r3/e6154908c44c742b6ee9.css"
+          ]
+        ]
+      },
+      {
+        "id": "usage",
+        "selectionId": "dialog-r5",
+        "generatedRound": 4,
+        "title": "任务用量说明 (Task Token Ledger)",
+        "screen": "projects/14906138420656377633/screens/3b176fa2a7df464e99a7d497d08392ba",
+        "htmlFile": "projects/14906138420656377633/files/6db95d6dc8124683a46f0ccaba7bc7b6",
+        "imageFile": "projects/14906138420656377633/files/205d5318a3654955ae6c9e513c64f796",
+        "rawHtml": {
+          "path": "designs/dialog-r5/raw/task-usage.html",
+          "sha256": "45e72e06b53132329207eb37ef5d6dfb51788fddc3b564ac9f6ceb2eb7077af3"
+        },
+        "localHtml": {
+          "path": "designs/dialog-r5/task-usage.html",
+          "sha256": "c8a301ff6bf6b48003acb2611f7172f660188da0c65183e942bd79a95bce3213"
+        },
+        "originalPng": {
+          "path": "designs/dialog-r5/raw/task-usage.png",
+          "sha256": "3f5bfb18a58737eb5285ced4df7863f8e5a8269285a8635cee0026cf5b6f6ead",
+          "pixelSize": [
+            2560,
+            2878
+          ]
+        },
+        "resourceReplacements": [
+          [
+            "https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap",
+            "../../assets/creative-r3/85b88de6c127390064ec.css"
+          ],
+          [
+            "https://cdn.tailwindcss.com?plugins=forms,container-queries",
+            "../../assets/creative-r3/5bff49eb5fe8201e5a37.js"
+          ],
+          [
+            "https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap",
+            "../../assets/creative-r3/9c0ee3ac4db172bcba01.css"
+          ]
+        ]
+      }
+    ],
+    "fontPolicy": "Preserve each page font stack, weights, variable axes and unicode subsets from source. Reuse local CSS and WOFF2; no global font substitution.",
+    "resources": {
+      "directory": "assets/creative-r3/",
+      "hashManifest": "package-manifest.json",
+      "payloadFiles": 153
+    },
+    "sourceArchive": {
+      "name": "stitch-dialog-r5.zip",
+      "sha256": "d7cf4abf4db367a2995fe0de62fe03d37ae2a1c9934756ce73c22205d91c8bf8",
+      "entriesIncludingManifest": 154
+    },
+    "permittedMirrorChanges": [
+      "dependency URL localization",
+      "nonvisual navigation bridge"
+    ],
+    "implementationContext": {
+      "snapshot": "historical private local integration snapshot (not a public upstream)",
+      "workspacePath": "plugins/codex-squad",
+      "observedHead": "ff5763460573687e8ae5a86fd750954493e49db4",
+      "observedHeadIsNotInstructionToReset": true,
+      "entrypoints": [
+        "cli/ui/app.tsx",
+        "cli/ui/styles.css",
+        "cli/ui/types.ts"
+      ],
+      "dataEndpoint": "./api/snapshot"
+    },
+    "acceptance": {
+      "cssWidths": [
+        480,
+        640
+      ],
+      "hostCssViewport": [
+        670,
+        1070
+      ],
+      "matchViewportDprDataAndState": true,
+      "dialogueMessageCards": 0,
+      "defaultCollapsed": [
+        "earlier context",
+        "public thought summary 1",
+        "public thought summary 2"
+      ],
+      "noToolCallRows": true,
+      "publicSummaryOnly": true,
+      "missingValuesAreNotZero": true,
+      "cachedInputAlreadyIncludedInInput": true,
+      "noReviewShellInProduct": true,
+      "noReuiWorkflow": true,
+      "productImplementationVerified": false
+    },
+    "browserReferences": [
+      {
+        "path": "browser-reference/overview-640.jpg",
+        "source": "evidence/task-r4/overview-640.jpg",
+        "sha256": "fcec771f940cb129507baa20049b8037ef0c8bdf525a5778849a3d25aa73a326",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/overview-480.jpg",
+        "source": "evidence/task-r4/overview-480.jpg",
+        "sha256": "d1b6aa4bb8c4ba6fb93b8dd035467437684c720c907e12bede3ff15b7bd5355a",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/session-r5-640.jpg",
+        "source": "evidence/dialog-r5/session-640.jpg",
+        "sha256": "cdbf9380d7e807016c661984487b803b2ebb2e47e4b6b28514af1fd970cd0df0",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/session-r5-480.jpg",
+        "source": "evidence/dialog-r5/session-480.jpg",
+        "sha256": "f63a094d82afc283f4af9ade55110584f1a133decd027386aa1d4b5143f428e5",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/usage-640.jpg",
+        "source": "evidence/task-r4/usage-640.jpg",
+        "sha256": "1a6c0cf810e3967f8903e34ff5cfce27df73b17d0149f0f79150476d4a5d5228",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/usage-480.jpg",
+        "source": "evidence/task-r4/usage-480.jpg",
+        "sha256": "75caf2e66ef252c82fc00697acc39745170752cf125c04d5bb8fe2f42255dc8e",
+        "kind": "design-preview-not-product"
+      },
+      {
+        "path": "browser-reference/review-host-670x1070.jpg",
+        "source": "evidence/dialog-r5/review-ready.jpg",
+        "sha256": "192460a4e9b4c21ec3cfcf80ab961ffee770988ddf0e0e630a38accb4a23390b",
+        "kind": "design-preview-not-product"
+      }
+    ],
+    "historicalEvidenceNote": "R4/R5 preview checks predate this human adoption. Their QA selection or pending-adoption states do not override selection/submitted.json. No real product implementation was performed in this handoff phase."
+  },
+  "method": "DOM from supplied localized HTML; page-specific CSS compiled by original Tailwind runtime in browser, captured without restyling; fonts/css copied byte for byte",
+  "changes": [
+    "Removed inline onclick; bound native read-only navigation and latest-scroll in app. Production-only labels and truthful data adaptation; fixture keeps source example."
+  ]
+}

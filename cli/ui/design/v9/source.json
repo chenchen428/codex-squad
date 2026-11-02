@@ -1,0 +1,366 @@
+{
+  "schemaVersion": 1,
+  "status": "implementation-authorized-local-design",
+  "project": "14906138420656377633",
+  "designSystem": "assets/1205ac5e9a3648868393485adf51a83a",
+  "latestUserDecision": "R50/R51: user explicitly requested a complete Stitch redesign of the existing analysis page after finding chaotic grouping and content-driven table widths after sorting. Implement locally, retain all current real capabilities, independently exercise every interaction before delivery.",
+  "screens": [
+    {
+      "name": "projects/14906138420656377633/screens/3712d847523646b4aa8c4f5c3695c016",
+      "title": "子任务详情：Codex 精致核验章 (收起态)",
+      "htmlFile": "projects/14906138420656377633/files/d0c41f1ec5e24cc1944111ec2439dba1",
+      "imageFile": "projects/14906138420656377633/files/7d5c9950938f42d68e795b742dc99d52",
+      "reportedViewport": [
+        "2560",
+        "2048"
+      ]
+    },
+    {
+      "name": "projects/14906138420656377633/screens/37d8d4acfe5543e7bd533078a50d4f27",
+      "title": "子任务详情：Codex 精致核验章 (Sheet 展开态)",
+      "htmlFile": "projects/14906138420656377633/files/f93df7568b68413a8b1b6b5cf1d054ba",
+      "imageFile": "projects/14906138420656377633/files/39f0390b7f274c528b4596aec13b9500",
+      "reportedViewport": [
+        "2560",
+        "2048"
+      ]
+    },
+    {
+      "name": "projects/14906138420656377633/screens/ea13fa8bac524e10984c905b3d292207",
+      "title": "Codex 小队 · 周期分析报告 (含账户额度与更新 Sheet)",
+      "htmlFile": "projects/14906138420656377633/files/7750b1b4b9774a1ca27f836014a02e6a",
+      "imageFile": "projects/14906138420656377633/files/f05e39b46e0a4edcb201bebffba9c8ef",
+      "reportedViewport": [
+        "2560",
+        "5954"
+      ]
+    },
+    {
+      "name": "projects/14906138420656377633/screens/6f7180e4ddaf4e5489f3ab1f85f81d6f",
+      "title": "子任务详情：Codex 响应式核验弹层 (自适应 Modal/Sheet)",
+      "htmlFile": "projects/14906138420656377633/files/bd25228531764b95bc44c5fd5a101f5e",
+      "imageFile": "projects/14906138420656377633/files/97c2e3eabdf447aeaf270ba00b54af87",
+      "reportedViewport": [
+        "2560",
+        "2048"
+      ]
+    },
+    {
+      "name": "projects/14906138420656377633/screens/3d5a78bb297348998935ac0629620555",
+      "title": "Codex 小队 · 周期分析报告 (自适应更新说明弹层)",
+      "htmlFile": "projects/14906138420656377633/files/b1e86c095e824031860473687b7f8b8d",
+      "imageFile": "projects/14906138420656377633/files/e7c086f8fed8492fbdd39168108c4de1",
+      "reportedViewport": [
+        "2560",
+        "5954"
+      ]
+    },
+    {
+      "name": "projects/14906138420656377633/screens/6c1bc5d1db884847a53bf533147aa1e9",
+      "title": "Codex 消耗与 CLI 表现、可点击更新",
+      "htmlFile": "projects/14906138420656377633/files/d27dadd3d9274bb3a4509c776f0da2a0",
+      "imageFile": "projects/14906138420656377633/files/71bf325eda8641048dbc2c0e7bf06414",
+      "localHtml": "analytics-consumption-v1-original.html",
+      "sha256": "176a4a5a71a1082043b7feae02eb0b83733b4cb61ca3861a777046381b75b94f"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/e450f146f2e44991a9045cb52e921612",
+      "title": "核验结论，无文件指纹",
+      "htmlFile": "projects/14906138420656377633/files/50681ff19b3242eab8b097ac47d71714",
+      "imageFile": "projects/14906138420656377633/files/ad8fcea3df894f21bb6f5823cb0daa08",
+      "localHtml": "verification-conclusion-original.html",
+      "sha256": "9a532e03680084466523becb73580edb6f5b794c673a2481f14fe8a8ac04a833"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/03909483e1d642309637b331b0139e03",
+      "title": "CLI 与工具表现完整物化版",
+      "htmlFile": "projects/14906138420656377633/files/41e3d19f7f684b81bdd5e1b6db40b217",
+      "imageFile": "projects/14906138420656377633/files/43745a0bf09641f68afe4d00347d2ccf",
+      "localHtml": "analytics-consumption-original.html",
+      "sha256": "e2dab90f4bc964051d770346bcb04c2ef9ecc23b8551f63e20484616206b2dd3"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/83b4b2fa56484a22945e60db09913274",
+      "htmlFile": "projects/14906138420656377633/files/40b930068b6f47fbb0c4344a9e595566",
+      "imageFile": "projects/14906138420656377633/files/6cb56934652843cf8b0e6df9d0e6f752",
+      "title": "CLI筛选与全部会话消耗",
+      "localHtml": "analytics-drilldown-original.html",
+      "sha256": "c14e661cc4c418f1934e1ae9f13d307a17d9223ae4ee39e29edc89acd4346882"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/c43a4ab847e64ab6bb8fb3e4ceee8386",
+      "htmlFile": "projects/14906138420656377633/files/828ee5fa8a9b4046af0f00f51f7e9bdb",
+      "imageFile": "projects/14906138420656377633/files/5b1294df31b944b29816f74f3f4bed8d",
+      "title": "右上角单一最新核验结论",
+      "localHtml": "verification-latest-original.html",
+      "sha256": "6eba54d4df45662b84b506bcad45648447ae18b84b14277022d6f28968857ca0"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/f37f2d4ae43c4283a060b5fa6dbc7359",
+      "htmlFile": "projects/14906138420656377633/files/1e795d99640f476a9e453ead36e9d7b9",
+      "imageFile": "projects/14906138420656377633/files/930ccef8ac3a4e418afffa1f680e8e20",
+      "title": "交付效率观察、Codex点评与多源用量对比",
+      "localHtml": "analytics-comparison-original.html",
+      "sha256": "272d31a66c27bff93bacc7bc8d39663902aad13ac11b141d4776d70b627408e2"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/4d9e32eee1f94167b3fe88aac3fdb8bd",
+      "htmlFile": "projects/14906138420656377633/files/3d786b4afb354c9fb4440ee8aa95c77a",
+      "imageFile": "projects/14906138420656377633/files/8d55d65c950844ff84330c9667e1730c",
+      "localHtml": "analytics-clean-original.html",
+      "sha256": "433e47220b49313d489fd97d10f1ab2e618213b6274e77f4204cd20da8347e53"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/a3e1ae6585ef4c0685b24087e14269fe",
+      "htmlFile": "projects/14906138420656377633/files/45840abf566546b98fb3f8e6bb02d10e",
+      "imageFile": "projects/14906138420656377633/files/1c7a3c73840b4483ac4bc3e76f513cf4",
+      "localHtml": "analytics-benefits-original.html",
+      "sha256": "565ef5f78191f631870d833deb46b0662ea29b598ee00e7226e6ad980bf80a5d"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/ab07a0ef5cd346ac85e3bf100aa1b4c9",
+      "htmlFile": "projects/14906138420656377633/files/e43aed7207f547e3be4e86cddbe1eb13",
+      "imageFile": "projects/14906138420656377633/files/511b3021e912441f9d9b9ae948409349",
+      "localHtml": "analytics-benefits-top-original.html",
+      "sha256": "3b0539b316ad3168656a054e1f40c5128068e213ca6723019ca86da038cc6dd0"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/c86d9be918b247fb8c134aeebdfd1380",
+      "htmlFile": "projects/14906138420656377633/files/ca334c1e39e24b1ea1079d8f70d8e0d5",
+      "imageFile": "projects/14906138420656377633/files/ae17da471e9e47da83763d98f42631fd",
+      "localHtml": "analytics-inline-basis-original.html",
+      "sha256": "adf29c2c15f85399dfc8f6b23e19383760367958ec5fc7e11ff3964b5de169fd"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/4c360956fe534dc38145b4b0d9f68d45",
+      "htmlFile": "projects/14906138420656377633/files/23d2a6afdd90432d85ab341b061bad45",
+      "imageFile": "projects/14906138420656377633/files/8dc32bde0a524e5d87038d022d38921c",
+      "title": "看板全宽泳道响应式布局",
+      "localHtml": "board-responsive-original.html",
+      "sha256": "eb28efb14d79a2ab2062a4e9739824e94d5e28dec56f0cf9c4f7fc0faceb855b"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/03742626cf3345c2a6e9c0ed3bd2c067",
+      "htmlFile": "projects/14906138420656377633/files/389aea7575b74166920af63fb929d508",
+      "imageFile": "projects/14906138420656377633/files/ce2ca873f2b54b4288e0737017ab154a",
+      "title": "看板泳道内自适应卡片网格",
+      "localHtml": "board-fluid-cards-grid-original.html",
+      "sha256": "dbdc0ab31bf41ec9c759fd8d341072f8f71aaa67ab34586bac3ff277aa3aa113"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/b1d2297dae3549dfab8eba5192022b27",
+      "htmlFile": "projects/14906138420656377633/files/3fa1c47cd32c480eb6c34a0e5afdb556",
+      "imageFile": "projects/14906138420656377633/files/2385097c91a44c93914c88c466d62686",
+      "localHtml": "analytics-compact-basis-original.html",
+      "sha256": "0ee58a6c05929acf40d5c6cd9e4d5bf419d3a9c7d8a15161745573c2302a378a"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/4041d80e4d3d4ce9b3405510c804b21d",
+      "htmlFile": "projects/14906138420656377633/files/5f486597acab46b1af2038f27828ac6f",
+      "imageFile": "projects/14906138420656377633/files/dabbb2950c71418d8a114cc400c5459b",
+      "localHtml": "analytics-unified-header-original.html",
+      "sha256": "8ddff76bff5c1a2852a1722681da5feca828e775f1ca6ba2bd4d29e68afa1f7e"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/8a0d86340d8549729e08911d1e0664c2",
+      "htmlFile": "projects/14906138420656377633/files/637f5ca878404c8198d3d65070b96e94",
+      "imageFile": "projects/14906138420656377633/files/3e2a62414d0347db89a38761a980853f",
+      "localHtml": "analytics-cohesive-toolbar-original.html",
+      "sha256": "34608a45d9f1e6122e93017257cd5cd842f2d65e3da6866492d7a6a6187d65d7"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/a94a376f06cb4bd7ae43bb13a97fbe5b",
+      "htmlFile": "projects/14906138420656377633/files/7a42a209502a496ba2a43c51417e4535",
+      "imageFile": "projects/14906138420656377633/files/3d529de1c8bf41d68cb9dfd6a6931253",
+      "title": "Codex 小队 · 刊页版周期分析报告（R38 用户认可稿）",
+      "localHtml": "analytics-editorial-original.html",
+      "sha256": "8df0640c770172c5675a6e4705ebdf5378d14f37fede8eb1d6349d44ade65593"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/8bcbc97cf4604b968cf9779809b79683",
+      "htmlFile": "projects/14906138420656377633/files/d587b4586c0c426cab446f18a109c2f2",
+      "imageFile": "projects/14906138420656377633/files/864faab724654beb8b6ce120b3874c12",
+      "title": "Codex 小队 · 周期分析：四卡、分布表、排序与 CLI 搜索（R40–R43 局部稿）",
+      "localHtml": "analytics-unified-usage-original.html",
+      "sha256": "d6368af73fc60e336ab285dfa49bb27addf52739800241db13ed8fefa9fa4e9d"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/71b7f6eda1d14d27b8a0f2051db3ef85",
+      "htmlFile": "projects/14906138420656377633/files/33a9450ea9b74876b13b75f6659ea13a",
+      "imageFile": "projects/14906138420656377633/files/9853010e78204a33aeeef10d46783fc1",
+      "title": "Codex 小队 · Token 消耗带（R49 局部组件：单一合计 + 细线流程条）",
+      "localHtml": "analytics-compact-token-original.html",
+      "sha256": "59425e669db3fd08a99c04cdb29ed246a93dc396c88d29301de15a09a3020466"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/ea897eb4f2d844a6a1fbeb75de52a48d",
+      "title": "Codex 小队 · 周期分析（R53 排版与问题行动区修订）",
+      "htmlFile": "projects/14906138420656377633/files/e6524b3b8dd649e18bd92ed1b6016a93",
+      "imageFile": "projects/14906138420656377633/files/6853714d6a5c43ec8c39252a658ed9db",
+      "localHtml": "analytics-r53-original.html",
+      "reportedViewport": [
+        "2560",
+        "4790"
+      ],
+      "sha256": "ddf3a1ed1235ee61f61aca85c9f69843ad87c6e02e817198319a01ba93b0dcd4"
+    }
+  ],
+  "scope": "Accepted R38 editorial sheet for the analysis page: edition bar, four chapters, warm paper tokens, 50px/28px number hierarchy, editorial tables and native details, with all original analytics, CLI and tool content restored inside those chapters. The repaired local preview and its fake data are not product sources.",
+  "dataRule": "Illustrative source data is replaced by actual native Codex usage, squad receipts, recorded verification notes and official release metadata. Benefits use the saved snapshot only: fixed savings titles, real signed values, negative means more input than the baseline and is never flipped positive; missing values stay 未上报. No quota inference or raw file fingerprints in user UI.",
+  "files": {
+    "seal-responsive-original.html": "3248ca5d2ecdd91524bde2d1a1a89cfd0d51843a567d2f534ff939c0f4580155",
+    "analytics-responsive-original.html": "246e8dfd56c3bab26b03df0f8c49c34af09487d900a801b15f3026dbe331a582",
+    "seal-original.html": "e55a18fde81690c731c03733bf93eb059361279c182d0e9d5e58945baec22a69",
+    "seal-sheet-original.html": "e4eb2e45e3521f1ba4da9b7a4c4d66519a5dd87543636177955a56ef75c5d577",
+    "analytics-original.html": "78635f8dcb216484be97fe7cb649f8e8ca30773c7d461fcb04a7d73b237ee5f1",
+    "analytics-consumption-original.html": "e2dab90f4bc964051d770346bcb04c2ef9ecc23b8551f63e20484616206b2dd3",
+    "verification-conclusion-original.html": "9a532e03680084466523becb73580edb6f5b794c673a2481f14fe8a8ac04a833",
+    "consumption-exported.css": "5490b6f0dce680818fe51492fa615a754e3f09d3bc00892189149f29686cfd8a",
+    "conclusion-exported.css": "e203528ae497586fd0cf1be3f8f40a1393e73b425ff2e00d1fbdb1faf7b54784",
+    "analytics-consumption-v1-original.html": "176a4a5a71a1082043b7feae02eb0b83733b4cb61ca3861a777046381b75b94f",
+    "analytics-drilldown-original.html": "c14e661cc4c418f1934e1ae9f13d307a17d9223ae4ee39e29edc89acd4346882",
+    "verification-latest-original.html": "6eba54d4df45662b84b506bcad45648447ae18b84b14277022d6f28968857ca0",
+    "drilldown-exported.css": "cda00e286405d07b253e9b417d04378669c9045dcb354a3c5a698d58cd439119",
+    "latest-exported.css": "d7c4054e3f3c90eee068774cb039c6a0a47b5018af82d4de7dfbc2e92ae24eb8",
+    "analytics-comparison-original.html": "272d31a66c27bff93bacc7bc8d39663902aad13ac11b141d4776d70b627408e2",
+    "comparison-exported.css": "7aad65d26edcceb2acbd4a0a461cd9a78dbfb787518a82a2252f4c47b81d7669",
+    "analytics-clean-original.html": "433e47220b49313d489fd97d10f1ab2e618213b6274e77f4204cd20da8347e53",
+    "clean-exported.css": "2ac38750f6a8b1b3e6add19afd1f59d0a9765a7c90707caffc38ecca1f034512",
+    "analytics-benefits-original.html": "565ef5f78191f631870d833deb46b0662ea29b598ee00e7226e6ad980bf80a5d",
+    "benefits-exported.css": "2ac38750f6a8b1b3e6add19afd1f59d0a9765a7c90707caffc38ecca1f034512",
+    "analytics-benefits-top-original.html": "3b0539b316ad3168656a054e1f40c5128068e213ca6723019ca86da038cc6dd0",
+    "benefits-top-exported.css": "bd2d96d686718081ad61d9ac09f291d1de0fe9be30f1f8143e101f418719f3b7",
+    "analytics-inline-basis-original.html": "adf29c2c15f85399dfc8f6b23e19383760367958ec5fc7e11ff3964b5de169fd",
+    "inline-basis-exported.css": "d884d921a96f8492202ac523631c21bb735c590e38e0e92617ac5bc3eed4ea53",
+    "board-responsive-original.html": "eb28efb14d79a2ab2062a4e9739824e94d5e28dec56f0cf9c4f7fc0faceb855b",
+    "board-responsive-exported.css": "6f8c9faa731fd5efce25c2f89a7b6a2f81be185ad4a35f2f7c63f086ae04b74a",
+    "board-fluid-cards-grid-original.html": "dbdc0ab31bf41ec9c759fd8d341072f8f71aaa67ab34586bac3ff277aa3aa113",
+    "board-fluid-cards-grid-exported.css": "989af71b90e90ea2ce7f006a4c42b26f803d713b559f193444ad03a51fc6b645",
+    "analytics-compact-basis-original.html": "0ee58a6c05929acf40d5c6cd9e4d5bf419d3a9c7d8a15161745573c2302a378a",
+    "compact-basis-exported.css": "c87f5c0fa3da8d040ccce456634dcf4f813a1cb015218c56c985b090196362bb",
+    "analytics-unified-header-original.html": "8ddff76bff5c1a2852a1722681da5feca828e775f1ca6ba2bd4d29e68afa1f7e",
+    "unified-header-exported.css": "c87f5c0fa3da8d040ccce456634dcf4f813a1cb015218c56c985b090196362bb",
+    "analytics-cohesive-toolbar-original.html": "34608a45d9f1e6122e93017257cd5cd842f2d65e3da6866492d7a6a6187d65d7",
+    "cohesive-toolbar-exported.css": "c87f5c0fa3da8d040ccce456634dcf4f813a1cb015218c56c985b090196362bb",
+    "analytics-editorial-original.html": "8df0640c770172c5675a6e4705ebdf5378d14f37fede8eb1d6349d44ade65593",
+    "editorial-exported.css": "395e71059d2d09675333b85984d386abd106130dec967df9c66a6801ec576aef",
+    "analytics-unified-usage-original.html": "d6368af73fc60e336ab285dfa49bb27addf52739800241db13ed8fefa9fa4e9d",
+    "unified-usage-exported.css": "48b9d3cd7b05977e30c16ac01d82a6a6cc5f30cd7dba476eb7ce57367f47f3ac",
+    "analytics-compact-token-original.html": "59425e669db3fd08a99c04cdb29ed246a93dc396c88d29301de15a09a3020466",
+    "compact-token-exported.css": "5c18abf58847c2b97cf3b52af9a61d1fa40ba79bdc2c55966c101150636411b0",
+    "analytics-complete-r50-original.html": "e53103cb37e472ead252f7bfca99209877f1f7a9fa4db9435d2f92a8778c5202",
+    "complete-r50-exported.css": "ef2f9c7d39e6c40dc8a0fdf1e37c70098e7fdcefb8a90a4715f05bf472e0009d",
+    "analytics-r53-original.html": "ddf3a1ed1235ee61f61aca85c9f69843ad87c6e02e817198319a01ba93b0dcd4",
+    "r53-exported.css": "f5c80593bd9e540cb41599c59222bf793699aa61af449de076ec9b7c45b0cb7d"
+  },
+  "latestDecision": {
+    "requirement": "R50-R51",
+    "screen": "cda37fcd02e740788e6ff3d1c514f31b",
+    "decision": "Use the complete Warm Editorial source as the visual basis; original HTML/CSS untouched. Exact exported component selectors are scoped to the report, with existing business hooks sharing those same rules. Four chapters and stable fixed-layout tables replace the old analysis visual layer. Restore omitted existing capabilities using the original table/fold/footer patterns, not demo data or script. Keep R46/R47 loading/header behavior and prior signed benefit requirements."
+  },
+  "r40Decision": {
+    "requirement": "R40-R43",
+    "screen": "8bcbc97cf4604b968cf9779809b79683",
+    "decision": "Local refinement of the accepted R38 sheet, not a new整体稿. Chapter order becomes 01 benefits, 02 consumption, 03 skills and CLI, 04 observations, keeping id=\"directives\" and its jump. Chapter 02 opens with four real cards (total, input, cached inside input, output) on a 4/2/1 symmetric grid before any distribution; Codex, Qoder and compare share one distribution-table shell and column set, single mode reserves the comparison second line so card height never changes, and the squad-level fact grid also uses 4/2/1. Every populated analysis table sorts through table-model.mjs with raw values and unknown last. CLI gains a category select intersected with a literal multi-term input search that preserves caret and IME composition. The Stitch demo numbers, dates and conclusions are not adopted, and the real -20.93M / about -54 minutes, four recommendations, 17 skills, 449 commands and all drilldowns are preserved."
+  },
+  "r40LocalRefinement": {
+    "original": "analytics-unified-usage-original.html",
+    "sha256": "d6368af73fc60e336ab285dfa49bb27addf52739800241db13ed8fefa9fa4e9d",
+    "exported": "unified-usage-exported.css",
+    "variableMapping": "--border→--line, --text-sec→--ink-muted, --text-main→--ink, #ffffff→--bg-card",
+    "adopted": "token-cards-grid/token-stat-card, shared distribution table shell, sort header button with aria-sort, CLI search + select layout, chapter order.",
+    "notAdopted": "Percentages, call counts, dates, benefit signs and business conclusions in the Stitch demo."
+  },
+  "boardDecision": {
+    "requirement": "R27-R28",
+    "screen": "03742626cf3345c2a6e9c0ed3bd2c067",
+    "decision": "Container-width driven stacked full-width lanes for narrow embedded panels and three flexible lanes at >=960 content width, with compact empty lanes. Inside each lane, cards flow in an auto-fill CSS grid whose tracks follow the card list's real width (min 260px, 12px gap); all cards in a row are equal-height flex columns with a bottom-anchored meta block. The first flex draft board-fluid-cards-original.html is superseded and not consumed."
+  },
+  "mainIntegration": {
+    "requirement": "R38-R39",
+    "approvedBy": "user in current conversation",
+    "changes": [
+      "Fact-repaired adopted preview controls the outside presentation: only signed metrics and real observation; calculation explanations stay in evidence.",
+      "Readable chapter names and warm ochre negative state; existing shared shell preserved.",
+      "Full skills and CLI retain all records with three-entry previews; CLI methodology is available in details."
+    ],
+    "validation": "artifacts/codex-squad-analytics-fast-read-20261027/R38-R39-ACCEPTANCE.md",
+    "fontSource": "9c0ee3ac4db172bcba01.css appended after legacy font faces: preserves Newsreader variable weight 300..700 from exact adopted design, without changing font bytes."
+  },
+  "r43MainIntegration": {
+    "changes": [
+      "Compact per-CLI card captions; missing cache stays 未记录, with no derived cache estimate.",
+      "Keep single and comparison card row geometry identical without two-line empty notes.",
+      "Token share columns sort by the same raw token numerator within their common view denominator.",
+      "Update the pre-existing chapter assertion for user-authorized section order.",
+      "Actual host width is 587px; two-column breakpoint refined to 560px so this host keeps two balanced cards per row, while 390px stays single-column."
+    ],
+    "verification": "artifacts/codex-squad-analytics-fast-read-20261027/R40-R43-ACCEPTANCE.md"
+  },
+  "r49Decision": {
+    "requirement": "R49",
+    "screen": "71b7f6eda1d14d27b8a0f2051db3ef85",
+    "original": "analytics-compact-token-original.html",
+    "exported": "compact-token-exported.css",
+    "supersedes": "r40LocalRefinement token-cards-grid/token-stat-card four-card 4/2/1 layout; the local refinement record above stays as R40-R43 history.",
+    "variableMapping": "--color-paper→--bg-paper, --color-paper-card→--bg-card, --color-paper-subtle→--bg-subtle, --color-ink→--ink, --color-ink-muted→--ink-muted, --color-line→--line, --color-rust→--rust; genuinely new source colors defined locally on .token-composite-card as --token-line-light, --token-rust-light, --token-codex-tint, --token-graphite.",
+    "adopted": "token-composite-card/top/hero-line/hero-left/hero-val/hero-right/flow-strip/flow-cell/flow-label/flow-val/flow-sub/provider-row/tag/val structure and declarations, scoped under [data-analysis-report]; one prominent total with a compact three-cell input/其中缓存/输出 strip; the existing Codex/Qoder/compare tab contract moved into token-composite-top; source breakpoints 880/640/420.",
+    "businessStateAdaptations": [
+      "The source demo dropped the total in compare mode; the product keeps both parties' real totals side by side as provider-row + token-hero-val inside the hero, never summed and never replaced by text.",
+      "The source demo compared a single flow value; the product's compare cells stack the two provider rows in a shared 36px value slot, so all three modes keep one card height without any reserved or blank row.",
+      "The flow label reserves 19px (pill height) so a cell without a ratio pill keeps the same height as cells with one.",
+      "The input ratio pill is omitted because ModelUsageTotals does not expose the raw-input numerator; it is not back-derived from formatted K/M/B strings. Cached uses cacheShare and output uses shares.output.",
+      "Missing totals show 未上报 and missing cache shows 未记录 at the same type size as real values (color only changes), so switching modes never resizes the hero.",
+      "All numbers come from ModelUsageTotals/reportModel; the source demo figures, '100%' copy, page globals, specimen footer and explanatory demo text are not adopted."
+    ]
+  },
+  "r50Decision": {
+    "requirement": "R50-R51",
+    "screen": "cda37fcd02e740788e6ff3d1c514f31b",
+    "original": "analytics-complete-r50-original.html",
+    "exported": "complete-r50-exported.css",
+    "designSystem": "assets/1205ac5e9a3648868393485adf51a83a",
+    "adopted": "report-chapter / chapter-heading-bar, benefit-editorial-container and two core metric slots, token composite and meta region, symmetric squad facts band, fixed editorial-data-table with table header/footer, CLI toolbar, recommendations list. Existing omitted capabilities reuse these exported structures. The previous analysis owner style block is removed. Shared verification/update dialogs remain in their own existing owner section.",
+    "businessStateAdaptations": [
+      "R46/R47 existing host and compact range header retained; demo host navigation, snapshot id and large header are excluded.",
+      "All real data, model/usage grouping, links, unknown states, 3/all preview state and event delegation continue from the saved model; no source mock JS or invented causal copy.",
+      "Signed net savings remain negative when appropriate; source positive more-used labels and outside baseline bar are excluded by the previous explicit user requirement.",
+      "The source example incorrectly adds Codex and Qoder into 18.37B; production continues existing squad-receipt kpiCards, never sums the two CLI totals.",
+      "Source sort SVGs were too small/dim; user-required 16px stroke2 with dark neutral and rust active state replaces the specimen 13px/dimmed rendering.",
+      "Explicit column profiles fit the actual host; long titles/commands are two-line blocks and table cells stay native cells.",
+      "Mode values use common real value slots, not reserved blank nodes.",
+      "Missing independent conversations, squad ranking, daily input, skill and failure records are retained using the same exported table/fold/list patterns."
+    ],
+    "repairRequest": "A requested missing-capability edit timed out at 300 seconds. Seven subsequent reads confirmed only the original screen; no repaired screen or new source is claimed. No duplicate generation request was made.",
+    "implementation": "Main Codex scopes/integrates original CSS and provenance; fixed Qoder continues TypeScript binding/table layout in non-overlapping files.",
+    "evidence": "artifacts/codex-squad-header-stability-20261028/R50-R51-ACCEPTANCE-MATRIX.md"
+  },
+  "r52WidthDecision": {
+    "requirement": "User exact embedded width about 548px: two board cards, two benefit metrics and a three-cell Token strip fit; do not stack prematurely.",
+    "board": "card-grid min 220px, based on actual lane content width",
+    "benefits": "two metric columns at viewport >=480px",
+    "tokenFlow": "three cells at viewport >=520px; smaller widths stack",
+    "preserved": "Stitch original files unchanged; semantic data and column sorting unchanged; actual breakpoint probes 390/479/480/519/520/548/587/800/1100."
+  },
+  "r53WidthDecision": {
+    "requirement": "User requires input/cache/output in a compact horizontal row like the facts below, including the 488px screenshot and smaller embedded panels.",
+    "supersedes": "R52 Token-flow max519px stack only; board and benefits unchanged.",
+    "implementation": "Keep three equal tracks; compact labels/ratio hints/provider values inside each track at narrow widths; preserve real data and same mode height.",
+    "verification": "Actual widths320/360/390/488/520/548/587/1100; final installed version and screenshots in artifacts/codex-squad-header-stability-20261028/R53-ACCEPTANCE.md"
+  },
+  "r53AnalysisDecision": {
+    "requirement": "R53 analytics layout and issue/action area.",
+    "screen": "ea897eb4f2d844a6a1fbeb75de52a48d",
+    "original": "analytics-r53-original.html",
+    "exported": "r53-exported.css",
+    "adopted": "stat-val-row value/unit/percentage grouping, identical 操作 column and action-btn-group on both session tables, 本期最值得处理的问题 heading, left-aligned rec-summary-paragraph, issue-card header/stage-grid/evidence-drawer structure.",
+    "businessStateAdaptations": [
+      "Runtime values, percentages, task and session titles still come from the saved snapshot/model; R53 sample figures, model names and 2-item count are not adopted.",
+      "The four stages map to saved observation title/observation/action/verification; a missing stage states that the saved analysis did not provide it instead of inventing advice.",
+      "Observation count is the real saved observation count; the old high-Token unaccepted 优先跟进 list is no longer rendered, while deliveryEfficiency stays as an unused model contract for existing tests.",
+      "Both session tables reuse usageLinks/action-btn-group; action column has a fixed width so sorting does not move titles or controls. Tables scroll inside their existing wrapper at narrow widths.",
+      "Benefit metrics keep the R52 two-column breakpoint at >=480px; value and badge never split internally and only wrap as whole groups."
+    ],
+    "verification": "artifacts/codex-squad-analytics-20261029/ui-implementation/REPORT.md"
+  }
+}

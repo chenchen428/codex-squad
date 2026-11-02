@@ -1,0 +1,31 @@
+{
+  "package": "rrweb",
+  "version": "2.1.1",
+  "source": {
+    "tarball": "/tmp/integration-test-acceptance-deps-20261030/rrweb-2.1.1.tgz",
+    "tarballSha256": "cb39b90998e958c68cd7d17d74ac2a1841a932284c0b8e458d0e46cad0f7deb7",
+    "registryUrl": "https://registry.npmjs.org/rrweb/-/rrweb-2.1.1.tgz",
+    "repository": "https://github.com/rrweb-io/rrweb",
+    "gitCommit": "3deb6e7da4528ddb33b5b7ff6a3e805d4ed14930",
+    "license": "MIT",
+    "licenseFile": "LICENSE",
+    "licenseSource": "https://raw.githubusercontent.com/rrweb-io/rrweb/3deb6e7da4528ddb33b5b7ff6a3e805d4ed14930/LICENSE"
+  },
+  "files": [
+    {
+      "path": "rrweb.umd.min.js",
+      "originalPath": "package/dist/rrweb.umd.min.cjs",
+      "sha256": "f6ccdb4d4da104156c2811ade2634107a888ab0b3dbab15638b30a473be15833",
+      "bytes": 265932,
+      "modification": "仅删除文件末尾的 //# sourceMappingURL=rrweb.umd.min.cjs.map 注释行，避免离线内联时请求 .map；其余字节未改动"
+    },
+    {
+      "path": "style.min.css",
+      "originalPath": "package/dist/style.min.css",
+      "sha256": "334d222824ebab92111f7db3231829847443a86ae26326cf4f68d5c5fdee40f9",
+      "bytes": 1965,
+      "modification": "无"
+    }
+  ],
+  "usage": "构建时作为 <script> 内联到验收包，暴露全局 window.rrweb.Replayer，做真实 DOM 回放"
+}

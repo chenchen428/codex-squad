@@ -1,0 +1,314 @@
+<main class="w-full max-w-[640px] min-h-screen md:min-h-[920px] paper-texture border-x border-paper-rule flex flex-col justify-between relative">
+<!-- TOP APP BAR / BRAND HEADER -->
+<header class="border-b border-paper-rule px-4 sm:px-6 pt-4 pb-3 bg-surface-container-low">
+<!-- Breadcrumb row -->
+<div class="flex items-center justify-between gap-2 pb-2">
+<nav class="flex items-center gap-1.5 font-annotation-cue text-annotation-cue text-on-surface-variant">
+<span class="hover:text-primary transition-colors cursor-pointer">父任务</span>
+<span class="text-outline">/</span>
+<span class="hover:text-primary transition-colors cursor-pointer truncate max-w-[130px] sm:max-w-[200px]">修复报表筛选异常</span>
+<span class="text-outline">/</span>
+<span class="text-primary font-bold">用量说明</span>
+</nav>
+<span class="font-label-stamp text-[10px] tracking-wider px-1.5 py-0.5 rounded border border-outline-variant bg-surface-container text-on-surface-variant uppercase">
+          READONLY
+        </span>
+</div>
+<!-- Main Headline & Subtitle -->
+<div class="flex items-baseline justify-between pt-1">
+<div>
+<h1 class="font-headline-scene text-headline-scene font-medium text-on-surface tracking-tight">
+            任务用量说明
+            <span class="text-xs font-annotation-cue text-on-surface-variant font-normal ml-2">（只读演示）</span>
+</h1>
+<p class="font-caption-footnote text-caption-footnote text-on-surface-variant mt-0.5">
+            父任务执行总消耗与具体子任务分配透视
+          </p>
+</div>
+<div class="hidden sm:flex items-center gap-1 text-on-surface-variant font-annotation-cue text-[11px]">
+<span class="material-symbols-outlined text-[14px]">receipt_long</span>
+<span>账本状态·终结</span>
+</div>
+</div>
+<!-- Section Navigation Anchors -->
+<nav class="flex items-center gap-4 mt-3 pt-2 border-t border-paper-rule text-annotation-cue">
+<a class="font-annotation-cue text-annotation-cue text-on-surface-variant hover:text-on-surface pb-1 transition-colors" href="#overview">
+          任务总览
+        </a>
+<a class="font-annotation-cue text-annotation-cue text-on-surface-variant hover:text-on-surface pb-1 transition-colors" href="#session">
+          子任务详情
+        </a>
+<a class="border-b-2 border-primary text-primary font-bold font-annotation-cue text-annotation-cue pb-1" href="#usage">
+          用量说明
+        </a>
+</nav>
+</header>
+<!-- MAIN SCROLLABLE CONTENT CANVAS -->
+<div class="px-4 sm:px-6 py-5 flex-1 flex flex-col gap-6 custom-scroll">
+<!-- SECTION 1: PARENT TASK OVERVIEW CARD -->
+<section class="bg-paper-card border border-paper-rule rounded-lg p-4 sm:p-5 relative" id="usage">
+<div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b border-paper-rule">
+<div class="flex items-center gap-2">
+<span class="font-label-stamp text-label-stamp text-on-surface-variant uppercase">父任务</span>
+<h2 class="font-headline-act-mobile text-headline-act-mobile font-semibold text-on-surface">
+              修复报表筛选异常
+            </h2>
+</div>
+<span class="font-label-stamp text-[11px] px-2 py-0.5 rounded bg-surface-variant text-on-surface-variant border border-paper-rule">
+            全队累计计费
+          </span>
+</div>
+<!-- Big Highlight Metric -->
+<div class="pt-4 pb-3 flex items-baseline justify-between flex-wrap gap-2">
+<div>
+<div class="font-annotation-cue text-[12px] text-on-surface-variant uppercase tracking-wider">本轮总用量</div>
+<div class="flex items-baseline gap-1 mt-0.5">
+<span class="font-display-lg-mobile text-display-lg-mobile font-bold text-on-surface tracking-tight">68.8k</span>
+<span class="font-annotation-cue text-sm text-on-surface-variant">Token</span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">参与执行人数</div>
+<div class="font-body-sans text-sm font-semibold text-on-surface mt-0.5">2 人（Qoder &amp; Codex）</div>
+</div>
+</div>
+<!-- Composite Horizontal Bar (Input vs Output) -->
+<div class="space-y-1.5 my-2">
+<div class="w-full h-3 bg-surface-container rounded-sm overflow-hidden flex border border-paper-rule">
+<!-- Cached (part of input) -->
+<div class="h-full bg-editorial-blue/70" style="width: 68.6%;" title="上下文缓存: 47.2k"></div>
+<!-- Regular input -->
+<div class="h-full bg-editorial-blue" style="width: 20.1%;" title="常规输入: 13.8k"></div>
+<!-- Output -->
+<div class="h-full bg-editorial-red" style="width: 11.3%;" title="全队输出: 7.8k"></div>
+</div>
+<div class="flex items-center justify-between font-annotation-cue text-[11px] text-on-surface-variant">
+<span class="flex items-center gap-1">
+<span class="inline-block w-2 h-2 rounded-[1px] bg-editorial-blue"></span>
+              输入：61.0k
+            </span>
+<span class="flex items-center gap-1">
+<span class="inline-block w-2 h-2 rounded-[1px] bg-editorial-blue/60"></span>
+              （含缓存 47.2k）
+            </span>
+<span class="flex items-center gap-1">
+<span class="inline-block w-2 h-2 rounded-[1px] bg-editorial-red"></span>
+              输出：7.8k
+            </span>
+</div>
+</div>
+<!-- Metric Details & Helper Note -->
+<div class="mt-4 pt-3 border-t border-paper-rule grid grid-cols-2 gap-3 text-xs font-body-sans">
+<div class="bg-surface-container-low p-2.5 rounded border border-paper-rule">
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">全队输入消耗</div>
+<div class="font-headline-act-mobile text-base font-semibold text-on-surface mt-0.5">61.0k Token</div>
+<div class="font-annotation-cue text-[11px] text-editorial-blue mt-0.5">其中包含上下文缓存 47.2k Token</div>
+</div>
+<div class="bg-surface-container-low p-2.5 rounded border border-paper-rule">
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">全队输出消耗</div>
+<div class="font-headline-act-mobile text-base font-semibold text-on-surface mt-0.5">7.8k Token</div>
+<div class="font-annotation-cue text-[11px] text-on-surface-variant mt-0.5">代码修改与回答文本</div>
+</div>
+</div>
+<!-- Plain Language Rule Box -->
+<div class="mt-3 p-2.5 bg-surface-container-lowest rounded border border-outline-variant/60 flex items-start gap-2">
+<span class="material-symbols-outlined text-outline mt-0.5 text-sm flex-shrink-0">info</span>
+<p class="font-caption-footnote text-caption-footnote text-on-surface-variant leading-relaxed">
+<strong class="font-semibold text-on-surface">说明：</strong>缓存属于输入（即对已有代码和长上下文的复用），已包含在 61.0k 输入之内，不重复相加到总用量。
+          </p>
+</div>
+</section>
+<!-- SECTION 2: CORE FOCUS - SUBTASK TOKEN DISTRIBUTION -->
+<section class="space-y-3">
+<div class="flex items-baseline justify-between">
+<div>
+<h3 class="font-headline-scene text-lg font-semibold text-on-surface flex items-center gap-1.5">
+<span>子任务用量分布</span>
+<span class="font-label-stamp text-[10px] text-primary bg-primary-container/10 px-1.5 py-0.2 rounded border border-primary-container/30">核心分配</span>
+</h3>
+<p class="font-caption-footnote text-caption-footnote text-on-surface-variant">
+              子任务是被分配的具体工作，一名成员可承担多个子任务。
+            </p>
+</div>
+<span class="font-annotation-cue text-[11px] text-on-surface-variant">共 3 个子任务</span>
+</div>
+<!-- 3 Subtask Cards Stack -->
+<div class="space-y-2.5">
+<!-- SUBTASK 1 -->
+<article class="bg-surface-container-lowest border border-paper-rule hover:border-outline-variant rounded-lg p-3.5 transition-all">
+<div class="flex items-start justify-between gap-2">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-annotation-cue text-[11px] text-outline font-bold">#01</span>
+<h4 class="font-body-sans text-sm font-semibold text-on-surface">修复清空后的页码</h4>
+</div>
+<div class="flex items-center gap-2 font-annotation-cue text-[11px] text-on-surface-variant">
+<span>执行人：<strong class="font-semibold text-on-surface">Qoder</strong></span>
+<span class="text-outline">·</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-secondary-container/40 text-secondary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                    已完成
+                  </span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline-act text-base font-bold text-on-surface">12.4k</div>
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">约占 18.0%</div>
+</div>
+</div>
+<!-- Single Subtask Proportion Bar -->
+<div class="mt-2.5 pt-2 border-t border-paper-rule">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-on-surface-variant h-full rounded-full" style="width: 18.0%;"></div>
+</div>
+</div>
+</article>
+<!-- SUBTASK 2 (Highlighted: Active and primary consumer) -->
+<article class="bg-paper-card border-2 border-editorial-blue/30 rounded-lg p-3.5 relative shadow-sm">
+<div class="flex items-start justify-between gap-2">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-annotation-cue text-[11px] text-editorial-blue font-bold">#02</span>
+<h4 class="font-body-sans text-sm font-semibold text-on-surface">保留报错前的输入</h4>
+<span class="font-label-stamp text-[9px] px-1 py-0.2 rounded bg-editorial-blue/10 text-editorial-blue border border-editorial-blue/20">
+                    当前最高消耗
+                  </span>
+</div>
+<div class="flex items-center gap-2 font-annotation-cue text-[11px] text-on-surface-variant">
+<span>执行人：<strong class="font-semibold text-on-surface">Qoder</strong></span>
+<span class="text-outline">·</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-editorial-blue/10 text-editorial-blue font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-editorial-blue animate-pulse"></span>
+                    处理中
+                  </span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline-act text-base font-bold text-editorial-blue">30.8k</div>
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">约占 44.8%</div>
+</div>
+</div>
+<!-- Proportion Bar -->
+<div class="mt-2.5 pt-2 border-t border-paper-rule">
+<div class="w-full bg-surface-container h-2 rounded-full overflow-hidden">
+<div class="bg-editorial-blue h-full rounded-full" style="width: 44.8%;"></div>
+</div>
+</div>
+<!-- Subtask direct link -->
+<div class="mt-2.5 flex items-center justify-end">
+<a class="inline-flex items-center gap-1 font-annotation-cue text-xs text-editorial-blue hover:underline font-medium" href="#session">
+<span>查看该子任务会话详情</span>
+<span class="material-symbols-outlined text-xs">arrow_forward</span>
+</a>
+</div>
+</article>
+<!-- SUBTASK 3 -->
+<article class="bg-surface-container-lowest border border-paper-rule hover:border-outline-variant rounded-lg p-3.5 transition-all">
+<div class="flex items-start justify-between gap-2">
+<div class="space-y-1">
+<div class="flex items-center gap-2">
+<span class="font-annotation-cue text-[11px] text-outline font-bold">#03</span>
+<h4 class="font-body-sans text-sm font-semibold text-on-surface">检查筛选和报错分支</h4>
+</div>
+<div class="flex items-center gap-2 font-annotation-cue text-[11px] text-on-surface-variant">
+<span>执行人：<strong class="font-semibold text-on-surface">Codex</strong></span>
+<span class="text-outline">·</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.2 rounded bg-tertiary-fixed-dim/30 text-tertiary font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-tertiary-container"></span>
+                    等待修改
+                  </span>
+</div>
+</div>
+<div class="text-right">
+<div class="font-headline-act text-base font-bold text-on-surface">25.6k</div>
+<div class="font-annotation-cue text-[11px] text-on-surface-variant">约占 37.2%</div>
+</div>
+</div>
+<!-- Single Subtask Proportion Bar -->
+<div class="mt-2.5 pt-2 border-t border-paper-rule">
+<div class="w-full bg-surface-container h-1.5 rounded-full overflow-hidden">
+<div class="bg-tertiary-container h-full rounded-full" style="width: 37.2%;"></div>
+</div>
+</div>
+</article>
+</div>
+</section>
+<!-- SECTION 3: SECONDARY MODULE - MEMBER TOTALS -->
+<section class="bg-surface-container-low border border-paper-rule rounded-lg p-4 space-y-3">
+<div class="flex items-center justify-between border-b border-paper-rule pb-2">
+<div>
+<h4 class="font-body-sans text-sm font-semibold text-on-surface">成员合计</h4>
+<p class="font-annotation-cue text-[11px] text-on-surface-variant">按执行人合并统计（两位成员合计 68.8k）</p>
+</div>
+<span class="font-label-stamp text-[11px] text-on-surface-variant">2 MEMBERS</span>
+</div>
+<!-- 2 Member Breakdown Cards -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+<!-- Member 1: Qoder -->
+<div class="bg-surface-container-lowest p-3 rounded border border-paper-rule flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-annotation-cue text-[11px] text-outline font-bold">执行人</span>
+<div class="font-body-sans font-bold text-base text-on-surface">Qoder</div>
+</div>
+<span class="font-label-stamp text-[10px] px-1.5 py-0.5 rounded bg-editorial-blue/10 text-editorial-blue">
+                2 个子任务
+              </span>
+</div>
+<div class="mt-2 pt-2 border-t border-paper-rule flex items-baseline justify-between">
+<span class="font-annotation-cue text-[11px] text-on-surface-variant">总计用量</span>
+<span class="font-headline-act text-base font-bold text-editorial-blue">43.2k</span>
+</div>
+<p class="font-annotation-cue text-[10px] text-on-surface-variant mt-1">
+              承担：子任务1 (12.4k) + 子任务2 (30.8k)
+            </p>
+</div>
+<!-- Member 2: Codex -->
+<div class="bg-surface-container-lowest p-3 rounded border border-paper-rule flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-annotation-cue text-[11px] text-outline font-bold">执行人</span>
+<div class="font-body-sans font-bold text-base text-on-surface">Codex</div>
+</div>
+<span class="font-label-stamp text-[10px] px-1.5 py-0.5 rounded bg-surface-variant text-on-surface-variant">
+                1 个子任务
+              </span>
+</div>
+<div class="mt-2 pt-2 border-t border-paper-rule flex items-baseline justify-between">
+<span class="font-annotation-cue text-[11px] text-on-surface-variant">总计用量</span>
+<span class="font-headline-act text-base font-bold text-on-surface">25.6k</span>
+</div>
+<p class="font-annotation-cue text-[10px] text-on-surface-variant mt-1">
+              承担：子任务3 (25.6k)
+            </p>
+</div>
+</div>
+<!-- Comparative Member Share Ratio Bar -->
+<div class="space-y-1 pt-1">
+<div class="flex justify-between font-annotation-cue text-[11px] text-on-surface-variant">
+<span>Qoder · 62.8%</span>
+<span>Codex · 37.2%</span>
+</div>
+<div class="w-full h-2.5 bg-surface-container rounded-sm overflow-hidden flex border border-paper-rule">
+<div class="bg-editorial-blue h-full" style="width: 62.8%;" title="Qoder 62.8%"></div>
+<div class="bg-tertiary-container h-full" style="width: 37.2%;" title="Codex 37.2%"></div>
+</div>
+</div>
+</section>
+</div>
+<!-- FOOTER LINKING ACTIONS & BOTTOM BAR -->
+<footer class="border-t border-paper-rule px-4 sm:px-6 py-3.5 bg-surface-container-low flex flex-col sm:flex-row items-center justify-between gap-2.5">
+<div class="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-start">
+<a class="inline-flex items-center gap-1 font-annotation-cue text-xs text-on-surface-variant hover:text-primary transition-colors" href="#overview">
+<span class="material-symbols-outlined text-sm">west</span>
+<span>返回任务与子任务总览</span>
+</a>
+</div>
+<div class="flex items-center gap-2 w-full sm:w-auto justify-end">
+<a class="w-full sm:w-auto text-center font-label-stamp text-xs px-3 py-1.5 rounded bg-primary-container text-on-primary font-bold hover:bg-primary transition-colors flex items-center justify-center gap-1" href="#session">
+<span>跳转子任务2会话</span>
+<span class="material-symbols-outlined text-sm">open_in_new</span>
+</a>
+</div>
+</footer>
+</main>

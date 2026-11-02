@@ -1,0 +1,480 @@
+
+/* ==========================================================================
+   squad-shell · 纯净统一样式表 (Warm Editorial Craft v1.0)
+   严格执行：640px 原生面板、480px 自适应、无全局外大框、无侧栏
+   ========================================================================== */
+:root {
+  /* Warm Editorial 配色变量 */
+  --squad-bg: #fffcf7;
+  --squad-bg-alt: #fbf7ee;
+  --squad-surface: #ffffff;
+  --squad-surface-card: #fdfbf7;
+  --squad-text-main: #2c2621;
+  --squad-text-muted: #6b645b;
+  --squad-text-dim: #9c9489;
+  --squad-terracotta: #b84b2e;
+  --squad-terracotta-bg: #faeee9;
+  --squad-border: #e8e1d5;
+  --squad-border-subtle: #f0eade;
+  --squad-border-dark: #cfc6b6;
+  --squad-green: #2a8356;
+  --squad-green-bg: #eaf5ee;
+  --squad-blue: #2762a4;
+  --squad-blue-bg: #edf3fa;
+  --squad-warn: #c2691b;
+  --squad-warn-bg: #fdf3e9;
+  --squad-error: #c93b2b;
+  --squad-error-bg: #faebea;
+
+  /* 尺度与间距基准 */
+  --squad-header-h: 38px;
+  --squad-nav-h: 46px;
+  --squad-gutter: 20px;
+  --squad-font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", sans-serif;
+  --squad-font-serif: 'Noto Serif SC', serif;
+  --squad-font-mono: 'Space Mono', monospace;
+}
+
+/* 基础重置与排版 */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3efe6; /* 预览外衬背景，实际导出面板为 .squad-shell-root */
+  color: var(--squad-text-main);
+  font-family: var(--squad-font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* 核心容器：原生 640px 宽度，居中平铺，480px 自适应，无侧边框 */
+.squad-shell-root {
+  width: 100%;
+  max-width: 640px;
+  min-height: 100vh;
+  margin: 0 auto;
+  background-color: var(--squad-bg);
+  position: relative;
+  overflow-x: hidden;
+  border-left: 1px dashed rgba(207, 198, 182, 0.4); /* 仅在设计演示时作参考对齐线 */
+  border-right: 1px dashed rgba(207, 198, 182, 0.4);
+}
+
+/* 1. 顶部细进度加载条（网络请求时滑出） */
+.squad-progress-rail {
+  position: sticky;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: transparent;
+  z-index: 100;
+  pointer-events: none;
+}
+.squad-progress-bar {
+  height: 100%;
+  width: 0%;
+  background: var(--squad-terracotta);
+  transition: width 0.25s ease;
+}
+.squad-progress-bar.active {
+  width: 65%;
+  animation: squad-pulse-load 1.4s ease-in-out infinite;
+}
+@keyframes squad-pulse-load {
+  0% { transform: translateX(-100%); width: 40%; }
+  50% { width: 75%; }
+  100% { transform: translateX(200%); width: 30%; }
+}
+
+/* 2. 统一顶部上下文行 (Context Meta Bar) - 高度严格 38px */
+.squad-meta-bar {
+  height: var(--squad-header-h);
+  padding: 0 var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--squad-border-subtle);
+  background: var(--squad-bg);
+  font-size: 11px;
+  color: var(--squad-text-muted);
+  user-select: none;
+}
+.squad-meta-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.squad-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 1px 6px;
+  background: var(--squad-bg-alt);
+  border: 1px solid var(--squad-border);
+  border-radius: 2px;
+  font-family: var(--squad-font-mono);
+  font-size: 10.5px;
+  color: var(--squad-text-main);
+  letter-spacing: 0.02em;
+}
+.squad-meta-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.squad-sync-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-family: var(--squad-font-mono);
+  font-size: 11px;
+  color: var(--squad-text-muted);
+}
+.squad-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--squad-green);
+  box-shadow: 0 0 0 2px var(--squad-green-bg);
+}
+.squad-pulse-dot.syncing {
+  background-color: var(--squad-terracotta);
+  box-shadow: 0 0 0 2px var(--squad-terracotta-bg);
+  animation: squad-pulse-dot 1s infinite;
+}
+@keyframes squad-pulse-dot {
+  0% { transform: scale(0.9); opacity: 0.6; }
+  50% { transform: scale(1.3); opacity: 1; }
+  100% { transform: scale(0.9); opacity: 0.6; }
+}
+
+/* 3. 统一全局主导航 (Main Nav) - 高度 46px */
+.squad-main-nav {
+  height: var(--squad-nav-h);
+  padding: 0 var(--squad-gutter);
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--squad-border);
+  background: var(--squad-bg);
+  position: sticky;
+  top: 2px;
+  z-index: 50;
+}
+.squad-nav-tabs {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  height: 100%;
+}
+.squad-nav-tab {
+  height: 100%;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 2px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--squad-text-muted);
+  text-decoration: none;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: all 0.15s ease;
+  position: relative;
+  top: 1px; /* 对齐底部分割线 */
+}
+.squad-nav-tab:hover {
+  color: var(--squad-text-main);
+}
+.squad-nav-tab.active {
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  border-bottom-color: var(--squad-terracotta);
+}
+.squad-nav-tab .squad-tab-count {
+  font-family: var(--squad-font-mono);
+  font-size: 11px;
+  padding: 1px 5px;
+  border-radius: 10px;
+  background: var(--squad-bg-alt);
+  color: var(--squad-text-muted);
+}
+.squad-nav-tab.active .squad-tab-count {
+  background: var(--squad-terracotta-bg);
+  color: var(--squad-terracotta);
+}
+
+.squad-nav-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 100%;
+}
+.squad-btn-refresh {
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid var(--squad-border);
+  border-radius: 4px;
+  color: var(--squad-text-muted);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.squad-btn-refresh:hover {
+  color: var(--squad-text-main);
+  background: var(--squad-bg-alt);
+  border-color: var(--squad-border-dark);
+}
+.squad-btn-refresh.spinning svg {
+  animation: squad-spin 0.8s linear infinite;
+}
+
+@keyframes squad-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* 4. 二级统一控制栏：分析页 Segmented Control 与时间切片 */
+.squad-sub-bar {
+  padding: 12px var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: var(--squad-bg);
+  border-bottom: 1px solid var(--squad-border-subtle);
+  flex-wrap: wrap;
+}
+/* 统一双段胶囊切换 */
+.squad-segment-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--squad-bg-alt);
+  border: 1px solid var(--squad-border);
+  border-radius: 4px;
+  padding: 2px;
+}
+.squad-segment-btn {
+  border: none;
+  background: transparent;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--squad-text-muted);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.squad-segment-btn.active {
+  background: var(--squad-surface);
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(44, 38, 33, 0.08);
+}
+/* 范围切换（近7天 / 近30天 / 全部） */
+.squad-range-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+}
+.squad-range-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  padding: 2px 7px;
+  font-size: 11px;
+  font-family: var(--squad-font-sans);
+  color: var(--squad-text-muted);
+  border-radius: 2px;
+  cursor: pointer;
+}
+.squad-range-btn:hover {
+  color: var(--squad-text-main);
+}
+.squad-range-btn.active {
+  background: var(--squad-terracotta-bg);
+  color: var(--squad-terracotta);
+  font-weight: 600;
+  border-color: rgba(184, 75, 46, 0.2);
+}
+
+/* 5. 统一面包屑导航栏 (用于子任务详情、账簿页返回) */
+.squad-breadcrumb-bar {
+  padding: 10px var(--squad-gutter);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--squad-bg);
+  border-bottom: 1px solid var(--squad-border-subtle);
+  font-size: 12px;
+}
+.squad-breadcrumb-left {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--squad-text-muted);
+}
+.squad-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  color: var(--squad-terracotta);
+  text-decoration: none;
+  font-weight: 500;
+  padding: 2px 6px;
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.squad-back-link:hover {
+  background: var(--squad-terracotta-bg);
+}
+.squad-breadcrumb-separator {
+  color: var(--squad-text-dim);
+}
+.squad-breadcrumb-current {
+  color: var(--squad-text-main);
+  font-weight: 500;
+}
+
+/* 6. 统一加载反馈态 (Loading States) */
+/* (A) 全局/局部卡片加载微提示 (保持旧内容，不遮挡) */
+.squad-loading-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px var(--squad-gutter);
+  background: var(--squad-terracotta-bg);
+  border-bottom: 1px solid rgba(184, 75, 46, 0.2);
+  font-size: 11.5px;
+  color: var(--squad-terracotta);
+}
+.squad-loading-banner-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.squad-spinner {
+  width: 13px;
+  height: 13px;
+  border: 1.75px solid rgba(184, 75, 46, 0.3);
+  border-top-color: var(--squad-terracotta);
+  border-radius: 50%;
+  animation: squad-spin 0.7s linear infinite;
+}
+
+/* (B) 详情执行中对话末尾流光与细微虚线旋转圆 (无需大卡片) */
+.squad-subtask-steamer {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  margin: 12px 0;
+  background: var(--squad-bg-alt);
+  border: 1px dashed var(--squad-border-dark);
+  border-radius: 4px;
+  font-size: 12px;
+  color: var(--squad-text-muted);
+}
+.squad-spinner-dashed {
+  width: 14px;
+  height: 14px;
+  border: 1.5px dashed var(--squad-terracotta);
+  border-radius: 50%;
+  animation: squad-spin 2s linear infinite;
+}
+.squad-streaming-text {
+  background: linear-gradient(90deg, var(--squad-text-main) 0%, var(--squad-terracotta) 50%, var(--squad-text-main) 100%);
+  background-size: 200% auto;
+  color: transparent;
+  -webkit-background-clip: text;
+  background-clip: text;
+  animation: squad-shimmer 2.2s linear infinite;
+  font-weight: 500;
+}
+@keyframes squad-shimmer {
+  to { background-position: 200% center; }
+}
+
+/* (C) 错误重试浮条 */
+.squad-error-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px var(--squad-gutter);
+  background: var(--squad-error-bg);
+  border-bottom: 1px solid rgba(201, 59, 43, 0.25);
+  font-size: 12px;
+  color: var(--squad-error);
+}
+.squad-btn-retry {
+  border: 1px solid var(--squad-error);
+  background: #fff;
+  color: var(--squad-error);
+  font-size: 11px;
+  padding: 2px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-weight: 500;
+}
+.squad-btn-retry:hover {
+  background: var(--squad-error);
+  color: #fff;
+}
+
+/* 7. 面板内容区统一样式基准 */
+.squad-content-body {
+  padding: 16px var(--squad-gutter) 40px var(--squad-gutter);
+}
+
+/* 演示切换控制（仅设计工作台演示用，不污染核心样式） */
+.demo-control-bar {
+  max-width: 640px;
+  margin: 16px auto 10px auto;
+  padding: 8px 12px;
+  background: #2c2621;
+  color: #fff;
+  border-radius: 6px;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.demo-btn-pill {
+  background: #443c35;
+  color: #fff;
+  border: 1px solid #5a5148;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  cursor: pointer;
+}
+.demo-btn-pill.active {
+  background: var(--squad-terracotta);
+  border-color: var(--squad-terracotta);
+}
+
+/* 响应式断点适配 480px 窄视口 */
+@media (max-width: 520px) {
+  :root {
+    --squad-gutter: 14px;
+  }
+  .squad-sub-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .squad-range-group {
+    width: 100%;
+    justify-content: flex-start;
+  }
+}

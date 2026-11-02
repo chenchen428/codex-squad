@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 任务看板 (自适应全宽泳道与列式重构版)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&amp;family=Noto+Sans+SC:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --paper-bg: #fbf9f4;
+      --paper-card: #ffffff;
+      --ink-primary: #2c2621;
+      --ink-secondary: #70685e;
+      --ink-tertiary: #9e9486;
+      --line-subtle: #e6dfd1;
+      --line-strong: #d5cbba;
+      --rust-red: #b84b2e;
+      --rust-red-light: #fbeee9;
+      --running-green: #2d6a4f;
+      --running-green-bg: #edf6f0;
+      --audit-amber: #b07219;
+      --audit-amber-bg: #fdf8ee;
+      --done-blue: #2b6cb0;
+      --done-blue-bg: #ebf4ff;
+    }
+
+    body {
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: 'Noto Sans SC', 'Space Grotesk', -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .font-grotesk {
+      font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    }
+
+    /* 容器查询自适应布局：根据内容主容器宽度而不是屏幕猜测 */
+    .board-container-wrapper {
+      container-type: inline-size;
+      container-name: squadboard;
+    }
+
+    /* 默认及小于 960px 容器：垂直全宽横向泳道从上向下排列，各状态占整行 */
+    .lanes-track {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .lane-block {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid var(--line-subtle);
+      border-radius: 8px;
+      padding: 0.875rem;
+      box-sizing: border-box;
+    }
+
+    .cards-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    /* 容器 >= 960px 宽度：自然恢复经典 3 列看板布局，每列最小约 280px 并填充 */
+    @container squadboard (min-width: 960px) {
+      .lanes-track {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        gap: 1rem;
+        align-items: start;
+      }
+      .lane-block {
+        background: rgba(255, 255, 255, 0.6);
+        min-height: 480px;
+      }
+    }
+
+    /* 针对不支持容器查询的回退：媒体查询 */
+    @media (min-width: 960px) {
+      @supports not (container-type: inline-size) {
+        .lanes-track {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(280px, 1fr));
+          gap: 1rem;
+          align-items: start;
+        }
+        .lane-block {
+          background: rgba(255, 255, 255, 0.6);
+          min-height: 480px;
+        }
+      }
+    }
+
+    /* 聚焦态无障碍保护 */
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--rust-red);
+      outline-offset: 2px;
+    }
+  </style>
+</head>
+<body class="min-h-screen text-[13px] leading-relaxed">
+<!-- 主内容容器：默认 640px 宽，高度自然延伸并流畅滚动 -->
+<main class="max-w-[1200px] mx-auto px-3.5 sm:px-5 py-4 w-full">
+<!-- 顶栏：项目元信息与导航 -->
+<header class="pb-3 border-b border-[#e6dfd1] mb-3.5">
+<div class="flex items-center justify-between gap-2 text-[12px] text-[#70685e] mb-2.5">
+<div class="flex items-center gap-1.5 truncate">
+<span class="font-medium text-[#2c2621]">Codex 小队</span>
+<span class="text-[#d5cbba]">/</span>
+<span class="truncate">示例项目</span>
+<span class="px-1.5 py-0.5 rounded text-[11px] font-mono-code bg-[#f4efe2] text-[#70685e]">codex-squad</span>
+</div>
+<div class="flex items-center gap-2 flex-shrink-0">
+<span class="inline-flex items-center gap-1 text-[11px] text-[#2d6a4f] bg-[#edf6f0] px-2 py-0.5 rounded-full font-medium">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f] animate-pulse"></span>
+            3秒自动同步
+          </span>
+<button aria-label="刷新看板" class="p-1 text-[#70685e] hover:text-[#2c2621] rounded transition-colors" type="button">
+<svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.85.83 6.72 2.24L21 8M21 3v5h-5"></path>
+</svg>
+</button>
+</div>
+</div>
+<!-- 一级 Tab：小队任务看板 (Active) -->
+<nav aria-label="小队主导航" class="flex items-center justify-between gap-4">
+<div class="flex items-center gap-2">
+<div class="inline-flex items-center gap-1.5 pb-1 text-[#b84b2e] border-b-2 border-[#b84b2e] font-semibold text-[14px]">
+<svg class="w-4 h-4 text-[#b84b2e]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<rect height="18" rx="2" ry="2" width="18" x="3" y="3"></rect>
+<line x1="9" x2="9" y1="3" y2="21"></line>
+<line x1="15" x2="15" y1="3" y2="21"></line>
+</svg>
+<span>小队任务看板</span>
+<span class="ml-1 px-1.5 py-0.2 bg-[#fbeee9] text-[#b84b2e] text-[11px] font-grotesk font-bold rounded-full">14</span>
+</div>
+</div>
+<div class="text-[12px] text-[#70685e] font-mono-code">
+          活跃执行中
+        </div>
+</nav>
+</header>
+<!-- 搜索与状态过滤工具栏 -->
+<section aria-label="筛选与搜索栏" class="space-y-2.5 mb-4">
+<div class="relative w-full">
+<svg class="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="11" cy="11" r="8"></circle>
+<line x1="21" x2="16.65" y1="21" y2="16.65"></line>
+</svg>
+<input class="w-full pl-8 pr-3 py-1.5 bg-white border border-[#ded5c4] rounded-md text-[12px] placeholder-[#9e9486] text-[#2c2621] focus:bg-white transition-all shadow-sm" placeholder="搜索任务标题、编号或当前动作..." type="text" value=""/>
+</div>
+<!-- 状态过滤胶囊 -->
+<div class="flex items-center gap-1.5 flex-wrap text-[11px]"><button class="px-2.5 py-1 rounded bg-[#2c2621] text-white font-medium shadow-xs" type="button">
+          全部 <span class="font-grotesk opacity-90 ml-0.5">14</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-white border border-[#e6dfd1] text-[#2d6a4f] hover:border-[#2d6a4f] transition-colors flex items-center gap-1" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]"></span>
+          处理中 <span class="font-grotesk text-[#70685e]">2</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-white border border-[#e6dfd1] text-[#b07219] hover:border-[#b07219] transition-colors flex items-center gap-1" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b07219]"></span>
+          待核验 <span class="font-grotesk text-[#70685e]">4</span>
+</button>
+<button class="px-2.5 py-1 rounded bg-white border border-[#e6dfd1] text-[#2b6cb0] hover:border-[#2b6cb0] transition-colors flex items-center gap-1" type="button">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2b6cb0]"></span>
+          已完成 <span class="font-grotesk text-[#70685e]">8</span>
+</button></div>
+</section>
+<!-- 响应式自适应容器看板 -->
+<div class="board-container-wrapper w-full">
+<div class="lanes-track">
+<!-- 泳道 1: 处理中 (1项任务) -->
+<section aria-labelledby="lane-heading-running" class="lane-block flex flex-col"><div class="flex items-center justify-between pb-2 mb-2.5 border-b border-[#e6dfd1]">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#2d6a4f]"></span>
+<h2 class="font-semibold text-[13px] text-[#2c2621]" id="lane-heading-running">处理中</h2>
+<span class="px-1.5 py-0.2 bg-[#edf6f0] text-[#2d6a4f] text-[11px] font-grotesk font-bold rounded-full">2</span>
+</div>
+<span class="text-[11px] text-[#2d6a4f] font-medium tracking-tight">活跃执行中</span>
+</div>
+<div class="cards-flow">
+<article class="bg-white border border-[#ded5c4] hover:border-[#b84b2e] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#01</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#edf6f0] text-[#2d6a4f] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f] animate-pulse"></span>
+                      运行中
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>尝试 1</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  核对需求差异并收敛参数边界
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b84b2e] font-bold select-none">&gt;</span>
+<span class="truncate text-[#2c2621]">diff: compare PRD tokens with runtime schema</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2d6a4f] bg-[#edf6f0] px-1 rounded">正在校验</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    02:40
+                  </span>
+<span>14.2k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#b84b2e] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#03</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#edf6f0] text-[#2d6a4f] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f] animate-pulse"></span>
+                      运行中
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>尝试 2</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  接入任务流式进展与事件增量订阅通道
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b84b2e] font-bold select-none">&gt;</span>
+<span class="truncate text-[#2c2621]">stream: bind SSE channel with heartbeat listener</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2d6a4f] bg-[#edf6f0] px-1 rounded">推流中</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    01:18
+                  </span>
+<span>9.6k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+</div></section>
+<!-- 泳道 2: 待核验 (0项任务，紧凑折叠单行，不占大片高度) -->
+<section aria-labelledby="lane-heading-audit" class="lane-block flex flex-col"><div class="flex items-center justify-between pb-2 mb-2.5 border-b border-[#e6dfd1]">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#b07219]"></span>
+<h2 class="font-semibold text-[13px] text-[#2c2621]" id="lane-heading-audit">待核验</h2>
+<span class="px-1.5 py-0.2 bg-[#fdf8ee] text-[#b07219] text-[11px] font-grotesk font-bold rounded-full">4</span>
+</div>
+<span class="text-[11px] text-[#b07219] font-medium">等待主会话确认</span>
+</div>
+<div class="cards-flow">
+<article class="bg-white border border-[#ded5c4] hover:border-[#b07219] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b07219]">#04</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#fdf8ee] text-[#b07219] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b07219]"></span>
+                      待核验
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>轮次 1</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  Markdown 长表格增量渲染及溢出保护
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b07219] font-bold select-none">?</span>
+<span class="truncate text-[#2c2621]">patch: virtual scroll chunk calculation</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#b07219] bg-[#fdf8ee] px-1 rounded">等待核对</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    03:12
+                  </span>
+<span>11.8k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#b07219] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b07219]">#05</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#fdf8ee] text-[#b07219] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b07219]"></span>
+                      待核验
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>轮次 3</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  原生会话续接验证与本地缓存一致性
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b07219] font-bold select-none">?</span>
+<span class="truncate text-[#2c2621]">sync: reconcile local storage with state tree</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#b07219] bg-[#fdf8ee] px-1 rounded">等待核对</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    01:45
+                  </span>
+<span>7.4k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#b07219] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b07219]">#06</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#fdf8ee] text-[#b07219] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b07219]"></span>
+                      待核验
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>轮次 1</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  发布包资源核对与哈希签名校验
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b07219] font-bold select-none">?</span>
+<span class="truncate text-[#2c2621]">verify: sha256 checksum on bundle assets</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#b07219] bg-[#fdf8ee] px-1 rounded">等待核对</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    00:54
+                  </span>
+<span>4.1k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#b07219] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b07219]">#07</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#fdf8ee] text-[#b07219] font-medium text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-[#b07219]"></span>
+                      待核验
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>轮次 2</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  网络加载失败重试机制与指数退避降级
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#b07219] font-bold select-none">?</span>
+<span class="truncate text-[#2c2621]">retry: apply exponential backoff strategy</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#b07219] bg-[#fdf8ee] px-1 rounded">等待核对</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span class="inline-flex items-center gap-1">
+<svg class="w-3 h-3 text-[#9e9486]" fill="none" stroke="currentColor" stroke-width="2" viewbox="0 0 24 24">
+<circle cx="12" cy="12" r="10"></circle>
+<polyline points="12 6 12 12 16 14"></polyline>
+</svg>
+                    02:08
+                  </span>
+<span>8.3k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+</div></section>
+<!-- 泳道 3: 已完成 (1项任务) -->
+<section aria-labelledby="lane-heading-done" class="lane-block flex flex-col"><div class="flex items-center justify-between pb-2 mb-2.5 border-b border-[#e6dfd1]">
+<div class="flex items-center gap-2">
+<span class="w-2 h-2 rounded-full bg-[#2b6cb0]"></span>
+<h2 class="font-semibold text-[13px] text-[#2c2621]" id="lane-heading-done">已完成</h2>
+<span class="px-1.5 py-0.2 bg-[#ebf4ff] text-[#2b6cb0] text-[11px] font-grotesk font-bold rounded-full">8</span>
+</div>
+<span class="text-[11px] text-[#2b6cb0]">已验收归档</span>
+</div>
+<div class="cards-flow">
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#02</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>01:15</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  修正统计显示及千分位格式化
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">commit: format token counts with locale string</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>8.6k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#08</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>00:48</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  统一页面导航与路由历史栈响应
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">fix: route history back button handling</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>5.2k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#09</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>01:02</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  移除任务详情多余外框并平滑转场动画
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">style: simplify modal wrapper padding</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>6.1k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#10</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>00:35</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  补齐深色主题变量与背景回退色标
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">tokens: define fallback paper CSS properties</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>3.9k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#11</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>01:20</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  优化卡片容器查询及视口边界吸附
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">layout: implement container query rules</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>7.8k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#12</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>00:52</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  修复代码差异高亮配色对比度不合规问题
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">a11y: increase diff green contrast ratio</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>4.6k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#13</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Qoder</span>
+<span class="text-[#d5cbba]">·</span>
+<span>00:40</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  建立自动化测试套件与执行状态快照
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">ci: integrate unit regression test suite</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>5.0k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+<article class="bg-white border border-[#ded5c4] hover:border-[#2b6cb0] rounded-md p-3 shadow-xs transition-all relative group cursor-pointer flex flex-col justify-between">
+<div>
+<div class="flex items-center justify-between gap-2 mb-1.5 text-[11px]">
+<div class="flex items-center gap-1.5">
+<span class="font-mono-code font-bold text-[#b84b2e]">#14</span>
+<span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded bg-[#ebf4ff] text-[#2b6cb0] font-medium text-[11px]">
+<svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="3" viewbox="0 0 24 24">
+<polyline points="20 6 9 17 4 12"></polyline>
+</svg>
+                      已验收
+                    </span>
+</div>
+<div class="flex items-center gap-1.5 text-[#70685e] font-mono-code">
+<span>Codex</span>
+<span class="text-[#d5cbba]">·</span>
+<span>01:10</span>
+</div>
+</div>
+<h3 class="font-medium text-[13px] text-[#2c2621] mb-2 leading-snug group-hover:text-[#b84b2e] transition-colors break-words">
+                  升级依赖项安全版本并剔除无用模块
+                </h3>
+<div class="bg-[#fcfaf5] border border-[#eee7da] rounded px-2.5 py-1.5 mb-2.5 text-[11px] font-mono-code text-[#70685e] flex items-center gap-1.5 overflow-hidden">
+<span class="text-[#2b6cb0] font-bold select-none">✓</span>
+<span class="truncate text-[#2c2621]">deps: audit packages and remove unused lodash</span>
+<span class="ml-auto flex-shrink-0 text-[10px] text-[#2b6cb0] bg-[#ebf4ff] px-1 rounded">断言通过</span>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] pt-1.5 border-t border-[#f4efe2] text-[#70685e]">
+<div class="flex items-center gap-2.5 font-mono-code">
+<span>6.7k tok</span>
+</div>
+<span class="text-[#b84b2e] group-hover:underline inline-flex items-center gap-0.5 text-[11px]">
+                  查看详情 ›
+                </span>
+</div>
+</article>
+</div></section>
+</div>
+</div>
+<!-- 底部状态说明（纯净无多余按钮） -->
+<footer class="mt-6 pt-3 border-t border-[#e6dfd1] text-[11px] text-[#9e9486] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1.5">
+<div class="flex items-center gap-2">
+<span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]"></span>
+<span>只读演示 · 点击任务查看对应会话与执行记录</span>
+</div>
+<div class="font-mono-code text-[#70685e]">
+        Codex Squad v0.9.4
+      </div>
+</footer>
+</main>
+</body>
+</html>
+

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'nonce-{{NONCE}}'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; media-src data: blob:; connect-src 'none'; frame-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'"/>
+<title>{{PAGE_TITLE}}</title>
+<!--INLINE_CSS-->
+</head>
+<body>
+<noscript><div class="list-empty">本验收工作台需要本地 JavaScript；当前浏览器已禁用脚本，界面不可用。</div></noscript>
+<header class="topbar">
+<div class="topbar-brand">
+<span class="brand-mark"><svg class="icon" data-icon="terminal" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg></span>
+<span class="topbar-title" id="report-title">{{REPORT_TITLE}}</span>
+</div>
+<nav class="report-links" id="report-links" aria-label="关联需求与资料" hidden></nav>
+<span class="topbar-sep"></span>
+<span class="chip primary" id="report-environment"><span class="dot"></span><span id="report-environment-text">环境未标注</span></span>
+<span class="chip" id="report-example-badge" hidden>示例数据</span>
+<div class="topbar-meta">
+<span class="chip" id="report-revision" hidden></span>
+<span class="topbar-env" id="report-executed-at"></span>
+<button class="icon-btn" id="btn-help" title="说明" type="button"><svg class="icon" data-icon="help_outline" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg></button>
+</div>
+</header>
+<div class="help-panel" id="help-panel" hidden>
+<div class="help-head">
+<h2>这个页面是什么</h2>
+<button class="icon-btn" id="btn-help-close" title="关闭" type="button"><svg class="icon" data-icon="close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg></button>
+</div>
+<p>离线验收包：只展示标准载荷里的用例、步骤、验证说明与原始证据，不发起业务请求，也不执行 SQL/RPC。</p>
+<p>左栏筛选用例；中央是当前步骤的原始截图，或“语句 / 请求 + 真实结果 / 响应”上下同屏的核验台（分隔条可拖动，也可获得焦点后用方向键调整）。右栏从业务疑问到结论边界连续阅读，不需要切换页签。页面整体不滚动，左右两栏与核验台内部各自滚动。</p>
+<p>截图支持滚轮缩放、拖动平移、双击复位；右栏可收起。结果表与响应字段直接取自步骤证据原文，生成的报告不推断通过状态，结论只来自输入。</p>
+</div>
+<div class="workbench">
+<aside class="list-pane" id="list-pane">
+<div class="list-head">
+<div class="search-wrap"><svg class="icon" data-icon="search" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg><input class="search-input" id="case-search" type="search" placeholder="搜索业务用例…" autocomplete="off"/></div>
+<div class="filter-row" id="group-filters"></div>
+<div class="filter-row" id="role-filters"></div>
+<div class="filter-row" id="page-filters"></div>
+<div class="filter-row" id="status-filters"></div>
+</div>
+<div class="case-list custom-scrollbar" id="case-groups"></div>
+<div class="list-foot" id="sidebar-foot">业务 0 条 · 审计 0 条</div>
+</aside>
+<main class="work-main">
+<div class="case-bar" id="case-bar"></div>
+<div class="steps-bar custom-scrollbar" id="steps-bar"><div class="steps-strip" id="steps-strip"></div></div>
+<div class="work-body" id="work-body">
+<section class="stage" id="stage-shell">
+<div class="stage-bar" id="stage-bar"></div>
+<div class="stage-body" id="stage-body">
+<div class="stage-canvas" id="stage-canvas" tabindex="0" aria-label="系统截图画布：滚轮缩放、拖动平移、双击复位">
+<div class="stage-world" id="stage-world" hidden><img class="stage-image" id="stage-image" alt=""/></div>
+<div class="stage-annotations" id="stage-annotations" hidden></div>
+<div class="stage-empty" id="stage-empty" hidden></div>
+</div>
+<div class="stage-panel custom-scrollbar" id="stage-panel" hidden></div>
+</div>
+<div class="repro-bar" id="repro"></div>
+</section>
+<aside class="inspector" id="inspector">
+<div class="inspector-head"><span class="inspector-title">验证说明与结论</span><span class="ins-status" id="inspector-status"></span></div>
+<div class="inspector-body custom-scrollbar" id="inspector-body"></div>
+</aside>
+</div>
+</main>
+</div>
+<div class="case-detail" id="case-detail" hidden></div>
+<div class="focus-pop" id="focus-pop" role="tooltip" hidden></div>
+<div class="row-detail" id="row-detail" role="dialog" aria-modal="false" aria-label="行详情" hidden></div>
+<div class="prefill-pop" id="prefill-pop" role="dialog" aria-modal="false" aria-label="带入参数" hidden></div>
+<div class="lightbox" id="lightbox" hidden>
+<div class="lb-backdrop" data-lightbox-close></div>
+<section class="lb-panel" role="dialog" aria-modal="true" aria-labelledby="lb-title">
+<header class="lb-head">
+<span class="lb-icon"><svg class="icon" data-icon="image" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg></span>
+<div class="lb-head-main"><h2 id="lb-title"></h2><div class="lb-meta" id="lb-meta"></div></div>
+<span class="lb-hint">按 Esc 关闭</span>
+<button class="icon-btn" id="lb-close" type="button" data-lightbox-close title="关闭"><svg class="icon" data-icon="close" viewBox="0 0 24 24" aria-hidden="true" focusable="false"></svg></button>
+</header>
+<div class="lb-stage" id="lb-stage">
+<div class="lb-world" id="lb-world" hidden><img class="lb-image" id="lb-image" alt=""/></div>
+<div class="lb-annotations" id="lb-annotations"></div>
+<div class="lb-empty" id="lb-empty" hidden></div>
+</div>
+<div class="lb-legend" id="lb-legend" hidden></div>
+<footer class="lb-foot">
+<span class="lb-zoom-label" id="lb-zoom-label">适应</span>
+<button class="icon-btn" type="button" data-lb-zoom="out" title="缩小">−</button>
+<span class="lb-zoom-value" id="lb-zoom-value">100%</span>
+<button class="icon-btn" type="button" data-lb-zoom="in" title="放大">+</button>
+<button class="btn" type="button" data-lb-fit>适应</button>
+<button class="btn" type="button" data-lb-actual>100%</button>
+<button class="btn" type="button" data-lb-toggle-anno aria-pressed="true" id="lb-toggle-anno">隐藏标注</button>
+<span class="lb-count" id="lb-anno-count"></span>
+<button class="btn btn-primary" type="button" data-lightbox-close>完成检视</button>
+</footer>
+</section>
+</div>
+<div class="toast" id="toast" hidden></div>
+<!--INLINE_DATA-->
+<!--INLINE_RRWEB-->
+<!--INLINE_APP_JS-->
+</body>
+</html>

@@ -1,0 +1,6 @@
+{
+  "name": "codex-squad",
+  "version": "0.12.0",
+  "description": "Codex leads planning and review; Qoder executes tasks with progress, usage, and HTML acceptance reports. / Codex 负责规划与核验，Qoder 执行，支持进展、用量与 HTML 验收报告。",
+  "skills": "./skills/"
+}

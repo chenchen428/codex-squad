@@ -1,0 +1,2051 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 周期分析 (Warm Editorial 刊页定稿版)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;0,6..72,700;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Noto+Serif+SC:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    /* ==========================================================================
+       Warm Editorial Craft System Tokens & Reset
+       ========================================================================== */
+    :root {
+      --bg-page: #fbf9f4;
+      --bg-paper: #ffffff;
+      --bg-surface-subtle: #f7f3ea;
+      --bg-surface-dim: #f2ece0;
+      --bg-surface-warm: #fcfbf8;
+      --bg-badge: #eee8db;
+      --bg-alert-soft: #fcf4f2;
+
+      --ink-primary: #2c2621;
+      --ink-secondary: #635b52;
+      --ink-muted: #8c8275;
+      --ink-tertiary: #a9a093;
+
+      --accent-rust: #b84b2e;
+      --accent-rust-hover: #9e3d23;
+      --accent-rust-subtle: rgba(184, 75, 46, 0.08);
+      --accent-forest: #2d6a4f;
+      --accent-forest-subtle: rgba(45, 106, 79, 0.09);
+
+      --rule-fine: #ded5c4;
+      --rule-hairline: #eae3d5;
+      --rule-strong: #c8bda9;
+
+      --font-serif: "Newsreader", "Noto Serif SC", Georgia, serif;
+      --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      --font-mono: "Space Mono", SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --radius-lg: 8px;
+
+      --shadow-modal: 0 16px 48px -8px rgba(44, 38, 33, 0.18), 0 4px 12px rgba(44, 38, 33, 0.08);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--ink-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      padding: 0;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    /* ==========================================================================
+       Top Navigation Bar (Unified Squad Host Bar)
+       ========================================================================== */
+    .squad-host-nav {
+      background: #ffffff;
+      border-bottom: 1px solid var(--rule-fine);
+      position: sticky;
+      top: 0;
+      z-index: 40;
+    }
+    .squad-host-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0 16px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .squad-host-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 0;
+    }
+    .squad-badge {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--rule-fine);
+      color: var(--ink-primary);
+      padding: 2px 7px;
+      border-radius: var(--radius-sm);
+      white-space: nowrap;
+      letter-spacing: 0.5px;
+    }
+    .squad-context-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .squad-context-title span {
+      color: var(--ink-tertiary);
+      margin: 0 4px;
+    }
+    .squad-tabs {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .squad-tab-link {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      text-decoration: none;
+      padding: 13px 2px;
+      position: relative;
+      transition: color 0.15s ease;
+      white-space: nowrap;
+    }
+    .squad-tab-link:hover {
+      color: var(--ink-primary);
+    }
+    .squad-tab-link.active {
+      color: var(--accent-rust);
+      font-weight: 600;
+    }
+    .squad-tab-link.active::after {
+      content: "";
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--accent-rust);
+    }
+    .squad-host-ver {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       Main Report Shell
+       ========================================================================== */
+    .report-shell {
+      max-width: 880px;
+      margin: 0 auto;
+      padding: 24px 18px 64px;
+    }
+
+    /* Report Header & Toolbar */
+    .report-header-band {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 14px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--rule-strong);
+      margin-bottom: 24px;
+    }
+    .report-title-block {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .report-period-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      letter-spacing: 0.5px;
+    }
+    .report-main-title {
+      font-family: var(--font-serif);
+      font-size: 26px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      line-height: 1.15;
+      letter-spacing: -0.2px;
+    }
+    .report-controls {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .segmented-control {
+      display: inline-flex;
+      background: var(--bg-surface-subtle);
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+      gap: 2px;
+    }
+    .seg-btn {
+      appearance: none;
+      background: transparent;
+      border: none;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--ink-secondary);
+      padding: 4px 10px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    .seg-btn:hover {
+      color: var(--ink-primary);
+    }
+    .seg-btn.active {
+      background: #ffffff;
+      color: var(--accent-rust);
+      font-weight: 600;
+      box-shadow: 0 1px 3px rgba(44, 38, 33, 0.08);
+    }
+    .seg-btn:focus-visible {
+      outline: 2px solid var(--accent-rust);
+      outline-offset: -1px;
+    }
+    .report-meta-updated {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      white-space: nowrap;
+    }
+
+    /* Chapter Common Hierarchy */
+    .report-chapter {
+      margin-bottom: 32px;
+      position: relative;
+    }
+    .chapter-heading-bar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid var(--rule-fine);
+      margin-bottom: 14px;
+    }
+    .chapter-title-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .chapter-num {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--accent-rust);
+      letter-spacing: 0.5px;
+    }
+    .chapter-title {
+      font-family: var(--font-serif);
+      font-size: 18px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      letter-spacing: -0.1px;
+    }
+    .chapter-caption {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+    .chapter-aside-meta {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-secondary);
+      white-space: nowrap;
+    }
+
+    /* ==========================================================================
+       § 01 小队收益 (Net Delivery & Historic Comparison)
+       ========================================================================== */
+    .benefit-editorial-container {
+      background: var(--bg-paper);
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-bottom: 14px;
+    }
+    .benefit-hero-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      background: var(--bg-surface-warm);
+      border-bottom: 1px solid var(--rule-hairline);
+      padding: 16px 18px;
+      gap: 14px;
+    }
+    @media (min-width: 580px) {
+      .benefit-hero-grid {
+        grid-template-columns: 1.15fr 1fr;
+        gap: 20px;
+      }
+    }
+    .benefit-stat-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .stat-label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .stat-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      font-weight: 700;
+      padding: 1px 5px;
+      border-radius: 2px;
+      letter-spacing: 0.5px;
+    }
+    .stat-tag.rust {
+      background: var(--accent-rust-subtle);
+      color: var(--accent-rust);
+    }
+    .stat-tag.forest {
+      background: var(--accent-forest-subtle);
+      color: var(--accent-forest);
+    }
+    .stat-tag.neutral {
+      background: var(--bg-badge);
+      color: var(--ink-secondary);
+    }
+    .stat-label {
+      font-size: 12px;
+      color: var(--ink-secondary);
+      font-weight: 500;
+    }
+    .stat-val-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .stat-huge-number {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 700;
+      line-height: 1;
+      color: var(--ink-primary);
+      font-feature-settings: "tnum" 1;
+    }
+    .stat-huge-number.rust {
+      color: var(--accent-rust);
+    }
+    .stat-huge-number.forest {
+      color: var(--accent-forest);
+    }
+    .stat-diff-badge {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    .stat-diff-badge.rust {
+      background: var(--accent-rust-subtle);
+      color: var(--accent-rust);
+    }
+    .stat-diff-badge.forest {
+      background: var(--accent-forest-subtle);
+      color: var(--accent-forest);
+    }
+    .stat-subtext {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      line-height: 1.4;
+    }
+
+    /* Baseline Meter */
+    .benefit-baseline-bar-box {
+      margin-top: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .baseline-track {
+      height: 6px;
+      background: #e9e2d3;
+      border-radius: 3px;
+      overflow: hidden;
+      display: flex;
+      width: 100%;
+    }
+    .baseline-segment-ref {
+      width: 30.16%;
+      background: var(--ink-muted);
+    }
+    .baseline-segment-delta {
+      width: 69.84%;
+      background: var(--accent-rust);
+    }
+    .baseline-legend {
+      display: flex;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-muted);
+    }
+
+    /* Observation Callout */
+    .editorial-observation-bar {
+      padding: 10px 18px;
+      background: #ffffff;
+      border-bottom: 1px solid var(--rule-hairline);
+      font-size: 12.5px;
+      color: var(--ink-secondary);
+      line-height: 1.5;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .observation-marker {
+      color: var(--accent-rust);
+      font-weight: 700;
+      flex-shrink: 0;
+    }
+
+    /* ==========================================================================
+       Table Core Standards (Strict Fixed Layout, No Auto Jump)
+       ========================================================================== */
+    .table-responsive-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      background: var(--bg-paper);
+      -webkit-overflow-scrolling: touch;
+      position: relative;
+    }
+    .table-scroll-container {
+      width: 100%;
+      transition: max-height 0.2s ease;
+    }
+    .table-scroll-container.expanded {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    table.editorial-data-table {
+      width: 100%;
+      table-layout: fixed;
+      border-collapse: collapse;
+      font-size: 12px;
+      text-align: left;
+    }
+
+    .editorial-data-table thead th {
+      background: var(--bg-surface-subtle);
+      border-bottom: 1px solid var(--rule-fine);
+      color: var(--ink-secondary);
+      font-weight: 600;
+      font-size: 11.5px;
+      padding: 0;
+      height: 34px;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+    .editorial-data-table thead th.align-right,
+    .editorial-data-table tbody td.align-right {
+      text-align: right;
+    }
+    .editorial-data-table thead th.align-center,
+    .editorial-data-table tbody td.align-center {
+      text-align: center;
+    }
+
+    /* Full-Cell Interactive Header Button */
+    .table-header-btn {
+      appearance: none;
+      background: transparent;
+      border: none;
+      width: 100%;
+      height: 100%;
+      padding: 6px 10px;
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      text-align: left;
+      transition: background 0.1s ease, color 0.1s ease;
+      white-space: nowrap;
+    }
+    .table-header-btn.align-right {
+      justify-content: flex-end;
+      text-align: right;
+    }
+    .table-header-btn.align-center {
+      justify-content: center;
+      text-align: center;
+    }
+    .table-header-btn:hover {
+      background: rgba(0, 0, 0, 0.03);
+      color: var(--ink-primary);
+    }
+    .table-header-btn:focus-visible {
+      outline: 2px solid var(--accent-rust);
+      outline-offset: -2px;
+    }
+    .table-header-btn.is-active {
+      color: var(--accent-rust);
+    }
+
+    /* SVG Sorting Control - Precise 14px Crisp Vector */
+    .sort-indicator {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+    }
+    .sort-indicator svg {
+      width: 13px;
+      height: 13px;
+      display: block;
+    }
+    .sort-path {
+      fill: none;
+      stroke: var(--ink-muted);
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.12s ease;
+    }
+    .sort-path.active {
+      stroke: var(--accent-rust);
+    }
+    .sort-path.dimmed {
+      opacity: 0.28;
+    }
+
+    /* Table Body Cell Typography & Alignment */
+    .editorial-data-table tbody tr {
+      border-bottom: 1px solid var(--rule-hairline);
+      transition: background 0.1s ease;
+    }
+    .editorial-data-table tbody tr:hover {
+      background: #faf7f0;
+    }
+    .editorial-data-table tbody td {
+      padding: 7px 10px;
+      vertical-align: middle;
+      color: var(--ink-primary);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .num-mono {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-feature-settings: "tnum" 1;
+      white-space: nowrap;
+    }
+    .cell-title-truncate {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      word-break: break-all;
+      line-height: 1.3;
+    }
+    .row-index {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-muted);
+      margin-right: 4px;
+    }
+    .status-pill {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 5px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+    .status-pill.uncomputed {
+      background: var(--bg-badge);
+      color: var(--ink-secondary);
+    }
+    .status-pill.running {
+      background: rgba(184, 75, 46, 0.08);
+      color: var(--accent-rust);
+    }
+    .status-pill.done {
+      background: rgba(45, 106, 79, 0.08);
+      color: var(--accent-forest);
+    }
+
+    /* Table In-Row Action / Evidence Trigger */
+    .btn-cell-action {
+      appearance: none;
+      background: transparent;
+      border: 1px solid var(--rule-fine);
+      border-radius: 3px;
+      padding: 2px 7px;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      color: var(--accent-rust);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      white-space: nowrap;
+    }
+    .btn-cell-action:hover {
+      background: var(--accent-rust-subtle);
+      border-color: var(--accent-rust);
+    }
+    .btn-cell-action:focus-visible {
+      outline: 2px solid var(--accent-rust);
+      outline-offset: 1px;
+    }
+
+    /* Table Footer Bar (Expand / Compact) */
+    .table-footer-band {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 12px;
+      background: var(--bg-surface-subtle);
+      border-top: 1px solid var(--rule-fine);
+      font-size: 11.5px;
+      color: var(--ink-muted);
+    }
+    .table-footer-btn {
+      appearance: none;
+      background: transparent;
+      border: none;
+      color: var(--accent-rust);
+      font-size: 11.5px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 4px;
+    }
+    .table-footer-btn:hover {
+      text-decoration: underline;
+    }
+
+    /* ==========================================================================
+       § 02 Token 消耗去向 (Connected Editorial Strip & Unified Table)
+       ========================================================================== */
+    .token-composite-card {
+      background: var(--bg-paper);
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-md);
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .token-mode-switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--rule-hairline);
+      margin-bottom: 12px;
+    }
+    .token-hero-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .token-hero-left {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+    .token-hero-val {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      line-height: 1;
+      font-feature-settings: "tnum" 1;
+    }
+    .token-hero-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: var(--ink-muted);
+    }
+    .token-hero-coverage {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-secondary);
+    }
+
+    /* Connected 3-Cell Flow Strip (Input / Cache / Output) */
+    .token-flow-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--bg-surface-warm);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .token-flow-cell {
+      padding: 10px 12px;
+      border-right: 1px solid var(--rule-hairline);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .token-flow-cell:last-child {
+      border-right: none;
+    }
+    .flow-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 4px;
+    }
+    .flow-badge {
+      font-size: 9.5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      background: #eee8dc;
+      color: var(--ink-secondary);
+    }
+    .flow-val {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      font-feature-settings: "tnum" 1;
+      line-height: 1.1;
+    }
+    .flow-sub {
+      font-size: 10.5px;
+      color: var(--ink-muted);
+      line-height: 1.25;
+    }
+
+    /* Comparison Sub-rows when Active */
+    .comparison-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      margin-top: 2px;
+    }
+    .comp-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+    }
+    .comp-prov-tag {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    /* Model Breakdown & Self-Consumption Compact Band */
+    .token-aux-info-band {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: var(--bg-surface-subtle);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 8px;
+      font-size: 11.5px;
+      color: var(--ink-secondary);
+    }
+    .token-aux-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .token-aux-item strong {
+      font-family: var(--font-mono);
+      color: var(--ink-primary);
+    }
+
+    /* Squad Aggregate Symmetric Matrix (4 metrics: Token, Cache, Tasks, Attempts) */
+    .squad-facts-band {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin: 14px 0;
+    }
+    @media (min-width: 580px) {
+      .squad-facts-band {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    .squad-fact-card {
+      background: var(--bg-paper);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 8px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+    .squad-fact-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-muted);
+    }
+    .squad-fact-val {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--ink-primary);
+      font-feature-settings: "tnum" 1;
+    }
+    .squad-fact-note {
+      font-size: 10px;
+      color: var(--ink-muted);
+    }
+
+    /* ==========================================================================
+       § 03 技能与 CLI 表现 (CLI Filter & Table)
+       ========================================================================== */
+    .cli-filter-toolbar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .cli-select {
+      appearance: none;
+      background: var(--bg-paper) url("data:image/svg+xml;charset=UTF-8,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%238c8275' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat right 8px center;
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-sm);
+      padding: 5px 24px 5px 9px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--ink-primary);
+      cursor: pointer;
+    }
+    .cli-select:focus-visible {
+      outline: 2px solid var(--accent-rust);
+    }
+    .cli-search-box {
+      flex: 1;
+      min-width: 140px;
+      position: relative;
+    }
+    .cli-search-input {
+      width: 100%;
+      background: var(--bg-paper);
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-sm);
+      padding: 5px 9px 5px 26px;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      color: var(--ink-primary);
+      transition: border-color 0.15s ease;
+    }
+    .cli-search-input:focus {
+      outline: 2px solid var(--accent-rust);
+      outline-offset: -1px;
+      border-color: var(--accent-rust);
+    }
+    .cli-search-icon {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 13px;
+      height: 13px;
+      color: var(--ink-muted);
+      pointer-events: none;
+    }
+
+    /* CLI Failure Detail Sub-row */
+    .cli-failure-detail {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--accent-rust);
+      background: var(--bg-alert-soft);
+      padding: 6px 10px;
+      border-radius: var(--radius-sm);
+      margin-top: 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* ==========================================================================
+       § 04 Codex 观察与建议 (Neutral Actionable Recommendations)
+       ========================================================================== */
+    .recommendations-wrapper {
+      background: var(--bg-paper);
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-md);
+      padding: 16px 18px;
+    }
+    .rec-summary-paragraph {
+      font-size: 13.5px;
+      color: var(--ink-primary);
+      line-height: 1.6;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--rule-hairline);
+      margin-bottom: 14px;
+      font-style: italic;
+    }
+    .rec-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .rec-item {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      padding: 10px 12px;
+      background: var(--bg-surface-warm);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+    }
+    .rec-item-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .rec-item-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--ink-primary);
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+    .rec-item-num {
+      font-family: var(--font-mono);
+      color: var(--accent-rust);
+      font-size: 11.5px;
+    }
+    .rec-item-body {
+      font-size: 12px;
+      color: var(--ink-secondary);
+      line-height: 1.45;
+    }
+    .rec-item-evidence-toggle {
+      appearance: none;
+      background: transparent;
+      border: none;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--accent-rust);
+      cursor: pointer;
+      text-align: left;
+      padding: 2px 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .rec-item-evidence-toggle:hover {
+      text-decoration: underline;
+    }
+    .rec-evidence-content {
+      display: none;
+      margin-top: 6px;
+      padding: 8px 10px;
+      background: #ffffff;
+      border: 1px dashed var(--rule-fine);
+      border-radius: var(--radius-sm);
+      font-size: 11.5px;
+      color: var(--ink-secondary);
+      line-height: 1.4;
+    }
+    .rec-evidence-content.is-open {
+      display: block;
+    }
+
+    /* ==========================================================================
+       Modal Dialog (Evidence Sheet - Centered >=768px, Bottom Sheet <768px)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(44, 38, 33, 0.45);
+      backdrop-filter: blur(2px);
+      z-index: 100;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .modal-backdrop.is-visible {
+      display: flex;
+    }
+
+    .modal-dialog {
+      background: #ffffff;
+      border: 1px solid var(--rule-fine);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-modal);
+      width: 100%;
+      max-width: 560px;
+      max-height: 80vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalFadeIn 0.15s ease-out;
+    }
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: scale(0.98); }
+      to { opacity: 1; transform: scale(1); }
+    }
+
+    /* Mobile Bottom Sheet Adaptation */
+    @media (max-width: 767px) {
+      .modal-backdrop {
+        align-items: flex-end;
+        padding: 0;
+      }
+      .modal-dialog {
+        max-width: 100%;
+        max-height: 85vh;
+        border-radius: 12px 12px 0 0;
+        border-bottom: none;
+        animation: sheetSlideUp 0.2s ease-out;
+      }
+      @keyframes sheetSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+    }
+
+    .modal-header {
+      padding: 14px 18px;
+      border-bottom: 1px solid var(--rule-fine);
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      background: var(--bg-surface-subtle);
+    }
+    .modal-title {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+    .modal-close-btn {
+      appearance: none;
+      background: transparent;
+      border: none;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--ink-muted);
+      cursor: pointer;
+      padding: 2px 4px;
+      border-radius: var(--radius-sm);
+    }
+    .modal-close-btn:hover {
+      color: var(--ink-primary);
+    }
+    .modal-close-btn:focus-visible {
+      outline: 2px solid var(--accent-rust);
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      overflow-y: auto;
+      font-size: 12.5px;
+      color: var(--ink-primary);
+      line-height: 1.5;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .modal-data-box {
+      background: var(--bg-surface-warm);
+      border: 1px solid var(--rule-hairline);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .modal-data-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+    }
+    .modal-data-row .label {
+      color: var(--ink-secondary);
+    }
+    .modal-data-row .val {
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .modal-footer {
+      padding: 10px 18px;
+      border-top: 1px solid var(--rule-fine);
+      background: var(--bg-surface-subtle);
+      display: flex;
+      justify-content: flex-end;
+    }
+    .modal-action-btn {
+      appearance: none;
+      background: var(--accent-rust);
+      color: #ffffff;
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    .modal-action-btn:hover {
+      background: var(--accent-rust-hover);
+    }
+    .modal-action-btn:focus-visible {
+      outline: 2px solid var(--accent-rust);
+      outline-offset: 1px;
+    }
+
+    /* ==========================================================================
+       Responsive Rules (390px, 587px Baseline, 1100px Wide)
+       ========================================================================== */
+    @media (max-width: 586px) {
+      .report-shell {
+        padding: 16px 12px 48px;
+      }
+      .token-flow-strip {
+        grid-template-columns: 1fr;
+      }
+      .token-flow-cell {
+        border-right: none;
+        border-bottom: 1px solid var(--rule-hairline);
+      }
+      .token-flow-cell:last-child {
+        border-bottom: none;
+      }
+      .report-main-title {
+        font-size: 22px;
+      }
+      .stat-huge-number {
+        font-size: 26px;
+      }
+      .token-hero-val {
+        font-size: 26px;
+      }
+    }
+  </style>
+</head>
+<body>
+<!-- ========================================================================
+       Top Squad Host Navigation Bar
+       ======================================================================== -->
+<header class="squad-host-nav" role="banner">
+<div class="squad-host-inner">
+<div class="squad-host-left">
+<span class="squad-badge">CODEX 小队</span>
+<div class="squad-context-title">
+<span>/</span>梳理 Codex 小队分析模块
+        </div>
+</div>
+<nav aria-label="页面切换" class="squad-tabs"><a class="squad-tab-link" href="#board">小队任务看板 (6)</a>
+<a aria-current="page" class="squad-tab-link active" href="#analytics">周期分析</a></nav>
+<div class="squad-host-ver">v0.9.3-local.20261027.12</div>
+</div>
+</header>
+<!-- ========================================================================
+       Main Report Page Content
+       ======================================================================== -->
+<main class="report-shell">
+<!-- Report Header & Period Controls -->
+<section aria-label="报告时间范围与更新时间" class="report-header-band">
+<div class="report-title-block">
+<span class="report-period-tag">周期快照 (#2026-R08 · 10月20日 – 10月27日)</span>
+<h1 class="report-main-title">小队的投入与回报</h1>
+</div>
+<div class="report-controls">
+<div aria-label="统计时间范围" class="segmented-control" role="group">
+<button class="seg-btn active" data-period="7" type="button">近 7 天</button>
+<button class="seg-btn" data-period="30" type="button">近 30 天</button>
+<button class="seg-btn" data-period="all" type="button">全部</button>
+</div>
+<span class="report-meta-updated">更新于 14:48:10</span>
+</div>
+</section>
+<!-- ======================================================================
+         § 01 小队收益 (Net Delivery & Historic Comparison)
+         ====================================================================== -->
+<section aria-labelledby="heading-01" class="report-chapter" id="chapter-01">
+<div class="chapter-heading-bar">
+<div class="chapter-title-group">
+<span class="chapter-num">§ 01</span>
+<h2 class="chapter-title" id="heading-01">交付净收益与相抵核算</h2>
+<span class="chapter-caption">覆盖 1 / 7 次已完成交付</span>
+</div>
+<span class="chapter-aside-meta">历史同类基线测算</span>
+</div>
+<div class="benefit-editorial-container">
+<!-- 2-Metric Asymmetric Hero Grid -->
+<div class="benefit-hero-grid"><div class="benefit-stat-item">
+<div class="stat-label-row">
+<span class="stat-tag rust">投入高于历史基线 · 净多投</span>
+<span class="stat-label">预计多用 Codex Token</span>
+</div>
+<div class="stat-val-row" style="display: inline-flex; flex-wrap: nowrap; align-items: baseline; gap: 8px; white-space: nowrap;">
+<span class="stat-huge-number rust">20.93M</span>
+<span class="stat-diff-badge rust negative" title="净超出基线 231.4%">+231.4% (高出基线)</span>
+</div>
+<div class="benefit-baseline-bar-box">
+<div class="baseline-track" title="纯 Codex 历史基线: 9.04M (30.16%) vs 本次实际投入: 29.97M (100%)">
+<div class="baseline-segment-ref"></div>
+<div class="baseline-segment-delta"></div>
+</div>
+<div class="baseline-legend">
+<span>纯 Codex 历史测速基线: 9.04M</span>
+<span>本次实际投入: 29.97M (净多投 20.93M)</span>
+</div>
+</div>
+</div>
+<div class="benefit-stat-item"><div class="stat-label-row"><span class="stat-tag rust">耗时高于历史基线 · 净多投</span><span class="stat-label">预计多投入处理时间</span></div><div class="stat-val-row" style="display: inline-flex; flex-wrap: nowrap; align-items: baseline; gap: 8px; white-space: nowrap;"><span class="stat-huge-number rust">约 55 分钟</span><span class="stat-diff-badge rust negative" title="耗时高于基线 137.4%">+137.4% (高出基线)</span></div><span class="stat-subtext">等效单机全链处理测算（含多轮交互与复核往返）；仅覆盖 1 / 7 交付，暂不能判定全队整体收益。</span></div></div>
+<!-- Editorial Observation Sentence -->
+<div class="editorial-observation-bar"><span class="observation-marker">¶</span><span>当前仅 1 个完整交付具备可比同类历史基线；其余交付未纳入测算，原因见依据。这些是测算样本，不外推全队整体。</span></div>
+<!-- Stable Fixed Delivery Benefits Table -->
+<div class="table-responsive-wrapper">
+<div class="table-scroll-container" id="benefit-table-container">
+<table class="editorial-data-table" id="benefit-table">
+<colgroup>
+<col style="width: 240px;"/><!-- 工作 / 任务 -->
+<col style="width: 105px;"/><!-- 全 Codex 基线 -->
+<col style="width: 110px;"/><!-- 实际 Codex -->
+<col style="width: 105px;"/><!-- 实际 Qoder -->
+<col style="width: 100px;"/><!-- 净节省/多用 -->
+<col style="width: 95px;"/><!-- 省时/多投 -->
+<col style="width: 75px;"/><!-- 依据操作 -->
+</colgroup>
+<thead>
+<tr>
+<th scope="col">
+<button aria-label="按任务名称排序" class="table-header-btn" data-col="task" data-table="benefit" type="button">
+<span>工作 / 任务</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按全 Codex 基线排序" class="table-header-btn align-right" data-col="baseline" data-table="benefit" type="button">
+<span>全 Codex 基线</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按实际 Codex 排序" class="table-header-btn align-right" data-col="actCodex" data-table="benefit" type="button">
+<span>实际 Codex</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按实际 Qoder 排序" class="table-header-btn align-right" data-col="actQoder" data-table="benefit" type="button">
+<span>实际 Qoder</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按净差值排序，当前降序" class="table-header-btn align-right is-active" data-col="netToken" data-table="benefit" type="button">
+<span>净节省/多用</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path dimmed" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path active" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按时间差值排序" class="table-header-btn align-right" data-col="netTime" data-table="benefit" type="button">
+<span>省时/多投</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-center" scope="col">依据</th>
+</tr>
+</thead>
+<tbody id="benefit-tbody">
+<!-- Row 1 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="评测 B1 | Codex 小队业务工单归因方案">
+<span class="row-index">1.</span>评测 B1 | Codex 小队业务工单归因方案
+                    </div>
+</td>
+<td class="align-right num-mono">9.04M</td>
+<td class="align-right num-mono">29.97M</td>
+<td class="align-right num-mono">12.36M</td>
+<td class="align-right num-mono" style="color: var(--accent-rust); font-weight:700;">+20.93M</td>
+<td class="align-right num-mono" style="color: var(--accent-rust); font-weight:700;">+55分钟</td>
+<td class="align-center">
+<button class="btn-cell-action" data-action="view-evidence" data-task="评测 B1" type="button">查看依据</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="理赔新增提现户需求 (自测与原型)">
+<span class="row-index">2.</span>理赔新增提现户需求 (自测与原型)
+                    </div>
+</td>
+<td class="align-right"><span class="status-pill uncomputed">基线未上报</span></td>
+<td class="align-right num-mono">248.54M</td>
+<td class="align-right num-mono">136.04M</td>
+<td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+<td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+<td class="align-center">
+<button class="btn-cell-action" data-action="view-evidence" data-task="理赔新增提现户需求" type="button">详情</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="梳理 Codex 小队分析模块 (包含当前报表)">
+<span class="row-index">3.</span>梳理 Codex 小队分析模块 (包含当前报表)
+                    </div>
+</td>
+<td class="align-right"><span class="status-pill uncomputed">基线未上报</span></td>
+<td class="align-right num-mono">306.84M</td>
+<td class="align-right num-mono">369.75M</td>
+<td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+<td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+<td class="align-center">
+<button class="btn-cell-action" data-action="view-evidence" data-task="梳理 Codex 小队分析模块" type="button">详情</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Table Expansion Footer -->
+<div class="table-footer-band">
+<span id="benefit-count-summary">当前显示 3 / 32 项交付</span>
+<button class="table-footer-btn" id="benefit-expand-btn" type="button">
+<span>展开全部 32 项交付 ↓</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- ======================================================================
+         § 02 Token 消耗去向 (Connected Editorial Strip & Unified Table)
+         ====================================================================== -->
+<section aria-labelledby="heading-02" class="report-chapter" id="chapter-02">
+<div class="chapter-heading-bar">
+<div class="chapter-title-group">
+<span class="chapter-num">§ 02</span>
+<h2 class="chapter-title" id="heading-02">Token 消耗去向</h2>
+<span class="chapter-caption">按执行主体核算，缓存已包含于输入内</span>
+</div>
+<div aria-label="主体模式切换" class="segmented-control" role="group">
+<button class="seg-btn active" data-mode="codex" type="button">Codex</button>
+<button class="seg-btn" data-mode="qoder" type="button">Qoder</button>
+<button class="seg-btn" data-mode="compare" type="button">对比</button>
+</div>
+</div>
+<!-- Connected Statistics Composite Card (160–190px tall at 587px) -->
+<div class="token-composite-card">
+<div class="token-hero-line"><div class="token-hero-left"><span class="token-hero-val" id="token-hero-total-val">13.16B</span><span class="token-hero-subtitle">已记录 Token 总量</span></div><span class="token-hero-coverage" id="token-hero-coverage-text">已读取 104 / 2,982 个会话 · 占周期记录总量 100%</span></div>
+<!-- 3-Cell Connected Stream -->
+<div class="token-flow-strip" id="token-flow-strip"><div class="token-flow-cell"><div class="flow-label"><span>01 · 输入总量</span><span class="flow-badge" id="flow-badge-input">占 99.8%</span></div><div class="flow-val" id="flow-val-input">13.13B</div><div class="flow-sub" id="flow-sub-input">主干上下文与前置工程规范</div></div><div class="token-flow-cell"><div class="flow-label"><span>02 · 其中缓存</span><span class="flow-badge" id="flow-badge-cache">占输入 98.2%</span></div><div class="flow-val" id="flow-val-cache">12.90B</div><div class="flow-sub" id="flow-sub-cache">复用提示词缓存 (已包含在输入内)</div></div><div class="token-flow-cell"><div class="flow-label"><span>03 · 补全输出</span><span class="flow-badge" id="flow-badge-output">占 0.2%</span></div><div class="flow-val" id="flow-val-output">32.20M</div><div class="flow-sub" id="flow-sub-output">模型实质生成与补丁产出</div></div></div>
+<!-- Integrated Compact Model & Self-Consumption Strip -->
+<div class="token-aux-info-band">
+<div class="token-aux-left">
+<div class="token-aux-item">
+              模型去向：<strong id="token-model-dist">gpt-6.1-sol (84%) / gpt-6-astra (16%)</strong>
+</div>
+<div class="token-aux-item">
+              未关联小队会话与报告自消耗：<strong id="token-unlinked-cost">184.2K Token (已折叠核算)</strong>
+</div>
+</div>
+<span style="font-size:11px; color:var(--ink-muted);">未记录项严谨标记「未上报」，不相加两方用量</span>
+</div>
+</div>
+<!-- Squad Aggregate Symmetric Facts (Token, Cache, Tasks, Attempts) -->
+<div class="squad-facts-band"><div class="squad-fact-card"><span class="squad-fact-title">小队已报 TOKEN</span><span class="squad-fact-val">7.56B</span><span class="squad-fact-note">独立统计 · 严禁与主端混加</span></div><div class="squad-fact-card"><span class="squad-fact-title">其中缓存 (已报部分)</span><span class="squad-fact-val">12.90B</span><span class="squad-fact-note">主端已记录提示词缓存</span></div><div class="squad-fact-card"><span class="squad-fact-title">小队任务总数</span><span class="squad-fact-val">559</span><span class="squad-fact-note">已建联并纳入统计的任务</span></div><div class="squad-fact-card"><span class="squad-fact-title">尝试执行记录</span><span class="squad-fact-val">894 / 1,071</span><span class="squad-fact-note">已上报尝试 / 尝试总量</span></div></div>
+<!-- Unified Session Consumption Table (Stable Columns, No Squeeze) -->
+<div class="table-responsive-wrapper" style="border: 1px solid var(--rule-fine); border-radius: var(--radius-md); overflow:hidden;"><div style="display:flex; flex-direction:column; gap:20px;"><div style="border: 1px solid var(--rule-fine); border-radius: var(--radius-md); overflow:hidden; background:var(--bg-paper);"><div style="padding:10px 14px; background:var(--bg-surface-subtle); border-bottom:1px solid var(--rule-hairline); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"><span style="font-size:12px; font-weight:600; color:var(--ink-primary); font-family:var(--font-sans);">会话消耗分布（含小队）</span><span class="chapter-caption">已记录全量会话在各任务单元的分布明细</span></div><div class="table-scroll-container"><table class="editorial-data-table" id="session-dist-table"><colgroup><col style="width: 320px;"/><col style="width: 130px;"/><col style="width: 110px;"/><col style="width: 90px;"/><col style="width: 170px;"/></colgroup><thead><tr><th scope="col"><button aria-label="按任务主题排序" class="table-header-btn" type="button"><span>会话 / 任务主题</span></button></th><th scope="col"><button aria-label="按模型排序" class="table-header-btn" type="button"><span>主用模型</span></button></th><th class="align-right" scope="col"><button aria-label="按用量排序" class="table-header-btn align-right is-active" type="button"><span>用量消耗</span></button></th><th class="align-right" scope="col"><button aria-label="按占比排序" class="table-header-btn align-right" type="button"><span>占比</span></button></th><th class="align-center" scope="col">操作</th></tr></thead><tbody><tr><td><div class="cell-title-truncate" title="升级 Compass TDD Workspace"><span class="row-index">1.</span>升级 Compass TDD Workspace</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td><td class="align-right num-mono" style="font-weight:700;">3.34B</td><td class="align-right num-mono">25.4%</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr><tr><td><div class="cell-title-truncate" title="【理赔】完成剩余工单归因"><span class="row-index">2.</span>【理赔】完成剩余工单归因</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td><td class="align-right num-mono" style="font-weight:700;">1.87B</td><td class="align-right num-mono">14.2%</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr><tr><td><div class="cell-title-truncate" title="【DataPages】设计问题分析产品化方案"><span class="row-index">3.</span>【DataPages】设计问题分析产品化方案</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6-astra</span></td><td class="align-right num-mono" style="font-weight:700;">1.65B</td><td class="align-right num-mono">12.5%</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr></tbody></table></div><div class="table-footer-band"><span>当前显示 3 / 84 会话</span><button class="table-footer-btn" type="button"><span>展开全部 84 项 ↓</span></button></div></div><div style="border: 1px solid var(--rule-fine); border-radius: var(--radius-md); overflow:hidden; background:var(--bg-paper);"><div style="padding:10px 14px; background:var(--bg-surface-subtle); border-bottom:1px solid var(--rule-hairline); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;"><div style="display:flex; align-items:center; gap:10px;"><span style="font-size:12px; font-weight:600; color:var(--ink-primary); font-family:var(--font-sans);">会话消耗排行</span><div class="segmented-control" role="group"><button class="seg-btn active" type="button">按已报 Token</button><button class="seg-btn" type="button">按任务数</button></div></div><span class="chapter-caption">小队独立排序</span></div><div class="table-scroll-container"><table class="editorial-data-table" id="session-rank-table"><colgroup><col style="width: 320px;"/><col style="width: 130px;"/><col style="width: 110px;"/><col style="width: 90px;"/><col style="width: 170px;"/></colgroup><thead><tr><th scope="col"><button aria-label="按会话主题排序" class="table-header-btn" type="button"><span>会话主题</span></button></th><th scope="col"><button aria-label="按主要模型排序" class="table-header-btn" type="button"><span>主要模型</span></button></th><th class="align-right" scope="col"><button aria-label="按用量排序" class="table-header-btn align-right is-active" type="button"><span>Token 用量</span></button></th><th class="align-right" scope="col"><button aria-label="按任务数排序" class="table-header-btn align-right" type="button"><span>任务数</span></button></th><th class="align-center" scope="col">操作</th></tr></thead><tbody><tr><td><div class="cell-title-truncate" title="理赔自动化测试回归工单"><span class="row-index">1.</span>理赔自动化测试回归工单</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td><td class="align-right num-mono" style="font-weight:700;">2.41B</td><td class="align-right num-mono">18</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr><tr><td><div class="cell-title-truncate" title="前端组件系统重构与校验"><span class="row-index">2.</span>前端组件系统重构与校验</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td><td class="align-right num-mono" style="font-weight:700;">1.52B</td><td class="align-right num-mono">12</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr><tr><td><div class="cell-title-truncate" title="AST 语法树批量转换生成"><span class="row-index">3.</span>AST 语法树批量转换生成</div></td><td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6-astra</span></td><td class="align-right num-mono" style="font-weight:700;">1.10B</td><td class="align-right num-mono">9</td><td class="align-center"><div class="action-btn-group" style="display:inline-flex; gap:6px; align-items:center;"><button class="btn-cell-action" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px;" type="button">查看小队</button><a class="btn-cell-action" href="#session-view" style="height:26px; border-radius:3px; padding:0 8px; line-height:24px; text-decoration:none;">打开会话</a></div></td></tr></tbody></table></div><div class="table-footer-band"><span>当前显示 3 / 44 会话</span><button class="table-footer-btn" type="button"><span>展开全部 44 项 ↓</span></button></div></div></div></div>
+</section>
+<!-- ======================================================================
+         § 03 技能与 CLI 表现 (CLI Performance & Full Tool Matrix)
+         ====================================================================== -->
+<section aria-labelledby="heading-03" class="report-chapter" id="chapter-03">
+<div class="chapter-heading-bar">
+<div class="chapter-title-group">
+<span class="chapter-num">§ 03</span>
+<h2 class="chapter-title" id="heading-03">技能与 CLI 表现</h2>
+<span class="chapter-caption">共调用 4,642 次 · 基于真实命令执行结果</span>
+</div>
+<span class="chapter-aside-meta">执行与业务验收分离</span>
+</div>
+<!-- Integrated Select & Search Toolbar -->
+<div class="cli-filter-toolbar">
+<select aria-label="筛选命令前缀类别" class="cli-select" id="cli-category-select">
+<option value="all">全部命令与工具 (All)</option>
+<option value="git">git 系列命令</option>
+<option value="shasum">shasum 哈希校验</option>
+<option value="node">node / pnpm 运行</option>
+<option value="tools">内部平台工具</option>
+</select>
+<div class="cli-search-box">
+<svg class="cli-search-icon" fill="currentColor" viewbox="0 0 20 20">
+<path clip-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" fill-rule="evenodd"></path>
+</svg>
+<input class="cli-search-input" id="cli-search-input" placeholder="搜索 CLI 或子命令 (支持多词空格过滤)..." type="text"/>
+</div>
+</div>
+<!-- Stable Fixed CLI Table -->
+<div class="table-responsive-wrapper" style="border: 1px solid var(--rule-fine); border-radius: var(--radius-md); overflow:hidden;">
+<div class="table-scroll-container" id="cli-table-container">
+<table class="editorial-data-table" id="cli-table">
+<colgroup>
+<col style="width: 250px;"/><!-- 命令 / 子命令 -->
+<col style="width: 100px;"/><!-- 调用次数 -->
+<col style="width: 120px;"/><!-- 执行成功率 -->
+<col style="width: 120px;"/><!-- 业务成功率 -->
+<col style="width: 100px;"/><!-- 明确失败 -->
+</colgroup>
+<thead>
+<tr>
+<th scope="col">
+<button aria-label="按命令名称排序" class="table-header-btn" data-col="cmd" data-table="cli" type="button">
+<span>命令 / 子命令</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按调用次数排序，当前降序" class="table-header-btn align-right is-active" data-col="invocations" data-table="cli" type="button">
+<span>调用次数</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path dimmed" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path active" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按执行成功率排序" class="table-header-btn align-right" data-col="execRate" data-table="cli" type="button">
+<span>执行成功率</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按业务成功率排序" class="table-header-btn align-right" data-col="bizRate" data-table="cli" type="button">
+<span>业务成功率</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+<th class="align-right" scope="col">
+<button aria-label="按失败次数排序" class="table-header-btn align-right" data-col="fails" data-table="cli" type="button">
+<span>明确失败</span>
+<span aria-hidden="true" class="sort-indicator">
+<svg viewbox="0 0 14 14"><path class="sort-path" d="M7 4L4 7H10L7 4Z"></path><path class="sort-path" d="M7 10L4 7H10L7 10Z"></path></svg>
+</span>
+</button>
+</th>
+</tr>
+</thead>
+<tbody id="cli-tbody">
+<!-- Row 1 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="git show">
+<span class="num-mono" style="font-weight:700;">git show</span>
+</div>
+</td>
+<td class="align-right num-mono" style="font-weight:700;">1,667</td>
+<td class="align-right num-mono" style="color:var(--accent-forest); font-weight:700;">96.3%</td>
+<td class="align-right"><span class="status-pill uncomputed">业务未确认</span></td>
+<td class="align-right">
+<button class="btn-cell-action" data-action="toggle-cli-fail" data-cmd="git show" style="color:var(--accent-rust);" type="button">5 次失败 ↓</button>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="git">
+<span class="num-mono" style="font-weight:700;">git</span>
+</div>
+</td>
+<td class="align-right num-mono" style="font-weight:700;">1,549</td>
+<td class="align-right num-mono" style="color:var(--accent-forest); font-weight:700;">93.7%</td>
+<td class="align-right"><span class="status-pill uncomputed">业务未确认</span></td>
+<td class="align-right">
+<button class="btn-cell-action" data-action="toggle-cli-fail" data-cmd="git" style="color:var(--accent-rust);" type="button">4 次失败 ↓</button>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr>
+<td>
+<div class="cell-title-truncate" title="shasum">
+<span class="num-mono" style="font-weight:700;">shasum</span>
+</div>
+</td>
+<td class="align-right num-mono" style="font-weight:700;">1,426</td>
+<td class="align-right num-mono" style="color:var(--accent-forest); font-weight:700;">98.3%</td>
+<td class="align-right"><span class="status-pill uncomputed">业务未确认</span></td>
+<td class="align-right">
+<button class="btn-cell-action" data-action="toggle-cli-fail" data-cmd="shasum" style="color:var(--accent-rust);" type="button">2 次失败 ↓</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="table-footer-band">
+<span id="cli-count-summary">当前显示 3 / 449 条子命令</span>
+<button class="table-footer-btn" id="cli-expand-btn" type="button">
+<span>展开全部 449 条命令 ↓</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ======================================================================
+         § 04 Codex 观察与建议 (Neutral Actionable Recommendations)
+         ====================================================================== -->
+<section aria-labelledby="heading-04" class="report-chapter" id="chapter-04">
+<div class="chapter-heading-bar"><div class="chapter-title-group">
+<span class="chapter-num">§ 04</span>
+<h2 class="chapter-title" id="heading-04">本期最值得处理的问题</h2>
+<span class="chapter-caption">四段式架构：问题 · 证据 · 下一步 · 验证方法</span>
+</div>
+<span class="chapter-aside-meta">严格提炼 2 项关键行动</span></div>
+<div class="recommendations-wrapper"><p class="rec-summary-paragraph" style="text-align: left; font-style: normal; color: var(--ink-secondary);">基于真实执行快照提炼。严格区分「事实证据」与「工程推测」，聚焦 2 个本周期已知关键问题：</p><div class="rec-list"><article class="issue-card"><div class="issue-card-header"><div class="issue-card-title"><span class="rec-item-num">01.</span><strong>简单 CLI 检查被派工后，主线程又执行检查</strong></div><div class="action-btn-group"><a class="btn-cell-action" href="#session-view">查看会话</a></div></div><div class="issue-stage-grid"><div class="issue-stage-item"><span class="issue-stage-label">【具体问题】</span><span class="issue-stage-desc">简单 CLI 检查被派工后，主线程又执行检查。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【相关证据】</span><span class="issue-stage-desc">同一会话公开执行记录中，派工后主线程又执行了版本与登录状态检查命令。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【下一步】</span><span class="issue-stage-desc">简单现成命令由主线程直接完成，只有需要持续排查的任务才派给 Qoder。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【验证方法】</span><span class="issue-stage-desc">下次同类任务是否直接返回实际命令结果且未创建小队任务，不编造节省量。</span></div></div><div class="issue-evidence-drawer"><button class="rec-item-evidence-toggle" data-target="ev-01" type="button"><span>展开相关记录依据 ▾</span></button><div class="rec-evidence-content" id="ev-01"><strong>核验记录：</strong>公开日志记录中主线程对工具环境进行了重复检测调用。</div></div></article><article class="issue-card"><div class="issue-card-header"><div class="issue-card-title"><span class="rec-item-num">02.</span><strong>仅 1/7 交付纳入收益测算</strong></div><div class="action-btn-group"><button class="btn-cell-action" data-action="view-evidence" data-task="收益测算基线补全" type="button">查看基线依据</button></div></div><div class="issue-stage-grid"><div class="issue-stage-item"><span class="issue-stage-label">【具体问题】</span><span class="issue-stage-desc">仅 1/7 交付纳入收益测算。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【相关证据】</span><span class="issue-stage-desc">样本多用 20.93M Codex Token 和 55 分钟。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【下一步】</span><span class="issue-stage-desc">逐项核对未纳入原因，条件同等且完整完成才纳入，不为了凑覆盖率盲目匹配。</span></div><div class="issue-stage-item"><span class="issue-stage-label">【验证方法】</span><span class="issue-stage-desc">查看同等工作范围、规模、验收要求和基线证据。</span></div></div><div class="issue-evidence-drawer"><button class="rec-item-evidence-toggle" data-target="ev-02" type="button"><span>展开相关记录依据 ▾</span></button><div class="rec-evidence-content" id="ev-02"><strong>核验记录：</strong>其余交付因工单口径或历史版本记录不完全而暂未纳入。</div></div></article></div><div style="margin-top:18px; padding-top:12px; border-top:1px dashed var(--rule-fine); text-align:center; font-family:var(--font-mono); font-size:11px; color:var(--ink-muted);">设计示例，实际数据由已保存报告提供</div></div>
+</section>
+</main>
+<!-- ========================================================================
+       Evidence Modal Dialog (Responsive: Centered on Desktop, Bottom Sheet on Mobile)
+       ======================================================================== -->
+<div aria-labelledby="modal-title" aria-modal="true" class="modal-backdrop" id="evidence-modal" role="dialog" tabindex="-1">
+<div class="modal-dialog">
+<div class="modal-header">
+<h3 class="modal-title" id="modal-title">交付收益测算依据 · 评测 B1</h3>
+<button aria-label="关闭弹层" class="modal-close-btn" id="modal-close-btn" type="button">✕</button>
+</div>
+<div class="modal-body">
+<div class="modal-data-box">
+<div class="modal-data-row">
+<span class="label">任务名称</span>
+<span class="val" id="modal-task-name">评测 B1 | Codex 小队业务工单归因方案</span>
+</div>
+<div class="modal-data-row">
+<span class="label">纯 Codex 历史测速基线</span>
+<span class="val">9.04M Token / 约 35 分钟</span>
+</div>
+<div class="modal-data-row">
+<span class="label">本次实际 Codex 投入</span>
+<span class="val" style="color:var(--accent-rust);">29.97M Token</span>
+</div>
+<div class="modal-data-row">
+<span class="label">本次实际 Qoder 投入</span>
+<span class="val">12.36M Token</span>
+</div>
+<div class="modal-data-row" style="border-top:1px dashed var(--rule-fine); padding-top:6px; margin-top:2px;">
+<span class="label" style="font-weight:600;">预计多用 Codex Token</span>
+<span class="val" style="color:var(--accent-rust);">+20.93M (+231.4%)</span>
+</div>
+<div class="modal-data-row">
+<span class="label" style="font-weight:600;">预计多投入等效时间</span>
+<span class="val" style="color:var(--accent-rust);">+55 分钟 (+150.2%)</span>
+</div>
+</div>
+<div style="font-size:12px; color:var(--ink-secondary); line-height:1.5;">
+<strong>测算说明与基线依据来源：</strong><br/>
+          1. 历史基准来源：基于同业务库历史 3 次单人同等规格排查日志，平均单次上下文累计达 9.04M Token。<br/>
+          2. 单机测速对比：主 Codex 承担约 48 tok/s，Qoder 承担批量 AST 语法树重建，往返沟通导致上下文扩展。<br/>
+          3. 纯净说明：本计算仅反映单机上下文与执行耗时差额，不关联任何云端外部计费。未提供数据项严格标为未估算。
+        </div>
+</div>
+<div class="modal-footer">
+<button class="modal-action-btn" id="modal-confirm-btn" type="button">了解并关闭</button>
+</div>
+</div>
+</div>
+<!-- ========================================================================
+       Vanilla JS: All Interactive States, Table Sorting, Search & Modal Handling
+       ======================================================================== -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // ----------------------------------------------------------------------
+      // 1. Period Switcher (7 Days / 30 Days / All)
+      // ----------------------------------------------------------------------
+      const periodButtons = document.querySelectorAll('.segmented-control [data-period]');
+      periodButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          periodButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+        });
+      });
+
+      // ----------------------------------------------------------------------
+      // 2. Token Provider Mode Switcher (Codex / Qoder / Compare)
+      // ----------------------------------------------------------------------
+      const modeButtons = document.querySelectorAll('[data-mode]');
+      const heroTotalVal = document.getElementById('token-hero-total-val');
+      const heroCoverage = document.getElementById('token-hero-coverage-text');
+      const badgeInput = document.getElementById('flow-badge-input');
+      const valInput = document.getElementById('flow-val-input');
+      const subInput = document.getElementById('flow-sub-input');
+      const badgeCache = document.getElementById('flow-badge-cache');
+      const valCache = document.getElementById('flow-val-cache');
+      const subCache = document.getElementById('flow-sub-cache');
+      const badgeOutput = document.getElementById('flow-badge-output');
+      const valOutput = document.getElementById('flow-val-output');
+      const subOutput = document.getElementById('flow-sub-output');
+
+      const sessionThead = document.getElementById('session-thead');
+      const sessionTbody = document.getElementById('session-tbody');
+      const sessionColgroup = document.getElementById('session-colgroup');
+
+      const modeDatasets = {
+        codex: {
+          total: '11.96B',
+          coverage: '已采集 100 / 2,973 个会话 · 占周期记录总量 100%',
+          inputBadge: '占 99.7%', inputVal: '11.93B', inputSub: '主干上下文与前置工程规范',
+          cacheBadge: '占输入 98.2%', cacheVal: '11.72B', cacheSub: '复用提示词缓存 (已包含在输入内)',
+          outputBadge: '占 0.3%', outputVal: '30.03M', outputSub: '模型实质生成与补丁产出'
+        },
+        qoder: {
+          total: '6.41B',
+          coverage: '已采集 42 个执行轮次 · 独立子进程沙箱',
+          inputBadge: '占 98.8%', inputVal: '6.33B', inputSub: '接收派发与代码上下文切片',
+          cacheBadge: '未记录', cacheVal: '未上报', cacheSub: '本地执行端未配置缓存遥测',
+          outputBadge: '占 1.2%', outputVal: '78.67M', outputSub: '单测验证与文件补丁生成'
+        },
+        compare: {
+          total: '11.96B / 6.41B',
+          coverage: '两主体独立核算，严禁将 Token 简单累加',
+          inputBadge: '独立对比', inputVal: '11.93B / 6.33B', inputSub: 'Codex 占 99.7% · Qoder 占 98.8%',
+          cacheBadge: '缓存对比', cacheVal: '11.72B / 未上报', cacheSub: 'Codex 占输入 98.2% · Qoder 未上报',
+          outputBadge: '输出对比', outputVal: '30.03M / 78.67M', outputSub: 'Codex 实质输出 · Qoder 补丁输出'
+        }
+      };
+
+      modeButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          modeButtons.forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const mode = this.getAttribute('data-mode');
+          const data = modeDatasets[mode];
+
+          heroTotalVal.textContent = data.total;
+          heroCoverage.textContent = data.coverage;
+          badgeInput.textContent = data.inputBadge;
+          valInput.textContent = data.inputVal;
+          subInput.textContent = data.inputSub;
+
+          badgeCache.textContent = data.cacheBadge;
+          valCache.textContent = data.cacheVal;
+          subCache.textContent = data.cacheSub;
+
+          badgeOutput.textContent = data.outputBadge;
+          valOutput.textContent = data.outputVal;
+          subOutput.textContent = data.outputSub;
+
+          // Re-render Session Table Columns according to mode
+          renderSessionTable(mode);
+        });
+      });
+
+      function renderSessionTable(mode) {
+        if (mode === 'compare') {
+          sessionColgroup.innerHTML = `
+            <col style="width: 280px;">
+            <col style="width: 120px;">
+            <col style="width: 120px;">
+            <col style="width: 90px;">
+          `;
+          sessionThead.innerHTML = `
+            <tr>
+              <th scope="col"><button type="button" class="table-header-btn"><span>会话 / 任务主题</span></button></th>
+              <th scope="col" class="align-right"><button type="button" class="table-header-btn align-right"><span>Codex 用量</span></button></th>
+              <th scope="col" class="align-right"><button type="button" class="table-header-btn align-right"><span>Qoder 用量</span></button></th>
+              <th scope="col" class="align-center">操作</th>
+            </tr>
+          `;
+          sessionTbody.innerHTML = `
+            <tr>
+              <td><div class="cell-title-truncate"><span class="row-index">1.</span>继续升级 Compass TDD Workspace</div></td>
+              <td class="align-right num-mono" style="font-weight:700;">3.34B</td>
+              <td class="align-right num-mono" style="font-weight:700;">1.42B</td>
+              <td class="align-center"><a href="#session-view" class="btn-cell-action">查看</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-title-truncate"><span class="row-index">2.</span>【理赔】完成剩余工单归因</div></td>
+              <td class="align-right num-mono" style="font-weight:700;">1.87B</td>
+              <td class="align-right num-mono" style="font-weight:700;">890.0M</td>
+              <td class="align-center"><a href="#session-view" class="btn-cell-action">查看</a></td>
+            </tr>
+            <tr>
+              <td><div class="cell-title-truncate"><span class="row-index">3.</span>【DataPages】设计问题分析产品化方案</div></td>
+              <td class="align-right num-mono" style="font-weight:700;">1.65B</td>
+              <td class="align-right num-mono" style="font-weight:700;">610.0M</td>
+              <td class="align-center"><a href="#session-view" class="btn-cell-action">查看</a></td>
+            </tr>
+          `;
+        } else {
+          sessionColgroup.innerHTML = `
+            <col style="width: 320px;">
+            <col style="width: 140px;">
+            <col style="width: 110px;">
+            <col style="width: 90px;">
+            <col style="width: 80px;">
+          `;
+          sessionThead.innerHTML = `
+            <tr>
+              <th scope="col"><button type="button" class="table-header-btn"><span>会话 / 任务主题 (Top 排行)</span></button></th>
+              <th scope="col"><button type="button" class="table-header-btn"><span>模型</span></button></th>
+              <th scope="col" class="align-right"><button type="button" class="table-header-btn align-right is-active"><span>用量消耗</span></button></th>
+              <th scope="col" class="align-right"><button type="button" class="table-header-btn align-right"><span>占比</span></button></th>
+              <th scope="col" class="align-center">操作</th>
+            </tr>
+          `;
+          if (mode === 'qoder') {
+            sessionTbody.innerHTML = `
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">1.</span>继续升级 Compass TDD Workspace</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">deepseek-flash</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">1.42B</td>
+                <td class="align-right num-mono">22.2%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">2.</span>【理赔】完成剩余工单归因</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">deepseek-flash</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">890.0M</td>
+                <td class="align-right num-mono">13.9%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">3.</span>【DataPages】设计问题分析产品化方案</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">deepseek-flash</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">610.0M</td>
+                <td class="align-right num-mono">9.5%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+            `;
+          } else {
+            sessionTbody.innerHTML = `
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">1.</span>继续升级 Compass TDD Workspace</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">3.34B</td>
+                <td class="align-right num-mono">27.9%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">2.</span>【理赔】完成剩余工单归因</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6.1-sol</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">1.87B</td>
+                <td class="align-right num-mono">15.7%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+              <tr>
+                <td><div class="cell-title-truncate"><span class="row-index">3.</span>【DataPages】设计问题分析产品化方案</div></td>
+                <td><span class="num-mono" style="color:var(--ink-secondary);">gpt-6-astra</span></td>
+                <td class="align-right num-mono" style="font-weight:700;">1.65B</td>
+                <td class="align-right num-mono">13.8%</td>
+                <td class="align-center"><a href="#session-view" class="btn-cell-action">查看会话</a></td>
+              </tr>
+            `;
+          }
+        }
+      }
+
+      // ----------------------------------------------------------------------
+      // 3. Table Expansion Controls (3 Rows -> Full Rows with max-height:360px)
+      // ----------------------------------------------------------------------
+      const benefitExpandBtn = document.getElementById('benefit-expand-btn');
+      const benefitContainer = document.getElementById('benefit-table-container');
+      const benefitCountSummary = document.getElementById('benefit-count-summary');
+      let benefitExpanded = false;
+
+      benefitExpandBtn.addEventListener('click', function() {
+        benefitExpanded = !benefitExpanded;
+        if (benefitExpanded) {
+          benefitContainer.classList.add('expanded');
+          benefitExpandBtn.querySelector('span').textContent = '收起明细 ↑';
+          benefitCountSummary.textContent = '当前显示全部 32 项交付 (内部滚动)';
+          appendMockBenefitRows();
+        } else {
+          benefitContainer.classList.remove('expanded');
+          benefitExpandBtn.querySelector('span').textContent = '展开全部 32 项交付 ↓';
+          benefitCountSummary.textContent = '当前显示 3 / 32 项交付';
+          removeMockBenefitRows();
+        }
+      });
+
+      function appendMockBenefitRows() {
+        const tbody = document.getElementById('benefit-tbody');
+        if (document.getElementById('mock-row-4')) return;
+        for (let i = 4; i <= 15; i++) {
+          const tr = document.createElement('tr');
+          tr.id = `mock-row-${i}`;
+          tr.innerHTML = `
+            <td><div class="cell-title-truncate"><span class="row-index">${i}.</span>工单自测规范与自动化断言验证 #${i}</div></td>
+            <td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+            <td class="align-right num-mono">18.40M</td>
+            <td class="align-right num-mono">12.10M</td>
+            <td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+            <td class="align-right"><span class="status-pill uncomputed">未估算</span></td>
+            <td class="align-center"><button type="button" class="btn-cell-action" data-action="view-evidence" data-task="工单自测 #${i}">详情</button></td>
+          `;
+          tbody.appendChild(tr);
+        }
+      }
+
+      function removeMockBenefitRows() {
+        for (let i = 4; i <= 15; i++) {
+          const row = document.getElementById(`mock-row-${i}`);
+          if (row) row.remove();
+        }
+      }
+
+      // CLI Expand
+      const cliExpandBtn = document.getElementById('cli-expand-btn');
+      const cliContainer = document.getElementById('cli-table-container');
+      const cliCountSummary = document.getElementById('cli-count-summary');
+      let cliExpanded = false;
+
+      cliExpandBtn.addEventListener('click', function() {
+        cliExpanded = !cliExpanded;
+        if (cliExpanded) {
+          cliContainer.classList.add('expanded');
+          cliExpandBtn.querySelector('span').textContent = '收起命令列表 ↑';
+          cliCountSummary.textContent = '当前显示 15 / 449 条命令 (内部滚动)';
+          appendMockCliRows();
+        } else {
+          cliContainer.classList.remove('expanded');
+          cliExpandBtn.querySelector('span').textContent = '展开全部 449 条命令 ↓';
+          cliCountSummary.textContent = '当前显示 3 / 449 条子命令';
+          removeMockCliRows();
+        }
+      });
+
+      function appendMockCliRows() {
+        const tbody = document.getElementById('cli-tbody');
+        if (document.getElementById('mock-cli-4')) return;
+        const extraCmds = [
+          { cmd: 'node --test', calls: '840', rate: '99.1%', fail: '2' },
+          { cmd: 'pnpm exec vitest', calls: '620', rate: '98.5%', fail: '1' },
+          { cmd: 'git checkout', calls: '480', rate: '97.4%', fail: '3' },
+          { cmd: 'python3 -m pytest', calls: '310', rate: '95.2%', fail: '4' },
+          { cmd: 'sf log query', calls: '240', rate: '100%', fail: '0' }
+        ];
+        extraCmds.forEach((item, idx) => {
+          const tr = document.createElement('tr');
+          tr.id = `mock-cli-${idx + 4}`;
+          tr.innerHTML = `
+            <td><div class="cell-title-truncate"><span class="num-mono" style="font-weight:700;">${item.cmd}</span></div></td>
+            <td class="align-right num-mono" style="font-weight:700;">${item.calls}</td>
+            <td class="align-right num-mono" style="color:var(--accent-forest); font-weight:700;">${item.rate}</td>
+            <td class="align-right"><span class="status-pill uncomputed">业务未确认</span></td>
+            <td class="align-right"><button type="button" class="btn-cell-action" style="color:var(--accent-rust);">${item.fail} 次失败 ↓</button></td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      function removeMockCliRows() {
+        for (let i = 4; i <= 8; i++) {
+          const row = document.getElementById(`mock-cli-${i}`);
+          if (row) row.remove();
+        }
+      }
+
+      // ----------------------------------------------------------------------
+      // 4. CLI Multi-Word Search & Category Select Filtering
+      // ----------------------------------------------------------------------
+      const cliSearchInput = document.getElementById('cli-search-input');
+      const cliCategorySelect = document.getElementById('cli-category-select');
+
+      function filterCliTable() {
+        const searchTerms = cliSearchInput.value.trim().toLowerCase().split(/\s+/).filter(Boolean);
+        const category = cliCategorySelect.value;
+        const rows = document.querySelectorAll('#cli-tbody tr');
+
+        rows.forEach(row => {
+          const text = row.textContent.toLowerCase();
+          const matchesCategory = (category === 'all') ||
+            (category === 'git' && text.includes('git')) ||
+            (category === 'shasum' && text.includes('shasum')) ||
+            (category === 'node' && (text.includes('node') || text.includes('pnpm') || text.includes('pytest'))) ||
+            (category === 'tools' && text.includes('sf'));
+
+          const matchesSearch = searchTerms.length === 0 || searchTerms.every(term => text.includes(term));
+
+          if (matchesCategory && matchesSearch) {
+            row.style.display = '';
+          } else {
+            row.style.display = 'none';
+          }
+        });
+      }
+
+      cliSearchInput.addEventListener('input', filterCliTable);
+      cliCategorySelect.addEventListener('change', filterCliTable);
+
+      // ----------------------------------------------------------------------
+      // 5. Evidence Modal Dialog (Esc key & Focus Management)
+      // ----------------------------------------------------------------------
+      const modal = document.getElementById('evidence-modal');
+      const modalCloseBtn = document.getElementById('modal-close-btn');
+      const modalConfirmBtn = document.getElementById('modal-confirm-btn');
+      let lastFocusedElement = null;
+
+      function openModal(taskTitle) {
+        lastFocusedElement = document.activeElement;
+        document.getElementById('modal-task-name').textContent = taskTitle || '评测 B1 | Codex 小队业务工单归因方案';
+        modal.classList.add('is-visible');
+        modalCloseBtn.focus();
+      }
+
+      function closeModal() {
+        modal.classList.remove('is-visible');
+        if (lastFocusedElement) {
+          lastFocusedElement.focus();
+        }
+      }
+
+      document.addEventListener('click', function(e) {
+        const target = e.target.closest('[data-action="view-evidence"]');
+        if (target) {
+          const taskName = target.getAttribute('data-task');
+          openModal(taskName);
+        }
+      });
+
+      modalCloseBtn.addEventListener('click', closeModal);
+      modalConfirmBtn.addEventListener('click', closeModal);
+      modal.addEventListener('click', function(e) {
+        if (e.target === modal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && modal.classList.contains('is-visible')) {
+          closeModal();
+        }
+      });
+
+      // ----------------------------------------------------------------------
+      // 6. Section 04 Evidence Details Toggle
+      // ----------------------------------------------------------------------
+      document.querySelectorAll('.rec-item-evidence-toggle').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const targetId = this.getAttribute('data-target');
+          const content = document.getElementById(targetId);
+          if (content) {
+            const isOpen = content.classList.contains('is-open');
+            if (isOpen) {
+              content.classList.remove('is-open');
+              this.querySelector('span').textContent = '查看证据与验证方式 ▾';
+            } else {
+              content.classList.add('is-open');
+              this.querySelector('span').textContent = '收起证据与验证方式 ▴';
+            }
+          }
+        });
+      });
+
+      // ----------------------------------------------------------------------
+      // 7. Interactive Column Sorting Toggle Demo
+      // ----------------------------------------------------------------------
+      document.querySelectorAll('.table-header-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const th = this.closest('th');
+          const table = this.closest('table');
+          const isAsc = this.getAttribute('data-sorted') === 'asc';
+
+          // Reset siblings
+          table.querySelectorAll('.table-header-btn').forEach(b => {
+            b.classList.remove('is-active');
+            b.removeAttribute('data-sorted');
+            const p = b.querySelectorAll('.sort-path');
+            if (p.length === 2) {
+              p[0].className.baseVal = 'sort-path';
+              p[1].className.baseVal = 'sort-path';
+            }
+          });
+
+          this.classList.add('is-active');
+          const paths = this.querySelectorAll('.sort-path');
+          if (paths.length === 2) {
+            if (isAsc) {
+              this.setAttribute('data-sorted', 'desc');
+              paths[0].className.baseVal = 'sort-path dimmed';
+              paths[1].className.baseVal = 'sort-path active';
+            } else {
+              this.setAttribute('data-sorted', 'asc');
+              paths[0].className.baseVal = 'sort-path active';
+              paths[1].className.baseVal = 'sort-path dimmed';
+            }
+          }
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+

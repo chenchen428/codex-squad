@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>留白 · 画布选稿</title><link rel="stylesheet" href="fonts.css"><link rel="stylesheet" href="canvas-export.css"><link rel="stylesheet" href="style.css"><link rel="icon" type="image/png" href="../design/product-logo.png"><link rel="stylesheet" href="../design/product-brand.css"></head>
+<body class="flex flex-col relative select-none">
+
+  <!-- 1. 顶部 56px 轻量精致白色通栏 -->
+  <header class="h-[56px] w-full bg-white/95 backdrop-blur border-b border-gray-200/80 px-6 flex items-center justify-between z-30 shrink-0" id="app-header">
+    <!-- 左：品牌与定位 -->
+    <div class="flex items-center space-x-3 brand-area">
+      <div class="flex items-center space-x-2">
+        <img class="product-logo" src="../design/product-logo.png" width="28" height="28" alt="Codex 小队">
+        <span class="font-semibold text-[15px] tracking-tight serif-title text-[#1b2a26]">Codex 小队</span>
+        <span class="text-gray-300 font-light">/</span>
+        <span class="text-xs uppercase tracking-widest text-gray-400 font-medium">Design Review</span>
+      </div>
+      <div class="h-4 w-px bg-gray-200"></div>
+      <span class="text-xs text-gray-500 font-normal" id="project-title">阅读应用 · 界面改版</span>
+    </div>
+
+    <!-- 中：议题下拉与状态徽标 -->
+    <div class="flex items-center space-x-2.5 header-context">
+      <div class="group-picker" id="group-picker">
+        <button id="group-trigger" type="button" aria-label="切换审阅组" aria-describedby="group-trigger-title" aria-haspopup="dialog" aria-expanded="false" aria-controls="group-menu"><span class="context-dot"></span><span id="group-trigger-title"></span><span class="group-chevron" aria-hidden="true">⌄</span></button>
+        <div id="group-menu" role="dialog" aria-label="选择审阅组" hidden></div>
+      </div>
+      <select id="state-select" class="state-picker" aria-label="相关页面状态"></select>
+      <span class="text-xs text-gray-400 hidden lg:inline-block" id="group-intent">让封面更完整，让下一步更清楚</span>
+    </div>
+
+    <!-- 右：目标提示与选择清单 -->
+    <div class="flex items-center space-x-3 header-actions">
+      <div class="flex items-center space-x-1.5 text-xs text-gray-500 bg-gray-50/80 px-2.5 py-1 rounded-md border border-gray-100" id="board-count">
+        <span class="text-emerald-700 font-medium">4</span>
+        <span>个画板就绪</span>
+      </div>
+      <button class="flex items-center space-x-1.5 text-xs font-medium px-3.5 py-1.5 rounded-lg border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 transition shadow-sm" id="show-summary" aria-label="查看选择清单">
+        <span>查看决定清单</span>
+        <svg class="w-3.5 h-3.5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- 2. 二维自由画布空间 (无边界感、点阵网格、可交互平移与缩放) -->
+  <main id="viewport" class="flex-1 w-full relative overflow-hidden canvas-dots cursor-grab active:cursor-grabbing" aria-label="设计画布，可拖动平移，Ctrl 或 Command 加滚轮缩放" tabindex="0">
+    
+    <!-- 画布左上角极简目标标签 -->
+    <div class="absolute top-4 left-6 z-10 pointer-events-none" id="canvas-goal">
+      <div class="flex items-center space-x-2 text-xs text-gray-500 bg-white/70 backdrop-blur-md px-3 py-1.5 rounded-full border border-gray-200/60 shadow-xs">
+        <svg class="w-3.5 h-3.5 text-[#296352]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span id="canvas-goal-text">核心审阅目标：让封面更完整，让下一步更清楚</span>
+      </div>
+    </div>
+
+    <!-- 画布可变换层 (Transform Root) -->
+    <div id="board-jumps" class="board-jumps" aria-label="定位候选"></div><div id="canvas-surface" class="canvas-surface"></div>
+
+    <!-- 3. 底部左侧浮动胶囊工具栏 (Figma式缩放、手形、平移、适应全屏) -->
+    <div class="absolute bottom-6 left-6 z-20 flex items-center bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/90 shadow-lg px-2 py-1.5 space-x-1 canvas-tools" id="canvas-tools">
+      <!-- 抓手工具 -->
+      <button id="hand-tool" title="手形平移画布 (空格快捷键)" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95" aria-label="拖动画布工具">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11.5V14m0-2.5v-6a1.5 1.5 0 113 0m-3 6a1.5 1.5 0 00-3 0v2a7.5 7.5 0 0015 0v-5a1.5 1.5 0 00-3 0m-6-3V11m0-5.5v-1a1.5 1.5 0 013 0v1m0 0V11m0-5.5a1.5 1.5 0 013 0v3m0 0V11"></path></svg>
+      </button>
+
+      <div class="w-px h-3.5 bg-gray-200"></div>
+
+      <!-- 缩小 -->
+      <button title="缩小" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95" id="zoom-out" aria-label="缩小画布">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+      </button>
+
+      <!-- 缩放数值 -->
+      <button id="zoom-value" title="点击重置为 100%" class="px-2 py-0.5 text-xs font-mono font-medium text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded" aria-label="原尺寸显示">
+        100%
+      </button>
+
+      <!-- 放大 -->
+      <button title="放大" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition active:scale-95" id="zoom-in" aria-label="放大画布">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+      </button>
+
+      <div class="w-px h-3.5 bg-gray-200"></div>
+
+      <!-- 适应全部 -->
+      <button title="适应全部画板" class="flex items-center space-x-1 px-2.5 py-1 rounded-lg text-xs font-medium text-gray-700 hover:bg-gray-100 transition" id="fit-all" aria-label="适应全部画板">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"></path></svg>
+        <span>适应全部</span>
+      </button>
+
+      <!-- 同宽排列 -->
+      <button title="并排对齐" class="p-1.5 rounded-lg text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition" id="same-width" aria-label="同宽排列">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+      </button>
+    </div>
+
+    <!-- 4. 底部中央轻量浮动备注与决定确认条 (约 650×86px，绝不占满底边) -->
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 w-[640px] bg-white/95 backdrop-blur-md rounded-2xl border border-gray-200/90 shadow-xl shadow-slate-400/10 p-2.5 flex items-center justify-between gap-3 note-panel" id="note-panel">
+      <!-- 自由备注输入框 (未选也可写，支持随时自动保存) -->
+      <div class="flex-1 flex flex-col justify-center note-editor">
+        <div class="flex items-center justify-between text-[10px] text-gray-400 mb-1 px-0.5">
+          <div class="flex items-center space-x-1"><button id="toggle-note" type="button">审阅备注 <span class="note-chevron">⌃</span></button><span class="note-help">未选也可写</span></div>
+          <span id="save-status" class="text-gray-400 font-mono">已就绪</span>
+        </div>
+        <textarea id="review-note" rows="2" placeholder="喜欢、顾虑，或希望再调整的地方…（未选也可写）" class="w-full text-xs text-gray-700 bg-gray-50/80 rounded-lg p-1.5 border border-gray-200/80 focus:bg-white focus:border-emerald-600 focus:outline-none resize-none leading-relaxed" aria-label="本组自由备注"></textarea>
+      </div>
+
+      <!-- 右侧轻量决策动作组 -->
+      <div class="flex flex-col items-end justify-center shrink-0 border-l border-gray-200 pl-3 space-y-1.5 note-actions">
+        <div class="flex items-center space-x-1.5">
+          <span class="text-[11px] text-gray-400">当前选择：</span>
+          <span id="selected-status-badge" class="text-[11px] font-medium text-gray-500 bg-gray-100 px-2 py-0.5 rounded-full">尚未选择</span>
+        </div>
+        <div class="flex items-center space-x-2">
+          <button class="text-xs text-gray-600 hover:text-gray-900 px-2 py-1.5 rounded-lg hover:bg-gray-100 transition" id="revise-choice">
+            继续改稿
+          </button>
+          <button id="confirm-choice" class="px-4 py-1.5 rounded-xl bg-gray-800 text-white text-xs font-medium hover:bg-black transition shadow-sm flex items-center space-x-1 disabled:opacity-50">
+            <span>确认选择</span>
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </button>
+        </div>
+      </div>
+      <div id="flow-hint" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- 5. 右下角极简画布鸟瞰小总览 (MiniMap) -->
+    <div class="absolute bottom-6 right-6 z-20 bg-white/90 backdrop-blur-md rounded-xl border border-gray-200/90 shadow-md p-2 w-[110px] h-[72px] flex flex-col justify-between minimap" id="minimap"></div>
+
+  <div id="canvas-help">拖动画布 · Ctrl / ⌘ + 滚轮缩放 · 双击画板看细节</div></main>
+
+  
+
+
+<template id="board-template"><div class="canvas-board">
+          <!-- 画板头部标头 (Figma式) -->
+          <div class="w-[300px] flex items-center justify-between mb-2.5 px-1">
+            <div class="flex items-center space-x-1.5">
+              <span class="w-2 h-2 rounded-sm bg-gray-400"></span>
+              <span class="text-[12px] font-semibold text-gray-600 tracking-tight">当前线上</span>
+              <span class="text-[11px] text-gray-400 font-mono">v1·常规</span>
+            </div>
+            <span class="text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-gray-200/70 text-gray-600">现状基准</span>
+          </div>
+
+          <!-- 画板主体 (基准 300 x 440) -->
+          <div class="artboard-card relative w-[300px] h-[440px] bg-white rounded-[22px] border border-gray-200 shadow-md shadow-slate-200/60 flex flex-col overflow-hidden group cursor-pointer">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-gray-400 font-medium shrink-0 pt-1.5 bg-white">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-gray-400 relative inline-block"><span class="absolute inset-0.5 bg-gray-400 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部 -->
+            <div class="px-3.5 py-1.5 flex items-center justify-between shrink-0">
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+              <span class="text-[11px] font-medium text-gray-700">图书详情</span>
+              <svg class="w-3.5 h-3.5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg>
+            </div>
+
+            <!-- 现况内容：密集卡片、封面偏小被截切 -->
+            <div class="px-3.5 pt-1 pb-2 flex-1 flex flex-col justify-between">
+              <div class="space-y-2">
+                <div class="flex space-x-2.5 bg-gray-50 p-2.5 rounded-xl border border-gray-100">
+                  <div class="w-16 h-20 bg-gray-400 rounded-md shrink-0 p-1.5 flex flex-col justify-between text-white text-[9px] shadow-xs">
+                    <span class="text-[7px] text-gray-200 font-mono">VOL.04</span>
+                    <span class="font-bold leading-tight">远山与行旅</span>
+                    <span class="text-[7px] text-gray-200">林栖 著</span>
+                  </div>
+                  <div class="flex-1 flex flex-col justify-center">
+                    <div class="text-[12px] font-bold text-gray-900 leading-tight">远山与行旅(修订本)</div>
+                    <div class="text-[10px] text-gray-400 mt-0.5">中文散文集 · 18.4万字</div>
+                    <div class="text-[9px] text-amber-600 mt-1 flex items-center">★ 8.7 <span class="text-gray-400 ml-1">(1,420 评价)</span></div>
+                    <p class="text-[8px] text-rose-500 mt-1 leading-snug">旧版信息密度过大，书封被局部裁切，动作层级分散。</p>
+                  </div>
+                </div>
+
+                <!-- 四格数据 -->
+                <div class="grid grid-cols-4 gap-1 text-center">
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">目录</div><div class="text-[7px] text-gray-400">18章</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">笔记</div><div class="text-[7px] text-gray-400">142条</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">书评</div><div class="text-[7px] text-gray-400">99+</div></div>
+                  <div class="bg-gray-50 py-1 rounded border border-gray-100"><div class="text-[9px] font-bold text-gray-700">听书</div><div class="text-[7px] text-gray-400">支持</div></div>
+                </div>
+
+                <!-- 试读片段 -->
+                <div class="p-2 bg-gray-50 rounded-lg border border-gray-100 text-[9px] text-gray-600 leading-relaxed">
+                  <span class="font-medium text-gray-800">第一章 · 晨雾中的渡口</span>
+                  <p class="line-clamp-2 text-gray-400 text-[8px] mt-0.5">江水在清晨的微风中泛起银白色的褶皱，两岸的青瓦民居在炊烟散尽后，隐约露出湿润的屋脊轮廓。</p>
+                </div>
+              </div>
+
+              <!-- 底部操作条 -->
+              <div class="flex items-center space-x-1.5 pt-1.5 border-t border-gray-100">
+                <button class="flex-1 py-1.5 rounded-lg bg-gray-800 text-white text-[10px] font-medium">开始阅读</button>
+                <button class="px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-600 text-[10px]">试读</button>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-gray-50/90 border-t border-gray-100 px-3 py-1 flex items-center justify-between text-[9px] text-gray-400">
+              <span>现状基准 · 1170×2532 px</span>
+              <span class="text-gray-400">紧凑网格</span>
+            </div>
+          </div>
+
+          <!-- 画板底部轻量选择 Radio -->
+          <div class="mt-3 flex items-center space-x-2">
+            <label class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full bg-white border border-gray-200 text-xs text-gray-600 cursor-pointer hover:border-gray-300 shadow-xs transition">
+              <input type="radio" name="board_select" value="current" class="text-emerald-700 focus:ring-0">
+              <span class="font-medium text-[11px]">保留当前</span>
+            </label>
+          </div>
+        </div></template><dialog id="image-dialog" aria-label="独立大图"></dialog><dialog id="summary-dialog" aria-label="选择与备注清单"></dialog><dialog id="decision-dialog" aria-label="确认保留当前"></dialog><div id="toast" role="status" aria-live="polite"></div><script src="data.js"></script><script src="app.js"></script></body></html>

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "purpose": "验收报告内联代码阅读：SQL 格式化（仅 mysql 方言）与按语言语法高亮；离线内联，运行时无 npm 安装、无 CDN 请求。",
+  "build": {
+    "tool": "esbuild 0.25.10（--bundle --format=iife --minify --target=es2017 --legal-comments=none）",
+    "workdir": "临时目录 /tmp/cv-build，构建完成后整目录丢弃",
+    "entries": {
+      "sql-formatter.mysql.min.js": "import { formatDialect, mysql } from 'sql-formatter'; 仅注册 mysql 方言并以 globalThis.sqlFormatter 暴露 format(text, options)",
+      "highlight-sql-json-http-java.min.js": "highlight.js/lib/core 仅注册 sql / json / http / java 四种语言，以 globalThis.hljs 暴露"
+    },
+    "exportsForTests": "两个 bundle 同时保留 CommonJS 出口，Node 侧可直接 require 做行为测试；浏览器侧只读全局"
+  },
+  "packages": [
+    {
+      "package": "sql-formatter",
+      "version": "15.9.0",
+      "license": "MIT",
+      "resolved": "https://registry.npmjs.org/sql-formatter/-/sql-formatter-15.9.0.tgz",
+      "integrity": "sha512-3A/N+v+mA5/PDU+FlO4uTFE0L/Mmg63c/Ny161Qv2b1Mxp9IX8War+LLmq17LA/Kgu4KXAR7iutK2JaHWJMMtw==",
+      "repository": "https://github.com/sql-formatter-org/sql-formatter",
+      "licenseFile": "LICENSE-sql-formatter.txt",
+      "files": [
+        {
+          "path": "sql-formatter.mysql.min.js",
+          "sha256": "253602ebbc10663d414dd61e00c52bb0339513f32542362d99e3153e84fc399d",
+          "bytes": 67641,
+          "modification": "仅 tree-shake 出 mysql 方言并包成 IIFE，未改动格式化逻辑"
+        }
+      ]
+    },
+    {
+      "package": "highlight.js",
+      "version": "11.12.0",
+      "license": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/highlight.js/-/highlight.js-11.12.0.tgz",
+      "integrity": "sha512-nbfWpyRMcMrPMmDwJB+dhX/eiaPKtc2RB+0QZskqJ3WjRA/FDS0e9hZrx8EC/lbEv8gXy98FcDbNa/dspAaJMg==",
+      "repository": "https://github.com/highlightjs/highlight.js",
+      "licenseFile": "LICENSE-highlightjs.txt",
+      "files": [
+        {
+          "path": "highlight-sql-json-http-java.min.js",
+          "sha256": "df1ffdd8cbd7b11247986419d8999ff3e3ee3660db916bcca6b1c2aa676cb9e1",
+          "bytes": 32003,
+          "modification": "仅注册 sql / json / http / java 四个语言模块，未改动高亮逻辑"
+        }
+      ]
+    }
+  ],
+  "runtimeConstraints": [
+    "不执行 eval / new Function，不使用 Web Worker 或 CDN",
+    "输入先作为纯文本处理，由库负责转义；库不可用时回退到 app 自身的 esc()",
+    "格式化失败、方言不支持或文本疑似被截断时保留原文，不生成替代 SQL"
+  ]
+}

@@ -1,0 +1,258 @@
+{
+  "schemaVersion": 1,
+  "status": "implementation-authorized-local-design",
+  "project": "14906138420656377633",
+  "designSystem": "assets/1205ac5e9a3648868393485adf51a83a",
+  "latestUserDecision": "R50/R51: implement the complete Stitch Warm Editorial page locally; correct grouping and sorting-induced width changes, retain every existing capability, then independently exercise all functions.",
+  "sourceScreens": [
+    {
+      "name": "projects/14906138420656377633/screens/6f7180e4ddaf4e5489f3ab1f85f81d6f",
+      "title": "子任务详情：Codex 响应式核验弹层 (自适应 Modal/Sheet)",
+      "htmlFile": "design/v9/seal-responsive-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/3712d847523646b4aa8c4f5c3695c016",
+      "title": "子任务详情：Codex 精致核验章 (收起态)",
+      "htmlFile": "design/v9/seal-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/c43a4ab847e64ab6bb8fb3e4ceee8386",
+      "title": "子任务详情：右上角单一核验状态与最新结论",
+      "htmlFile": "design/v9/verification-latest-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/3d5a78bb297348998935ac0629620555",
+      "title": "Codex 小队 · 周期分析报告 (自适应更新说明弹层)",
+      "htmlFile": "design/v9/analytics-responsive-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/83b4b2fa56484a22945e60db09913274",
+      "title": "Codex 小队 · 分析下钻：CLI 筛选、全部会话消耗与更新入口",
+      "htmlFile": "design/v9/analytics-drilldown-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/f37f2d4ae43c4283a060b5fa6dbc7359",
+      "title": "Codex 小队 · 周期分析：Codex/Qoder 消耗对比与交付观察",
+      "htmlFile": "design/v9/analytics-comparison-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/4d9e32eee1f94167b3fe88aac3fdb8bd",
+      "title": "Codex 小队 · 周期分析：纯报告态、保存周期与更新时间",
+      "htmlFile": "design/v9/analytics-clean-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/a3e1ae6585ef4c0685b24087e14269fe",
+      "title": "Codex 小队 · 小队收益：外层两指标与计算依据弹层",
+      "htmlFile": "design/v9/analytics-benefits-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/ab07a0ef5cd346ac85e3bf100aa1b4c9",
+      "title": "小队收益置顶与主次数字排版",
+      "htmlFile": "design/v9/analytics-benefits-top-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/b1d2297dae3549dfab8eba5192022b27",
+      "title": "小队收益：紧凑依据表与单项工作依据弹框",
+      "htmlFile": "design/v9/analytics-compact-basis-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/4041d80e4d3d4ce9b3405510c804b21d",
+      "title": "周期分析：统一报告头、本地时间与区间切换",
+      "htmlFile": "design/v9/analytics-unified-header-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/a94a376f06cb4bd7ae43bb13a97fbe5b",
+      "title": "Codex 小队 · 刊页版周期分析报告（R38 用户认可稿）",
+      "htmlFile": "design/v9/analytics-editorial-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/71b7f6eda1d14d27b8a0f2051db3ef85",
+      "title": "Codex 小队 · Token 消耗带（R49 局部组件：单一合计 + 细线流程条）",
+      "htmlFile": "design/v9/analytics-compact-token-original.html"
+    },
+    {
+      "name": "projects/14906138420656377633/screens/cda37fcd02e740788e6ff3d1c514f31b",
+      "title": "Codex 小队 · 周期分析 (Warm Editorial 刊页定稿版)",
+      "htmlFile": "design/v9/analytics-complete-r50-original.html"
+    }
+  ],
+  "scope": "Complete four-chapter analysis page from the R50 original source inside the unchanged shared shell. Typography, connected token/meta region, symmetric squad facts, fixed editorial tables and compact footers come from that source. Business state retains signed savings, real snapshots, separate Codex/Qoder scopes, every existing table/fold/search/failure and related-session capability. R46/R47 loading/header behavior and shared verification/update dialogs remain.",
+  "dataRule": "No example values ship. Every runtime string comes from acceptance records, saved local analysis snapshots, saved period benefits or official release metadata; missing data is rendered as missing and is never estimated or replaced with a Stitch sample. One shared decimal formatter renders every recorded token count as K/M/B, and a missing count is 未上报 rather than 0. Benefits are read only from the saved snapshot's benefits block: when neither net Token nor net time can be estimated the whole section is hidden instead of showing placeholder cards, while a valid zero, positive or negative estimate stays visible and a partial snapshot keeps the real estimate it has. Savings titles are fixed as 预计少用 Codex Token and 预计节省处理时间, but a negative estimate is printed with its real minus sign, keeps the warn tone and is explained as more input than the baseline; it is never flipped into a positive saving. No GET-time calculation or POST is issued. No account quota, remaining balance, money equivalent or invented consumption for other CLIs is read or rendered.",
+  "responsiveContract": {
+    "breakpointPx": 768,
+    "wide": {
+      "placement": "centered",
+      "widthPx": 560,
+      "maxWidth": "90vw",
+      "maxHeight": "80vh"
+    },
+    "narrow": {
+      "placement": "bottom-sheet",
+      "width": "100%",
+      "maxHeight": "85dvh",
+      "radius": "16px 16px 0 0",
+      "fixedHeaderFooter": true,
+      "internalScroll": true,
+      "safeArea": "env(safe-area-inset-bottom, 0px)"
+    },
+    "sideDrawer": false
+  },
+  "components": [
+    {
+      "id": "verification-header-status",
+      "selector": ".squad-v9-verify-stamp",
+      "source": "design/v9/verification-latest-original.html",
+      "notes": "The single clickable verification status in the task title row replaces the execution status badge. It is green when the latest attempt was accepted and amber with a pulsing dot while that latest attempt is verifying. No second status, bottom ledger, cards, changed bar or diff entry is rendered."
+    },
+    {
+      "id": "verification-sheet",
+      "selector": ".squad-v9-dialog--seal",
+      "source": "design/v9/verification-latest-original.html",
+      "notes": "Latest-conclusion dialog only. Accepted shows the acceptance time and the record's own note; verifying shows that verification is in progress and never falls back to an older accepted conclusion. File lists, fingerprints, diffs, round numbers, history counts and Stitch sample criteria are not rendered."
+    },
+    {
+      "id": "report-header",
+      "selector": ".edition-bar",
+      "source": "design/v9/analytics-unified-header-original.html",
+      "notes": "Editorial edition bar inside the shared shell. The shell keeps the product brand, native session name, navigation and version entry; this row adds only the period title, saved local date range, one local update stamp, at most one necessary non-success status and the 近7天/近30天/全部 switch. Date and time use Intl in the browser's local timezone and the raw cutoffs stay in the stamp tooltip. No project name, version, duplicate UTC stamp or success badge is rendered."
+    },
+    {
+      "id": "codex-usage",
+      "selector": ".token-composite-card",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "R50 connected total/input/cache/output and compact provider meta group; real model bindings with equal-height values and separate provider totals. No source fake ratios, causes or summed CLI amount."
+    },
+    {
+      "id": "usage-distribution",
+      "selector": ".usage-distribution",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "R50 native fixed-layout tables and explicit column profiles; title blocks clamp to two lines without widening columns. Every mode keeps its full real rows, preview/expand footer and native table-cell actions."
+    },
+    {
+      "id": "sort-header",
+      "selector": "th.has-sort",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "16px stroke2 SVGs, dark neutral and rust active direction, native th scope/aria-sort and full-cell keyboard button with inward focus. Raw values and unknown-last sorting retained."
+    },
+    {
+      "id": "cli-search",
+      "selector": ".cli-controls",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Source CLI toolbar mapped to existing multi-term input, CLI select intersection, clear/no-match and IME/focus state. Real source callbacks and model retained, no mock JS."
+    },
+    {
+      "id": "delivery-efficiency",
+      "selector": ".followup-list",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Existing actual priority work retained as a compact bordered list in chapter04; no invented causes or efficiency claims."
+    },
+    {
+      "id": "daily-investment",
+      "selector": ".editorial-details[data-daily]",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Existing daily facts retained in a fold using the same R50 native fixed table, preview and expanded scroll contract."
+    },
+    {
+      "id": "squad-benefits",
+      "selector": ".roi-folio",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Source two-metric group bound to signed saved Token and equivalent processing time, real coverage and one observation. Previous required labels and negative values override the source more-used specimen; no outside baseline bar."
+    },
+    {
+      "id": "squad-benefits-basis",
+      "selector": ".basis-details",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Complete real seven-column basis table reuses R50 frame/header/footer, default3 and expand-all. Per-item evidence keeps its existing responsive dialog."
+    },
+    {
+      "id": "squad-benefit-dialog",
+      "selector": ".squad-v9-benefit-dialog",
+      "source": "design/v9/analytics-compact-basis-original.html",
+      "notes": "Per-work basis dialog opened from one delivery's 依据 button. It shows the work title, status, complete start-end range, baseline source names and readable session links, actual Codex/Qoder input, net Token and time savings with their calculation summaries, model output speed, caliber and exclusion reasons. It never renders files, fingerprints, internal IDs or the full work list. The dialog uses the shared responsive sheet (centered 560px at >=768px, bottom sheet 85dvh below), keeps its header/footer visible with body-only scroll, and restores focus to the originating row button when closed by Esc, the close control or the 返回计算依据表 action. Only one work dialog is open at a time; if the snapshot stops providing estimable benefits the dialog closes."
+    },
+    {
+      "id": "codex-review",
+      "selector": ".advisory-item",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Four real observations and evidence retained in the source recommendations pattern; duplicate introductory text is omitted."
+    },
+    {
+      "id": "cli-performance",
+      "selector": ".cli-block",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Complete actual CLI table and failure/session details retain raw sorting, real filter results and unknown statuses; long commands cannot resize columns."
+    },
+    {
+      "id": "version-entry",
+      "selector": ".squad-v9-version",
+      "source": "design/v9/analytics-responsive-original.html",
+      "notes": "Shared navigation chip. Rust tone and 有更新 only when the official record reports an available update."
+    },
+    {
+      "id": "update-sheet",
+      "selector": ".squad-v9-dialog--update",
+      "source": "design/v9/analytics-drilldown-original.html",
+      "notes": "Release-notes dialog. Uses only official releaseNotes; the three Stitch benefit cards are intentionally not implemented. Installation starts only from an explicit click, stays enabled while a task is running, and shows idle, updating, succeeded or failed retry from the real updateAction state. Copy makes no claim that running tasks keep an old version or that new tasks switch, and does not ask the user to stop or wait for tasks. When a footer rerender replaces the focused install/close control, focus stays inside the dialog; body reading focus is never stolen."
+    },
+    {
+      "id": "analysis-sheet",
+      "selector": "[data-analysis-report]",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Exact scoped R50 source plus one business-owner adaptation section; old analysis visual layer removed. R47 title/range header retained."
+    },
+    {
+      "id": "editorial-chapter",
+      "selector": ".chapter-head",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Source report-chapter/chapter-heading-bar typography and rules, four sections in benefits, consumption, skills/CLI, observations order."
+    },
+    {
+      "id": "skills-reads",
+      "selector": ".skills-block",
+      "source": "design/v9/analytics-complete-r50-original.html",
+      "notes": "Real skill-read entries retained in compact source list/table style, default3 and expand-all, without fabricating unreported links."
+    }
+  ],
+  "assets": [],
+  "icons": "Inline SVG only; no icon font or public CDN.",
+  "runtimeAdaptations": [
+    "Dynamic facts replace illustrative copy without changing the page body.",
+    "Current host session names replace old workspace labels.",
+    "Conversation messages from Codex and Qoder, including handoff and user turns, share one Markdown renderer; tool output keeps its separate presentation.",
+    "Session ranking shows only readable session names, counts and the 查看小队/打开会话 actions; native task IDs and technical summaries are not rendered.",
+    "Verification exposes exactly one latest attempt in the title row; internal attempt history is retained in data but no ledger, file name, fingerprint or diff is displayed.",
+    "CLI filters and expansion only change visible rows; totals, coverage and failure counts still come from every real record.",
+    "Consumption lists every readable recorded session in an expandable details table; missing, unreported and undated coverage is stated instead of estimated.",
+    "The Codex/Qoder/对比 switch only rerenders local snapshot views; it never refetches, merges the two providers or turns tokens into money or an efficiency ranking.",
+    "Delivery focus lists at most three saved unverified tasks that already reported tokens; it never infers rework, low efficiency, waste or a cause from execution count.",
+    "The daily table expands only saved interval dates and shows missing dates as 无记录 and missing usage as 未上报 instead of 0; it scopes itself to squad-executor records rather than the full account investment.",
+    "Codex observations stay in the saved analysis order; evidence and verification are folded into native details and keep readable task links instead of native IDs.",
+    "Every expandable analysis table previews three real rows by default and flows with the page; only explicit expand-all caps at 360px with internal scrolling and a sticky header.",
+    "Collapsing a table returns it to three rows, resets its table scroll and lets the mouse wheel scroll the page again; tables with three or fewer rows show no expand control.",
+    "The unified report head formats the real saved range and update time in the browser's local timezone; switching 近7天/近30天/全部 only reads that interval's saved snapshot and never triggers analysis.",
+    "Consumption and CLI facts come only from saved snapshots; a missing snapshot stays explicitly empty instead of falling back to account quota.",
+    "The analysis page is a stored-period report: period generation stays in the backend, interval switching only reads the saved snapshot, and the page never offers a run/snapshot action, analysis-session link or manual-analysis guidance.",
+    "Squad benefits are read only from saved stats.benefits; the card never issues a live GET calculation or POST. With no estimable net Token or time the whole section stays hidden, while a real zero, positive, negative or partial estimate remains visible.",
+    "The benefits basis is an inline table in the same card: the button expands and scrolls to it, three deliveries show by default, every real N stays available, and excluded or missing-baseline deliveries remain listed instead of being dropped.",
+    "Each delivery's 依据 opens that work's own responsive dialog; closing it returns focus to the originating row, and it closes itself if the saved benefits stop being estimable.",
+    "Benefit evidence maps qoder:total to Qoder 用量汇总 and benefit:* to 小队收益汇总, so raw evidence references never appear in readable copy.",
+    "The update action is available while tasks run; progress and success come only from the runtime reader's real updateAction state, and footer rerenders keep focus inside the dialog.",
+    "The analysis page adopts the accepted R38 editorial sheet: chapters, warm paper, 50px/28px number hierarchy, editorial tables and native details, while the shared shell brand, native session name, navigation and version entry are preserved.",
+    "Benefits keep fixed savings titles in every state; real negatives print with a minus sign and warn tone, and the basis explains that negative means more input than the baseline rather than a saving.",
+    "All original capabilities remain: Codex/Qoder/compare usage, models, coverage and every session, core facts, priority follow-up, daily investment, session ranking, skills reads, the complete CLI table with failures and denominators, observations and evidence.",
+    "Every expandable table still previews three real rows, flows with the page when collapsed, and only explicitly expanded tables cap at 360px with internal scroll and a sticky header.",
+    "The R49 Token card keeps the existing Codex/Qoder/compare switch inside its own dashed top row; switching only rerenders the card and the distribution below it from the same snapshot, so the table never moves because the card never changes height.",
+    "In compare mode the hero prints both providers' actual totals side by side and each flow cell stacks both provider rows in one shared 36px value slot; the two sides are never added together and no empty placeholder row is rendered.",
+    "Missing totals stay 未上报 and a missing cache share stays 未记录 at the same type size as real values, so an unknown side cannot shrink the hero line.",
+    "The input ratio pill is intentionally absent: the raw-input numerator behind the total is not part of ModelUsageTotals and is not reverse-derived from formatted K/M/B text. Cached and output ratios still come from the recorded cacheShare and shares.output.",
+    "The card ports only its own component declarations; the Stitch demo page globals, specimen footer, sample figures and '100%' copy are not adopted, and the page font, reset, report header and other chapters are untouched.",
+    "R50/R51 ports the complete Stitch four-chapter sheet into the existing model and delegated actions, with native fixed-layout tables, explicit colgroups, bounded long text, 3/all scroll behavior, all prior data and details retained, signed savings and separate CLI scopes. Host, R47 header and existing dialogs remain. Source demo JS/data, simple CLI sums and fake success/causal conclusions are excluded."
+  ],
+  "r50Source": {
+    "screen": "projects/14906138420656377633/screens/cda37fcd02e740788e6ff3d1c514f31b",
+    "html": "design/v9/analytics-complete-r50-original.html",
+    "css": "design/v9/complete-r50-exported.css",
+    "owner": "design/v9/components.css",
+    "fidelity": "Exact exported component declarations scoped to the report; TypeScript binds original classes to existing business callbacks. R47 header, 16px sort visibility and real-data/unknown/mode/native-details states are explicit adaptations."
+  }
+}

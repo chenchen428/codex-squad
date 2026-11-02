@@ -1,0 +1,148 @@
+<main class="w-full max-w-[640px] paper-texture border border-paper-border rounded-xl flex flex-col overflow-hidden text-[14px] leading-relaxed shadow-lg">
+<!-- 顶栏：导航与只读状态 -->
+<header class="px-5 py-3 border-b border-paper-border bg-paper-subtle flex items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-ink-muted text-xs">
+<a class="flex items-center gap-1 hover:text-accent transition-colors font-medium text-ink" href="#overview">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>返回任务总览</span>
+</a>
+<span class="text-paper-border">/</span>
+<span class="text-ink-muted">子任务详情</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-xs font-medium text-ink-muted hover:text-ink flex items-center gap-1 transition-colors" href="#usage">
+<span class="material-symbols-outlined text-[15px] text-ink-faint">data_usage</span>
+<span>用量说明</span>
+</a>
+<div class="h-3 w-px bg-paper-border"></div>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-paper border border-paper-border text-ink-muted text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
+<span>只读演示</span>
+</div>
+</div>
+</header>
+<!-- 子任务身份与层级说明卡 -->
+<section class="p-5 border-b border-paper-border bg-paper">
+<!-- 父任务归属面包线 -->
+<div class="flex items-center gap-1.5 text-xs text-ink-faint mb-2">
+<span class="material-symbols-outlined text-[15px] text-accent">folder_open</span>
+<span class="text-ink-muted font-medium">修复报表筛选异常</span>
+<span class="text-ink-faint">›</span>
+<span class="text-ink font-semibold">子任务 2</span>
+</div>
+<!-- 子任务标题与当前状态标签 -->
+<div class="flex items-start justify-between gap-3 mb-2.5">
+<h1 class="text-lg md:text-xl font-bold font-serif text-ink tracking-tight flex items-center gap-2">
+          保留报错前的输入
+        </h1>
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-brand-blue-soft text-brand-blue border border-brand-blue/20 shrink-0">
+<span class="w-1.5 h-1.5 rounded-full bg-brand-blue animate-pulse"></span>
+<span>处理中</span>
+</span>
+</div>
+<!-- 任务要求说明文案 -->
+<p class="text-xs md:text-[13px] text-ink-muted mb-3.5 bg-paper-subtle p-2.5 rounded-lg border border-paper-border-soft">
+<span class="font-medium text-ink">任务说明：</span>请求失败时保留用户已填写的内容，并给出失败提示。不要直接清空。
+      </p>
+<!-- 属性卡片：执行人与独立用量 -->
+<div class="flex items-center justify-between text-xs text-ink-muted border-t border-paper-border-soft pt-3">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="text-ink-faint">执行人：</span>
+<span class="inline-flex items-center gap-1 font-medium text-ink">
+<span class="w-4 h-4 rounded bg-brand-blue text-white text-[10px] flex items-center justify-center font-bold">Q</span>
+<span>Qoder</span>
+</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-ink-faint">子任务用量：</span>
+<span class="font-mono font-medium text-ink">30.8k Token</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 会话内容区 (只保留思考摘要与回复正文，按轮次阅读) -->
+<div class="p-5 flex flex-col gap-3.5 bg-paper custom-scroll max-h-[580px] overflow-y-auto" id="session-scroll-area"><!-- 较早轮次轻量折叠入口 -->
+<details class="group select-none">
+<summary class="cursor-pointer list-none py-1.5 flex items-center gap-1.5 text-xs text-ink-faint hover:text-ink transition-colors">
+<span class="toggle-chevron material-symbols-outlined text-[16px] transition-transform duration-200">expand_more</span>
+<span>展开前面的 2 轮上下文记录 (14:02 - 14:04)</span>
+</summary>
+<div class="pl-5 pr-2 py-2 flex flex-col gap-2.5 text-xs text-ink-muted border-l border-paper-border ml-2 my-1.5">
+<div>
+<span class="text-ink-faint font-mono mr-1.5">14:02</span>
+<span class="text-ink font-medium">主会话：</span>
+<span>派发子任务，提出清空筛选与表单异常隔离原则。</span>
+</div>
+<div>
+<span class="text-ink-faint font-mono mr-1.5">14:04</span>
+<span class="text-ink-faint font-mono mr-1.5">Qoder：</span>
+<span>排查报表组件生命周期，确认输入框与筛选状态绑定在同一清空函数下。</span>
+</div>
+</div>
+</details>
+<div class="h-px bg-paper-border-soft my-1"></div>
+<!-- 轮次 1：Qoder 回复与思考摘要 -->
+<div class="flex flex-col gap-1.5">
+<div class="flex items-center gap-2 text-xs">
+<span class="font-medium text-ink">Qoder</span>
+<span class="text-ink-faint text-[11px] font-mono">14:08</span>
+</div>
+<!-- 极简思考摘要折叠 -->
+<details class="group">
+<summary class="cursor-pointer list-none inline-flex items-center gap-1 text-[12px] text-ink-faint hover:text-ink-muted select-none py-0.5">
+<span class="toggle-chevron material-symbols-outlined text-[14px] transition-transform duration-200">expand_more</span>
+<span>思考摘要：先确认草稿在请求前后的变化</span>
+</summary>
+<div class="pl-4 py-1.5 text-xs text-ink-muted leading-relaxed border-l border-paper-border-soft ml-1.5 mt-0.5">
+      目前请求发出后就会清空输入，我计划分别验证成功与失败时的数据流向，确保失败分支保留草稿状态。
+    </div>
+</details>
+<div class="text-[14px] text-ink leading-relaxed">
+    目前请求发出后就会清空输入。我会把清空放到成功之后，失败时保留草稿。
+  </div>
+</div>
+<!-- 轮次 2：主会话要求 -->
+<div class="flex flex-col gap-1.5 pt-2">
+<div class="flex items-center gap-2 text-xs">
+<span class="font-medium text-ink">主会话</span>
+<span class="text-ink-faint text-[11px] font-mono">14:14</span>
+</div>
+<div class="text-[14px] text-ink leading-relaxed">
+    失败时提示“请求失败，请重试”，输入内容保持原样。
+  </div>
+</div>
+<!-- 轮次 3：最新处理中进展 -->
+<div class="flex flex-col gap-1.5 pt-2">
+<div class="flex items-center gap-2 text-xs">
+<span class="font-medium text-ink">Qoder</span>
+<span class="text-ink-faint text-[11px] font-mono">14:25</span>
+</div>
+<!-- 最新思考摘要折叠 -->
+<details class="group">
+<summary class="cursor-pointer list-none inline-flex items-center gap-1 text-[12px] text-ink-faint hover:text-ink-muted select-none py-0.5">
+<span class="toggle-chevron material-symbols-outlined text-[14px] transition-transform duration-200">expand_more</span>
+<span>思考摘要：正在检查失败后能否恢复草稿</span>
+</summary>
+<div class="pl-4 py-1.5 text-xs text-ink-muted leading-relaxed border-l border-paper-border-soft ml-1.5 mt-0.5">
+      已调整表单提交流程：只有在后端返回成功状态时才触发清空操作。正在验证返回页面时的草稿恢复机制。
+    </div>
+</details>
+<div class="text-[14px] text-ink leading-relaxed font-normal">
+    已改成请求成功后才清空。失败时会保留输入并给出提示，正在检查返回页面后能否继续恢复。
+  </div>
+</div></div>
+<!-- 悬浮辅助条：回到最新位置按钮（平滑查看历史不被滚回，可一键复位） -->
+<div class="px-5 py-2.5 border-t border-paper-border bg-paper flex items-center justify-between text-xs text-ink-muted">
+<div class="flex items-center gap-1.5 text-ink-faint text-[11px]">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span>查看历史记录时不会打断当前阅读</span>
+</div>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-paper-subtle border border-paper-border hover:bg-paper hover:text-ink text-ink-muted font-medium transition-colors">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+<span>回到最新</span>
+</button>
+</div>
+<!-- 底栏：原型状态与任务层级流转说明 -->
+<footer class="px-5 py-3 border-t border-paper-border bg-paper-subtle flex items-center justify-between text-xs text-ink-faint"><div class="flex items-center gap-2 text-ink-faint"><span class="w-1.5 h-1.5 rounded-full bg-ink-faint"></span><span>子任务会话详情</span></div><div class="flex items-center gap-3 text-ink-muted"><a class="hover:text-accent transition-colors font-medium" href="#overview">返回任务总览</a><span>·</span><a class="hover:text-accent transition-colors font-medium" href="#usage">用量说明</a></div></footer>
+</main>

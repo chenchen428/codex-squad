@@ -1,0 +1,923 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Codex 小队 · 周期分析局部组件规范标本 (Token 统计带与排序表头)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400..700;1,6..72,400&family=Space+Grotesk:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* ==========================================================================
+       Codex Squad Analytics · Local Component Specimen
+       Warm Editorial Craft System · Direct Export Version
+       ========================================================================== */
+
+    :root {
+      --color-paper: #fbf9f4;
+      --color-paper-card: #ffffff;
+      --color-paper-subtle: #f5f0e6;
+      --color-paper-hover: #f7f2e9;
+      --color-ink: #22201d;
+      --color-ink-muted: #6c665e;
+      --color-line: #e4decb;
+      --color-line-light: #ece7da;
+      --color-rust: #b84b2e;
+      --color-rust-light: #faede9;
+      --color-sage: #2d6a4f;
+      --color-graphite: #4f4a43;
+      
+      --font-serif: 'Newsreader', Georgia, serif;
+      --font-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Space Mono', "SF Mono", Monaco, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--color-paper);
+      color: var(--color-ink);
+      font-family: var(--font-sans);
+      font-size: 13px;
+      line-height: 1.5;
+      padding: 32px 16px;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* Outer preview container strictly bounded for specimen validation */
+    .specimen-canvas {
+      width: 100%;
+      max-width: 680px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .specimen-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--color-line);
+      padding-bottom: 8px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-ink-muted);
+    }
+
+    .specimen-meta strong {
+      color: var(--color-rust);
+      font-weight: 700;
+    }
+
+    .specimen-section {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .specimen-section-header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .specimen-section-title {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.05em;
+      color: var(--color-ink-muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .specimen-section-title::before {
+      content: "§";
+      color: var(--color-rust);
+      font-weight: 700;
+    }
+
+    /* --------------------------------------------------------------------------
+       1. Token Consumption Summary (.token-composite-card)
+       -------------------------------------------------------------------------- */
+
+    .token-composite-card {
+      background: var(--color-paper-card);
+      border: 1px solid var(--color-line);
+      border-radius: 4px;
+      padding: 16px 18px 14px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      position: relative;
+      /* Stable bounding box targeting 160-190px at 587px width */
+      box-shadow: 0 1px 2px rgba(34, 32, 29, 0.03);
+    }
+
+    /* Top bar: segmented control + meta */
+    .token-composite-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border-bottom: 1px dashed var(--color-line-light);
+      padding-bottom: 10px;
+    }
+
+    .token-segment-group {
+      display: inline-flex;
+      background: var(--color-paper-subtle);
+      border: 1px solid var(--color-line);
+      border-radius: 3px;
+      padding: 2px;
+      gap: 2px;
+    }
+
+    .token-segment-btn {
+      appearance: none;
+      background: transparent;
+      border: none;
+      padding: 3px 10px;
+      font-family: var(--font-sans);
+      font-size: 11.5px;
+      font-weight: 500;
+      color: var(--color-ink-muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: background 0.15s ease, color 0.15s ease;
+      line-height: 1.2;
+    }
+
+    .token-segment-btn:hover {
+      color: var(--color-ink);
+    }
+
+    .token-segment-btn.is-active {
+      background: var(--color-paper-card);
+      color: var(--color-rust);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(34, 32, 29, 0.06);
+    }
+
+    .token-segment-btn:focus-visible {
+      outline: 2px solid var(--color-rust);
+      outline-offset: 1px;
+    }
+
+    .token-scope-badge {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--color-ink-muted);
+      letter-spacing: 0.02em;
+    }
+
+    /* Hero line */
+    .token-hero-line {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .token-hero-left {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .token-hero-val {
+      font-family: var(--font-serif);
+      font-size: 32px;
+      line-height: 1;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      color: var(--color-ink);
+    }
+
+    .total-subtitle {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-ink-muted);
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+    }
+
+    .token-hero-right {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-ink-muted);
+    }
+
+    /* Three-cell connected editorial strip */
+    .token-flow-strip {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      border: 1px solid var(--color-line);
+      border-radius: 3px;
+      background: var(--color-paper);
+      overflow: hidden;
+    }
+
+    .token-flow-cell {
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      background: var(--color-paper);
+      transition: background 0.15s ease;
+    }
+
+    .token-flow-cell:not(:last-child) {
+      border-right: 1px solid var(--color-line);
+    }
+
+    .flow-label {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      letter-spacing: 0.04em;
+      color: var(--color-ink-muted);
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .flow-val {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      line-height: 1.15;
+      font-weight: 600;
+      color: var(--color-ink);
+      letter-spacing: -0.01em;
+      white-space: nowrap;
+    }
+
+    .flow-sub {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      line-height: 1.3;
+      color: var(--color-ink-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Compare mode multi-provider breakdown lines within cells */
+    .provider-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 6px;
+      width: 100%;
+    }
+
+    .provider-tag {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      background: var(--color-paper-subtle);
+      color: var(--color-ink-muted);
+      border: 1px solid var(--color-line-light);
+      line-height: 1.1;
+    }
+
+    .provider-tag.tag-codex {
+      color: var(--color-rust);
+      border-color: var(--color-rust-light);
+      background: #fff8f5;
+    }
+
+    .provider-tag.tag-qoder {
+      color: var(--color-graphite);
+      border-color: var(--color-line);
+    }
+
+    .provider-val {
+      font-family: var(--font-serif);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--color-ink);
+      line-height: 1.2;
+    }
+
+    .provider-sub {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      color: var(--color-ink-muted);
+      line-height: 1.1;
+    }
+
+    .is-unreported {
+      color: var(--color-ink-muted);
+      font-style: normal;
+      font-weight: 400;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+
+    /* --------------------------------------------------------------------------
+       2. Sortable Table Header Specimen (.sortable-table)
+       -------------------------------------------------------------------------- */
+
+    .specimen-table-wrap {
+      border: 1px solid var(--color-line);
+      border-radius: 4px;
+      background: var(--color-paper-card);
+      overflow: hidden;
+      box-shadow: 0 1px 2px rgba(34, 32, 29, 0.03);
+    }
+
+    .sortable-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 12.5px;
+    }
+
+    .sortable-table thead tr {
+      background: var(--color-paper-subtle);
+      border-bottom: 1px solid var(--color-line);
+    }
+
+    /* Full-cell clickable header button wrapper */
+    .sortable-table th {
+      padding: 0;
+      font-weight: normal;
+      user-select: none;
+    }
+
+    .sortable-table th:not(:last-child) {
+      border-right: 1px solid var(--color-line-light);
+    }
+
+    .sort-header-cell {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--color-ink);
+      text-align: left;
+      transition: background 0.12s ease;
+      position: relative;
+    }
+
+    .sort-header-cell:hover {
+      background: var(--color-paper-hover);
+    }
+
+    .sort-header-cell:focus-visible {
+      outline: 2px solid var(--color-rust);
+      outline-offset: -2px; /* Inward focus ring to prevent clipping */
+      background: var(--color-paper-hover);
+    }
+
+    .sort-header-title {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    /* Sort icon button container & SVG styling */
+    .sort-icon-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      pointer-events: none; /* Let parent th button receive clicks */
+    }
+
+    .sort-svg {
+      width: 15px;
+      height: 15px;
+      display: block;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+      transition: stroke 0.15s ease, opacity 0.15s ease;
+    }
+
+    /* Neutral state: high contrast graphite/slate tone */
+    .sort-svg.state-neutral {
+      stroke: var(--color-graphite);
+      opacity: 0.65;
+    }
+
+    /* Active ascending/descending states: highlighted rust accent */
+    .sort-svg.state-active-asc,
+    .sort-svg.state-active-desc {
+      stroke: var(--color-rust);
+      opacity: 1;
+    }
+
+    /* Partial dimming for inactive chevron in bidirectional icons */
+    .sort-svg-dim {
+      opacity: 0.28;
+    }
+
+    .sort-header-cell[aria-sort="ascending"] {
+      color: var(--color-rust);
+      background: #fffcf9;
+    }
+
+    .sort-header-cell[aria-sort="descending"] {
+      color: var(--color-rust);
+      background: #fffcf9;
+    }
+
+    /* Sample table body */
+    .sortable-table tbody tr {
+      border-bottom: 1px solid var(--color-line-light);
+      transition: background 0.1s ease;
+    }
+
+    .sortable-table tbody tr:last-child {
+      border-bottom: none;
+    }
+
+    .sortable-table tbody tr:hover {
+      background: #fffefb;
+    }
+
+    .sortable-table td {
+      padding: 9px 14px;
+      font-size: 12px;
+      color: var(--color-ink);
+    }
+
+    .sortable-table td:not(:last-child) {
+      border-right: 1px solid var(--color-line-light);
+    }
+
+    .td-num {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+    }
+
+    .td-task {
+      font-family: var(--font-sans);
+      font-weight: 500;
+    }
+
+    .td-placeholder-pill {
+      display: inline-block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 1px 6px;
+      border-radius: 2px;
+      background: var(--color-paper-subtle);
+      color: var(--color-ink-muted);
+      border: 1px solid var(--color-line);
+    }
+
+    /* Specimen footer instructions */
+    .specimen-help {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--color-ink-muted);
+      line-height: 1.6;
+      border-top: 1px dashed var(--color-line);
+      padding-top: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .specimen-help-item {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .specimen-help-item::before {
+      content: "•";
+      color: var(--color-rust);
+    }
+
+    /* --------------------------------------------------------------------------
+       Responsive Media Queries
+       880px / 587px / 390px
+       -------------------------------------------------------------------------- */
+
+    /* Wide layout >= 880px: single compact flow row */
+    @media (min-width: 880px) {
+      .token-composite-card {
+        padding: 14px 20px;
+      }
+      .token-hero-val {
+        font-size: 34px;
+      }
+      .flow-val {
+        font-size: 22px;
+      }
+    }
+
+    /* Primary panel standard: around 587px width */
+    @media (max-width: 640px) {
+      body {
+        padding: 20px 12px;
+      }
+      .token-composite-card {
+        padding: 12px 14px 12px 14px;
+      }
+      .token-hero-val {
+        font-size: 28px;
+      }
+      .token-flow-cell {
+        padding: 8px 10px;
+      }
+      .flow-val {
+        font-size: 18px;
+      }
+    }
+
+    /* Mobile narrow viewport <= 390px: clean compact wrapping */
+    @media (max-width: 420px) {
+      .token-composite-top {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .token-segment-group {
+        width: 100%;
+        display: flex;
+      }
+      .token-segment-btn {
+        flex: 1;
+        text-align: center;
+        padding: 4px 6px;
+      }
+      .token-hero-line {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+      }
+      .token-flow-strip {
+        grid-template-columns: 1fr;
+      }
+      .token-flow-cell:not(:last-child) {
+        border-right: none;
+        border-bottom: 1px solid var(--color-line);
+      }
+      .sort-header-cell {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+      .sortable-table td {
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <main class="specimen-canvas">
+
+    <!-- Specimen Meta Header -->
+    <header class="specimen-meta">
+      <span>Codex Squad · Local Component Specimen</span>
+      <span>Warm Editorial Craft · <strong>v0.9.3</strong></span>
+    </header>
+
+    <!-- SECTION 1: Token Consumption Summary -->
+    <section class="specimen-section" aria-label="Token 消耗去向统计组件">
+      <div class="specimen-section-header">
+        <h2 class="specimen-section-title">02 Token 消耗去向</h2>
+        <span class="token-scope-badge">已读取 100 / 2,973 个会话</span>
+      </div>
+
+      <!-- .token-composite-card -->
+      <div class="token-composite-card" id="tokenCompositeCard">
+        
+        <!-- Segment Toggle & View Mode -->
+        <div class="token-composite-top">
+          <div class="token-segment-group" role="tablist" aria-label="用量提供方透视模式">
+            <button type="button" class="token-segment-btn is-active" id="tabCodex" role="tab" aria-selected="true" onclick="setTokenView('codex')">Codex</button>
+            <button type="button" class="token-segment-btn" id="tabQoder" role="tab" aria-selected="false" onclick="setTokenView('qoder')">Qoder</button>
+            <button type="button" class="token-segment-btn" id="tabCompare" role="tab" aria-selected="false" onclick="setTokenView('compare')">对比</button>
+          </div>
+          <div class="total-subtitle" id="viewModeSubtitle">本周期已记录</div>
+        </div>
+
+        <!-- .token-hero-line -->
+        <div class="token-hero-line">
+          <div class="token-hero-left">
+            <span class="token-hero-val" id="heroTotalVal">11.96B</span>
+            <span class="total-subtitle" id="heroTotalLabel">已记录总 Token</span>
+          </div>
+          <div class="token-hero-right">
+            <span id="heroScopeNote">100% 周期记录总量</span>
+          </div>
+        </div>
+
+        <!-- .token-flow-strip -->
+        <div class="token-flow-strip" id="tokenFlowStrip">
+          
+          <!-- Cell 1: 输入 -->
+          <div class="token-flow-cell">
+            <span class="flow-label">
+              <span>01 · 输入</span>
+              <span id="inputPercentBadge" class="td-placeholder-pill">占 99.7%</span>
+            </span>
+            <div id="inputValContainer">
+              <span class="flow-val">11.93B</span>
+            </div>
+            <span class="flow-sub" id="inputSubText">总输入量</span>
+          </div>
+
+          <!-- Cell 2: 其中缓存 -->
+          <div class="token-flow-cell">
+            <span class="flow-label">
+              <span>02 · 其中缓存</span>
+              <span id="cachePercentBadge" class="td-placeholder-pill">占输入 98.2%</span>
+            </span>
+            <div id="cacheValContainer">
+              <span class="flow-val">11.72B</span>
+            </div>
+            <span class="flow-sub" id="cacheSubText">已复用提示词缓存</span>
+          </div>
+
+          <!-- Cell 3: 输出 -->
+          <div class="token-flow-cell">
+            <span class="flow-label">
+              <span>03 · 输出</span>
+              <span id="outputPercentBadge" class="td-placeholder-pill">占总用量 0.3%</span>
+            </span>
+            <div id="outputValContainer">
+              <span class="flow-val">30.03M</span>
+            </div>
+            <span class="flow-sub" id="outputSubText">模型生成输出</span>
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 2: Sortable Table Header Specimen -->
+    <section class="specimen-section" aria-label="可排序表头控件标本">
+      <div class="specimen-section-header">
+        <h2 class="specimen-section-title">03 表格排序控件标本 (会话消耗示例)</h2>
+        <span class="token-scope-badge">点击表头单元格测试排序状态切换</span>
+      </div>
+
+      <div class="specimen-table-wrap">
+        <table class="sortable-table">
+          <thead>
+            <tr>
+              <!-- Col 1: 会话名称 (Default: Neutral) -->
+              <th scope="col">
+                <button type="button" class="sort-header-cell" id="thName" aria-sort="none" onclick="toggleHeaderSort('thName', 'name')">
+                  <span class="sort-header-title">会话 / 任务主题</span>
+                  <span class="sort-icon-btn">
+                    <!-- Neutral 15x15 SVG in 24x24 viewBox (both chevrons within bounds) -->
+                    <svg class="sort-svg state-neutral" viewBox="0 0 24 24" aria-hidden="true">
+                      <!-- up: M7 9l5-5 5 5 -->
+                      <path d="M7 9l5-5 5 5"></path>
+                      <!-- down: M7 15l5 5 5-5 -->
+                      <path d="M7 15l5 5 5-5"></path>
+                    </svg>
+                  </span>
+                </button>
+              </th>
+
+              <!-- Col 2: 用量消耗 (Default: Active Descending) -->
+              <th scope="col" style="width: 140px;">
+                <button type="button" class="sort-header-cell" id="thUsage" aria-sort="descending" onclick="toggleHeaderSort('thUsage', 'usage')">
+                  <span class="sort-header-title">用量消耗</span>
+                  <span class="sort-icon-btn">
+                    <!-- Active Descending 15x15 SVG in 24x24 viewBox -->
+                    <svg class="sort-svg state-active-desc" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M12 5v14"></path>
+                      <path d="M19 12l-7 7-7-7"></path>
+                    </svg>
+                  </span>
+                </button>
+              </th>
+
+              <!-- Col 3: 占比 (Default: Neutral) -->
+              <th scope="col" style="width: 110px;">
+                <button type="button" class="sort-header-cell" id="thRatio" aria-sort="none" onclick="toggleHeaderSort('thRatio', 'ratio')">
+                  <span class="sort-header-title">占比</span>
+                  <span class="sort-icon-btn">
+                    <svg class="sort-svg state-neutral" viewBox="0 0 24 24" aria-hidden="true">
+                      <path d="M7 9l5-5 5 5"></path>
+                      <path d="M7 15l5 5 5-5"></path>
+                    </svg>
+                  </span>
+                </button>
+              </th>
+            </tr>
+          </thead>
+          <tbody id="tableSampleBody">
+            <!-- Two generic neutral sample rows as explicit design placeholders -->
+            <tr>
+              <td class="td-task">1. 继续升级 Compass TDD Workspace</td>
+              <td class="td-num">3.34B</td>
+              <td class="td-num">27.9%</td>
+            </tr>
+            <tr>
+              <td class="td-task">2. 【理赔】完成剩余工单归因</td>
+              <td class="td-num">1.87B</td>
+              <td class="td-num">15.7%</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Specimen Documentation Footer -->
+    <footer class="specimen-help">
+      <div class="specimen-help-item">
+        <strong>DOM/CSS 完整契约</strong>：已声明 <code>.token-composite-card</code>、<code>.token-hero-line</code>、<code>.token-hero-left</code>、<code>.total-subtitle</code>、<code>.token-flow-strip</code>、<code>.token-flow-cell</code>、<code>.flow-label</code>、<code>.flow-val</code>、<code>.flow-sub</code>、<code>.sort-icon-btn</code>、<code>.sort-svg</code>。
+      </div>
+      <div class="specimen-help-item">
+        <strong>零外部依赖</strong>：仅引用 Google Fonts，无 Tailwind 或脚本库；SVG 均位于 24×24 viewBox 内部，聚焦轮廓为内向 <code>outline-offset: -2px</code>。
+      </div>
+      <div class="specimen-help-item">
+        <strong>对比模式安全保障</strong>：对比模式下清晰分离 Codex 与 Qoder 独立行，未记录指标严谨呈现为「未上报」，严禁相加两方 Token。
+      </div>
+    </footer>
+
+  </main>
+
+  <!-- Specimen Interactive JavaScript (Plain Vanilla JS) -->
+  <script>
+    // State management for Token View
+    let currentView = 'codex';
+
+    function setTokenView(mode) {
+      currentView = mode;
+      
+      // Update Tab active states
+      document.getElementById('tabCodex').classList.toggle('is-active', mode === 'codex');
+      document.getElementById('tabCodex').setAttribute('aria-selected', mode === 'codex');
+      
+      document.getElementById('tabQoder').classList.toggle('is-active', mode === 'qoder');
+      document.getElementById('tabQoder').setAttribute('aria-selected', mode === 'qoder');
+      
+      document.getElementById('tabCompare').classList.toggle('is-active', mode === 'compare');
+      document.getElementById('tabCompare').setAttribute('aria-selected', mode === 'compare');
+
+      // Containers
+      const heroVal = document.getElementById('heroTotalVal');
+      const heroSub = document.getElementById('viewModeSubtitle');
+      const heroNote = document.getElementById('heroScopeNote');
+      
+      const inVal = document.getElementById('inputValContainer');
+      const inBadge = document.getElementById('inputPercentBadge');
+      const inSub = document.getElementById('inputSubText');
+
+      const cacheVal = document.getElementById('cacheValContainer');
+      const cacheBadge = document.getElementById('cachePercentBadge');
+      const cacheSub = document.getElementById('cacheSubText');
+
+      const outVal = document.getElementById('outputValContainer');
+      const outBadge = document.getElementById('outputPercentBadge');
+      const outSub = document.getElementById('outputSubText');
+
+      if (mode === 'codex') {
+        heroSub.textContent = '本周期已记录';
+        heroVal.textContent = '11.96B';
+        heroNote.textContent = '100% 周期记录总量';
+
+        inBadge.textContent = '占 99.7%';
+        inVal.innerHTML = '<span class="flow-val">11.93B</span>';
+        inSub.textContent = '总输入量';
+
+        cacheBadge.textContent = '占输入 98.2%';
+        cacheVal.innerHTML = '<span class="flow-val">11.72B</span>';
+        cacheSub.textContent = '已复用提示词缓存';
+
+        outBadge.textContent = '占总用量 0.3%';
+        outVal.innerHTML = '<span class="flow-val">30.03M</span>';
+        outSub.textContent = '模型生成输出';
+      } 
+      else if (mode === 'qoder') {
+        heroSub.textContent = 'Qoder 用量透视';
+        heroVal.textContent = '未上报';
+        heroNote.textContent = '本期未接收 Qoder 上报数据';
+
+        inBadge.textContent = '未上报';
+        inVal.innerHTML = '<span class="flow-val is-unreported">未上报</span>';
+        inSub.textContent = 'Qoder 输入用量';
+
+        cacheBadge.textContent = '未上报';
+        cacheVal.innerHTML = '<span class="flow-val is-unreported">未上报</span>';
+        cacheSub.textContent = 'Qoder 缓存命中';
+
+        outBadge.textContent = '未上报';
+        outVal.innerHTML = '<span class="flow-val is-unreported">未上报</span>';
+        outSub.textContent = 'Qoder 输出用量';
+      } 
+      else if (mode === 'compare') {
+        heroSub.textContent = 'Codex 与 Qoder 对比';
+        heroVal.innerHTML = '<span style="font-size:22px; font-family:var(--font-serif); font-weight:600;">双源独立核算</span>';
+        heroNote.textContent = '两方独立核算 · 不累加总额';
+
+        inBadge.textContent = '独立输入';
+        inVal.innerHTML = `
+          <div class="provider-row"><span class="provider-tag tag-codex">Codex</span><span class="provider-val">11.93B</span></div>
+          <div class="provider-row"><span class="provider-tag tag-qoder">Qoder</span><span class="provider-val is-unreported">未上报</span></div>
+        `;
+        inSub.textContent = '占输入比：Codex 99.7%';
+
+        cacheBadge.textContent = '独立缓存';
+        cacheVal.innerHTML = `
+          <div class="provider-row"><span class="provider-tag tag-codex">Codex</span><span class="provider-val">11.72B</span></div>
+          <div class="provider-row"><span class="provider-tag tag-qoder">Qoder</span><span class="provider-val is-unreported">未上报</span></div>
+        `;
+        cacheSub.textContent = '占输入：Codex 98.2%';
+
+        outBadge.textContent = '独立输出';
+        outVal.innerHTML = `
+          <div class="provider-row"><span class="provider-tag tag-codex">Codex</span><span class="provider-val">30.03M</span></div>
+          <div class="provider-row"><span class="provider-tag tag-qoder">Qoder</span><span class="provider-val is-unreported">未上报</span></div>
+        `;
+        outSub.textContent = '占总：Codex 0.3%';
+      }
+    }
+
+    // Sort icon template helpers
+    const SVG_NEUTRAL = `
+      <svg class="sort-svg state-neutral" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M7 9l5-5 5 5"></path>
+        <path d="M7 15l5 5 5-5"></path>
+      </svg>
+    `;
+
+    const SVG_ASCENDING = `
+      <svg class="sort-svg state-active-asc" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 19V5"></path>
+        <path d="M5 12l7-7 7 7"></path>
+      </svg>
+    `;
+
+    const SVG_DESCENDING = `
+      <svg class="sort-svg state-active-desc" viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14"></path>
+        <path d="M19 12l-7 7-7-7"></path>
+      </svg>
+    `;
+
+    // Interactive Sorting Toggle for Demonstration
+    function toggleHeaderSort(btnId, colKey) {
+      const btn = document.getElementById(btnId);
+      const iconSpan = btn.querySelector('.sort-icon-btn');
+      const currentSort = btn.getAttribute('aria-sort');
+
+      // Reset all buttons to neutral first
+      ['thName', 'thUsage', 'thRatio'].forEach(id => {
+        if (id !== btnId) {
+          const otherBtn = document.getElementById(id);
+          otherBtn.setAttribute('aria-sort', 'none');
+          otherBtn.querySelector('.sort-icon-btn').innerHTML = SVG_NEUTRAL;
+        }
+      });
+
+      // Cycle: none -> descending -> ascending -> none
+      if (currentSort === 'none') {
+        btn.setAttribute('aria-sort', 'descending');
+        iconSpan.innerHTML = SVG_DESCENDING;
+      } else if (currentSort === 'descending') {
+        btn.setAttribute('aria-sort', 'ascending');
+        iconSpan.innerHTML = SVG_ASCENDING;
+      } else {
+        btn.setAttribute('aria-sort', 'none');
+        iconSpan.innerHTML = SVG_NEUTRAL;
+      }
+    }
+  </script>
+</body>
+</html>

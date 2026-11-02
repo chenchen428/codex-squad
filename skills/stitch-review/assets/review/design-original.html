@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>02 选稿与备注 - 留白 / Design Review</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Google Fonts for Editorial Aesthetics -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&family=Noto+Sans+SC:wght@300;400;500;600&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            canvas: '#F6F4EF',
+            card: '#FFFFFF',
+            primary: '#296352',
+            'primary-hover': '#1F4D3F',
+            'primary-light': '#F0F6F3',
+            'primary-subtle': '#E2EDE8',
+            charcoal: {
+              900: '#1C1F21',
+              800: '#2A2E31',
+              700: '#3D4246',
+              600: '#5A6066',
+              400: '#8A9198',
+              300: '#B6BCC2',
+              200: '#DDE2E5',
+              100: '#ECEEEF',
+            },
+            sand: {
+              border: '#E8E5DC',
+              'border-subtle': '#F0ECE1',
+              tag: '#EFECE4',
+              hover: '#F0ECE3',
+            }
+          },
+          fontFamily: {
+            sans: ['"Noto Sans SC"', 'system-ui', '-apple-system', 'sans-serif'],
+            serif: ['"Noto Serif SC"', '"Newsreader"', 'Georgia', 'serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 12px -2px rgba(40, 44, 46, 0.04), 0 1px 3px 0 rgba(40, 44, 46, 0.02)',
+            'float': '0 8px 24px -4px rgba(40, 44, 46, 0.07), 0 2px 6px -1px rgba(40, 44, 46, 0.03)',
+            'phone': '0 12px 32px -6px rgba(41, 50, 45, 0.08), 0 3px 8px -2px rgba(41, 50, 45, 0.04)',
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      background-color: #F6F4EF;
+      color: #2A2E31;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+    }
+    /* Custom subtle scrollbar */
+    ::-webkit-scrollbar {
+      width: 5px;
+      height: 5px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #D8D4C8;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #C2BDAF;
+    }
+  </style>
+</head>
+<body class="w-[1440px] h-[1000px] overflow-hidden flex flex-col font-sans select-none bg-canvas">
+
+  <!-- ==================== TOP NAVIGATION ==================== -->
+  <header class="h-14 bg-card border-b border-sand-border px-7 flex items-center justify-between shrink-0 z-30">
+    <!-- Brand / Project Scope -->
+    <div class="flex items-center space-x-5">
+      <div class="flex items-center space-x-2.5">
+        <span class="w-2.5 h-2.5 rounded-full bg-primary inline-block"></span>
+        <span class="font-serif font-medium text-base tracking-wide text-charcoal-900">留白</span>
+        <span class="text-charcoal-300 font-light">/</span>
+        <span class="text-xs uppercase tracking-widest text-charcoal-600 font-medium">Design Review</span>
+      </div>
+
+      <div class="h-4 w-[1px] bg-sand-border"></div>
+
+      <!-- Current Milestone Breadcrumb -->
+      <div class="flex items-center space-x-2 text-sm">
+        <span class="font-medium text-charcoal-800">阅读应用 · 界面改版</span>
+        <span class="text-charcoal-400">/</span>
+        <span class="text-xs px-2 py-0.5 rounded bg-sand-tag text-charcoal-700 font-mono font-medium">第 1 轮</span>
+      </div>
+    </div>
+
+    <!-- Top Right Actions -->
+    <div class="flex items-center space-x-5">
+      <div class="flex items-center text-xs text-charcoal-600 space-x-1.5">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+        <span>进行中审阅</span>
+      </div>
+
+      <a href="#decision-list" class="flex items-center space-x-1.5 text-xs font-medium text-charcoal-700 hover:text-primary transition-colors py-1.5 px-3 rounded-md hover:bg-sand-tag border border-sand-border">
+        <span>查看决定清单</span>
+        <i data-lucide="arrow-right" class="w-3.5 h-3.5 text-charcoal-600"></i>
+      </a>
+    </div>
+  </header>
+
+  <!-- ==================== MAIN BODY (SIDEBAR + CONTENT) ==================== -->
+  <div class="flex flex-1 overflow-hidden">
+
+    <!-- LEFT SIDEBAR -->
+    <aside class="w-56 bg-card border-r border-sand-border flex flex-col justify-between p-4 shrink-0 z-20">
+      <div class="space-y-6">
+        <!-- Review Step Sections -->
+        <div>
+          <div class="text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider px-3 mb-2 font-mono">审阅阶段</div>
+          <nav class="space-y-1">
+            <!-- 01 -->
+            <a href="#issues" class="flex items-center justify-between px-3 py-2 text-xs font-normal text-charcoal-600 hover:text-charcoal-900 hover:bg-sand-hover rounded-md transition-colors group">
+              <span class="flex items-center space-x-2.5">
+                <span class="font-mono text-charcoal-400 text-[11px] group-hover:text-charcoal-600">01</span>
+                <span>问题记录</span>
+              </span>
+              <span class="text-[10px] text-charcoal-400 font-mono bg-charcoal-100 px-1.5 py-0.5 rounded">4 项</span>
+            </a>
+
+            <!-- 02 ACTIVE -->
+            <div class="flex items-center justify-between px-3 py-2 text-xs font-medium text-primary bg-primary-light rounded-md border border-primary-subtle">
+              <span class="flex items-center space-x-2.5">
+                <span class="font-mono text-primary text-[11px] font-semibold">02</span>
+                <span class="font-medium">选稿与备注</span>
+              </span>
+              <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            </div>
+
+            <!-- 03 -->
+            <a href="#decisions" class="flex items-center justify-between px-3 py-2 text-xs font-normal text-charcoal-600 hover:text-charcoal-900 hover:bg-sand-hover rounded-md transition-colors group">
+              <span class="flex items-center space-x-2.5">
+                <span class="font-mono text-charcoal-400 text-[11px] group-hover:text-charcoal-600">03</span>
+                <span>决定清单</span>
+              </span>
+              <span class="text-[10px] text-charcoal-400 font-mono">待确认</span>
+            </a>
+
+            <!-- 04 -->
+            <a href="#acceptance" class="flex items-center justify-between px-3 py-2 text-xs font-normal text-charcoal-600 hover:text-charcoal-900 hover:bg-sand-hover rounded-md transition-colors group">
+              <span class="flex items-center space-x-2.5">
+                <span class="font-mono text-charcoal-400 text-[11px] group-hover:text-charcoal-600">04</span>
+                <span>实现验收</span>
+              </span>
+              <span class="text-[10px] text-charcoal-300 font-mono">就绪</span>
+            </a>
+          </nav>
+        </div>
+
+        <!-- Review Topic Index -->
+        <div class="pt-4 border-t border-sand-border-subtle">
+          <div class="text-[11px] font-semibold text-charcoal-400 uppercase tracking-wider px-3 mb-2 font-mono">议题清单</div>
+          <div class="space-y-1">
+            <div class="px-3 py-1.5 text-xs text-charcoal-800 bg-sand-tag rounded flex items-center justify-between">
+              <span class="truncate">01 发现与阅读</span>
+              <i data-lucide="check" class="w-3 h-3 text-primary shrink-0 ml-1"></i>
+            </div>
+            <div class="px-3 py-1.5 text-xs text-charcoal-600 hover:bg-sand-hover rounded cursor-pointer transition-colors">
+              <span class="truncate">02 目录跳转交互</span>
+            </div>
+            <div class="px-3 py-1.5 text-xs text-charcoal-600 hover:bg-sand-hover rounded cursor-pointer transition-colors">
+              <span class="truncate">03 夜间阅读反色</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Footer Info in Sidebar -->
+      <div class="pt-3 border-t border-sand-border">
+        <div class="flex items-center space-x-2 text-[11px] text-charcoal-400 px-2 py-1">
+          <i data-lucide="shield-check" class="w-3.5 h-3.5 text-charcoal-400"></i>
+          <span>中性演示 · 本机保存</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- CENTER MAIN REVIEW WORKSPACE -->
+    <main class="flex-1 flex flex-col overflow-hidden bg-canvas">
+
+      <!-- TOP STAGE HEADER & CANDIDATE TABS -->
+      <div class="px-8 pt-5 pb-3 border-b border-sand-border bg-canvas shrink-0">
+        <div class="flex items-baseline justify-between">
+          <div>
+            <div class="flex items-center space-x-3">
+              <h1 class="text-xl font-serif font-medium text-charcoal-900 tracking-tight">01 发现与阅读</h1>
+              <span class="text-xs text-charcoal-400">/</span>
+              <p class="text-sm text-charcoal-600">让封面更完整，让下一步更清楚</p>
+            </div>
+          </div>
+
+          <!-- Stage Toolbar & External Prototype Link -->
+          <div class="flex items-center space-x-4">
+            <!-- Stage Tools: Zoom, Fit, Fullscreen -->
+            <div class="flex items-center bg-card border border-sand-border rounded-md px-1 py-0.5 text-xs text-charcoal-600 shadow-soft">
+              <button class="px-2 py-1 hover:text-charcoal-900 hover:bg-sand-tag rounded transition-colors" title="缩小">−</button>
+              <span class="px-1.5 text-[11px] font-mono text-charcoal-400">100%</span>
+              <button class="px-2 py-1 hover:text-charcoal-900 hover:bg-sand-tag rounded transition-colors" title="放大">+</button>
+              <div class="w-[1px] h-3 bg-sand-border mx-1"></div>
+              <button class="px-2 py-1 hover:text-charcoal-900 hover:bg-sand-tag rounded font-medium text-[11px] transition-colors">整图</button>
+              <button class="px-2 py-1 hover:text-charcoal-900 hover:bg-sand-tag rounded font-medium text-[11px] transition-colors text-primary bg-primary-light">同宽</button>
+              <button class="px-2 py-1 hover:text-charcoal-900 hover:bg-sand-tag rounded transition-colors" title="全屏">
+                <i data-lucide="maximize-2" class="w-3 h-3 text-charcoal-600"></i>
+              </button>
+            </div>
+
+            <!-- Open prototype -->
+            <a href="#figma-prototype" class="flex items-center space-x-1 text-xs font-medium text-primary hover:text-primary-hover px-2.5 py-1.5 rounded hover:bg-primary-light border border-transparent hover:border-primary-subtle transition-all">
+              <span>打开交互稿</span>
+              <span class="text-xs font-mono">↗</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Candidate Version Tabs -->
+        <div class="flex items-center space-x-3 mt-4">
+          <span class="text-xs text-charcoal-600 font-mono mr-1">对比方案:</span>
+          <!-- Tab A Active -->
+          <button class="flex items-center space-x-2 px-3.5 py-1.5 rounded-md bg-card border border-primary text-primary text-xs font-medium shadow-soft">
+            <span class="w-1.5 h-1.5 rounded-full bg-primary"></span>
+            <span>方案 A · 留白阅读</span>
+            <span class="text-[10px] bg-primary text-white px-1.5 py-0.2 rounded font-normal tracking-wide">推荐</span>
+          </button>
+
+          <!-- Tab B Inactive -->
+          <button class="flex items-center space-x-2 px-3.5 py-1.5 rounded-md bg-sand-tag/60 hover:bg-sand-tag border border-sand-border text-charcoal-600 hover:text-charcoal-900 text-xs transition-colors">
+            <span class="w-1.5 h-1.5 rounded-full bg-charcoal-300"></span>
+            <span>方案 B · 目录优先</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- CENTER COMPARISON STAGE (DUAL COLUMN DISPLAY) -->
+      <div class="flex-1 px-8 py-4 overflow-y-auto flex items-center justify-center">
+        <div class="w-full max-w-5xl grid grid-cols-2 gap-8 items-start justify-center">
+
+          <!-- LEFT COLUMN: 当前 · v1 / 常规 -->
+          <div class="flex flex-col items-center">
+            <!-- Header of Column -->
+            <div class="w-full max-w-[340px] flex items-center justify-between mb-2.5 px-1">
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-semibold text-charcoal-700">当前</span>
+                <span class="text-charcoal-300 text-xs">·</span>
+                <span class="text-xs font-mono text-charcoal-600 bg-sand-tag px-1.5 py-0.5 rounded">v1</span>
+                <span class="text-xs text-charcoal-600">常规</span>
+              </div>
+              <span class="text-[11px] text-charcoal-600 font-mono">现状基准</span>
+            </div>
+
+            <!-- Phone Frame 1 (Neutral Mobile Reading App Mockup) -->
+            <div class="w-[330px] h-[450px] bg-card rounded-[24px] border border-sand-border shadow-phone p-3.5 flex flex-col relative overflow-hidden">
+              <!-- Phone Status Bar -->
+              <div class="flex justify-between items-center px-2 py-0.5 text-[10px] text-charcoal-400 font-mono mb-2">
+                <span>09:41</span>
+                <div class="flex items-center space-x-1.5">
+                  <i data-lucide="signal" class="w-2.5 h-2.5"></i>
+                  <i data-lucide="wifi" class="w-2.5 h-2.5"></i>
+                  <span class="w-3.5 h-2 border border-charcoal-400 rounded-sm inline-block"></span>
+                </div>
+              </div>
+
+              <!-- In-App Header -->
+              <div class="flex items-center justify-between px-1 mb-3">
+                <i data-lucide="chevron-left" class="w-4 h-4 text-charcoal-700"></i>
+                <span class="text-[11px] font-medium text-charcoal-800">图书详情</span>
+                <i data-lucide="share" class="w-3.5 h-3.5 text-charcoal-500"></i>
+              </div>
+
+              <!-- In-App Content (Cluttered v1 Version) -->
+              <div class="flex-1 flex flex-col justify-between overflow-hidden">
+                <!-- Book Cover & Info (Dense, Cropped Cover) -->
+                <div class="flex space-x-3 p-2 bg-charcoal-100/60 rounded-xl border border-charcoal-200/50">
+                  <!-- Abstract Book Cover Graphic -->
+                  <div class="w-20 h-24 bg-gradient-to-br from-stone-300 via-stone-400 to-stone-500 rounded-md p-1.5 flex flex-col justify-between shrink-0 shadow-sm border border-stone-300">
+                    <span class="text-[8px] tracking-widest text-stone-100 font-mono">VOL. 04</span>
+                    <div class="border-t border-stone-200/50 pt-1">
+                      <div class="text-[9px] font-serif font-bold text-white leading-tight">远山与行旅</div>
+                      <div class="text-[7px] text-stone-200">林栖 著</div>
+                    </div>
+                  </div>
+                  <!-- Book Meta Details -->
+                  <div class="flex-1 flex flex-col justify-between py-0.5">
+                    <div>
+                      <div class="text-xs font-bold text-charcoal-900 leading-snug">远山与行旅 (修订本)</div>
+                      <div class="text-[10px] text-charcoal-500 mt-0.5">中文散文集 · 18.4 万字</div>
+                      <div class="flex items-center space-x-1 mt-1 text-[10px] text-amber-600 font-mono">
+                        <span>★ 8.7</span>
+                        <span class="text-charcoal-400 text-[9px]">(1,420 评价)</span>
+                      </div>
+                    </div>
+                    <div class="text-[9px] text-charcoal-600 line-clamp-2 leading-relaxed">
+                      旧版信息密度过大，书封被局部裁切，关键试读与购买动作层级分散。
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Dense Feature Buttons (v1 Flaw) -->
+                <div class="grid grid-cols-4 gap-1.5 my-2">
+                  <div class="bg-card border border-sand-border p-1.5 rounded text-center">
+                    <div class="text-[10px] font-mono text-charcoal-800">目录</div>
+                    <div class="text-[8px] text-charcoal-400">18章</div>
+                  </div>
+                  <div class="bg-card border border-sand-border p-1.5 rounded text-center">
+                    <div class="text-[10px] font-mono text-charcoal-800">笔记</div>
+                    <div class="text-[8px] text-charcoal-400">142条</div>
+                  </div>
+                  <div class="bg-card border border-sand-border p-1.5 rounded text-center">
+                    <div class="text-[10px] font-mono text-charcoal-800">书评</div>
+                    <div class="text-[8px] text-charcoal-400">99+</div>
+                  </div>
+                  <div class="bg-card border border-sand-border p-1.5 rounded text-center">
+                    <div class="text-[10px] font-mono text-charcoal-800">听书</div>
+                    <div class="text-[8px] text-charcoal-400">支持</div>
+                  </div>
+                </div>
+
+                <!-- Chapter Preview Excerpt -->
+                <div class="p-2.5 bg-card rounded-lg border border-sand-border flex-1 flex flex-col justify-center">
+                  <div class="text-[10px] font-serif font-medium text-charcoal-800 mb-1">第一章 · 晨雾中的渡口</div>
+                  <div class="text-[9px] text-charcoal-500 leading-relaxed font-serif line-clamp-3">
+                    江水在清晨的微风中泛起银白色的褶皱，两岸的青瓦民居在炊烟散尽后，隐约露出湿润的屋脊轮廓。
+                  </div>
+                </div>
+
+                <!-- Bottom Button v1 -->
+                <div class="pt-2 flex space-x-2">
+                  <button class="flex-1 py-1.5 bg-charcoal-800 text-white text-[11px] font-medium rounded-lg text-center">
+                    开始阅读
+                  </button>
+                  <button class="px-3 py-1.5 bg-sand-tag text-charcoal-700 text-[11px] rounded-lg">
+                    试读
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accurate Label Below Phone 1 -->
+            <div class="w-full max-w-[330px] flex items-center justify-between mt-2.5 px-2">
+              <span class="inline-flex items-center text-[11px] text-charcoal-600 bg-sand-tag px-2 py-0.5 rounded border border-sand-border">
+                <i data-lucide="image" class="w-3 h-3 text-charcoal-500 mr-1.5"></i>
+                示例产品截图
+              </span>
+              <span class="text-[11px] text-charcoal-600 font-mono">1170 × 2532 px</span>
+            </div>
+          </div>
+
+
+          <!-- RIGHT COLUMN: 方案 A · v2 / 常规 -->
+          <div class="flex flex-col items-center">
+            <!-- Header of Column -->
+            <div class="w-full max-w-[340px] flex items-center justify-between mb-2.5 px-1">
+              <div class="flex items-center space-x-2">
+                <span class="text-xs font-semibold text-primary">方案 A</span>
+                <span class="text-charcoal-300 text-xs">·</span>
+                <span class="text-xs font-mono text-primary font-medium bg-primary-light px-1.5 py-0.5 rounded border border-primary-subtle">v2</span>
+                <span class="text-xs text-charcoal-600">常规</span>
+                <span class="text-[10px] text-primary bg-primary-subtle px-1.5 py-0.2 rounded font-medium">留白阅读</span>
+              </div>
+              <span class="text-[11px] text-primary font-mono font-medium">本次提案</span>
+            </div>
+
+            <!-- Phone Frame 2 (Proposed Elegant Reading App Mockup) -->
+            <div class="w-[330px] h-[450px] bg-[#FAF8F5] rounded-[24px] border-2 border-primary/30 shadow-phone p-3.5 flex flex-col relative overflow-hidden">
+              <!-- Phone Status Bar -->
+              <div class="flex justify-between items-center px-2 py-0.5 text-[10px] text-charcoal-400 font-mono mb-2">
+                <span>09:41</span>
+                <div class="flex items-center space-x-1.5">
+                  <i data-lucide="signal" class="w-2.5 h-2.5"></i>
+                  <i data-lucide="wifi" class="w-2.5 h-2.5"></i>
+                  <span class="w-3.5 h-2 border border-charcoal-400 rounded-sm inline-block"></span>
+                </div>
+              </div>
+
+              <!-- In-App Header -->
+              <div class="flex items-center justify-between px-1 mb-2">
+                <i data-lucide="arrow-left" class="w-4 h-4 text-charcoal-700"></i>
+                <div class="w-1.5 h-1.5 rounded-full bg-primary/40"></div>
+                <div class="flex items-center space-x-2">
+                  <i data-lucide="bookmark" class="w-3.5 h-3.5 text-charcoal-500"></i>
+                  <i data-lucide="more-horizontal" class="w-3.5 h-3.5 text-charcoal-500"></i>
+                </div>
+              </div>
+
+              <!-- In-App Content (Generous Whitespace, Complete Elegant Cover) -->
+              <div class="flex-1 flex flex-col justify-between overflow-hidden px-1">
+                <!-- Book Stage: Complete Abstract Cover, Generous Margin -->
+                <div class="flex flex-col items-center pt-1 pb-3">
+                  <!-- Abstract Artistic Book Cover (Non-photo) -->
+                  <div class="w-28 h-36 bg-[#EBE7DF] rounded-md shadow-md border border-[#DDD8CC] p-3 flex flex-col justify-between relative overflow-hidden">
+                    <div class="w-6 h-1 bg-primary/60 rounded"></div>
+                    <div class="space-y-1">
+                      <div class="text-[12px] font-serif font-semibold text-charcoal-900 leading-snug">远山<br>与行旅</div>
+                      <div class="text-[8px] text-charcoal-500 font-sans tracking-wide">林栖 著</div>
+                    </div>
+                    <div class="flex justify-between items-end border-t border-charcoal-300/40 pt-1">
+                      <span class="text-[7px] font-mono text-charcoal-400">ESSAY</span>
+                      <span class="text-[8px] font-mono text-primary font-medium">留白版</span>
+                    </div>
+                  </div>
+
+                  <div class="text-center mt-2.5">
+                    <h3 class="text-sm font-serif font-medium text-charcoal-900">远山与行旅</h3>
+                    <p class="text-[10px] text-charcoal-500 mt-0.5">林栖 · 纯享版 · 18.4 万字</p>
+                  </div>
+                </div>
+
+                <!-- Clean Editorial Preview Box -->
+                <div class="bg-white/80 backdrop-blur-sm rounded-xl p-3 border border-sand-border space-y-1.5">
+                  <div class="flex items-center justify-between text-[10px] text-charcoal-600">
+                    <span class="font-medium font-serif">正文摘录 · 卷一</span>
+                    <span class="font-mono text-[9px] text-primary">第 3 节</span>
+                  </div>
+                  <p class="text-[10px] text-charcoal-600 font-serif leading-relaxed line-clamp-2">
+                    江水在晨光里舒展，山影静默如初。阅读的呼吸，本就该在无声的留白里渐次沉淀。
+                  </p>
+                </div>
+
+                <!-- Bottom CTA: Simplified High-clarity Actions -->
+                <div class="pt-2 flex items-center space-x-2">
+                  <button class="flex-1 py-2 bg-primary hover:bg-primary-hover text-white text-xs font-medium rounded-lg text-center transition-colors shadow-sm">
+                    继续阅读 · 第 14 页
+                  </button>
+                  <button class="px-3 py-2 bg-card hover:bg-sand-tag border border-sand-border text-charcoal-700 text-xs rounded-lg transition-colors">
+                    目录
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Accurate Label Below Phone 2 -->
+            <div class="w-full max-w-[330px] flex items-center justify-between mt-2.5 px-2">
+              <span class="inline-flex items-center text-[11px] text-primary bg-primary-light px-2 py-0.5 rounded border border-primary-subtle">
+                <i data-lucide="palette" class="w-3 h-3 text-primary mr-1.5"></i>
+                设计示意
+              </span>
+              <span class="text-[11px] text-primary font-mono font-medium">完整封面 · 呼吸感加强</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ==================== BOTTOM DECISION & FEEDBACK DRAWER ==================== -->
+      <footer class="bg-card border-t border-sand-border px-8 py-3.5 shrink-0 shadow-soft z-20">
+        <div class="max-w-5xl mx-auto flex flex-col space-y-3">
+
+          <div class="flex items-start space-x-6">
+            <!-- Level-1 Free Remark Textarea -->
+            <div class="flex-1">
+              <div class="flex justify-between items-center mb-1">
+                <label for="feedback-input" class="text-xs font-medium text-charcoal-700 flex items-center space-x-1.5">
+                  <span>审阅备注</span>
+                  <span class="text-[11px] font-normal text-charcoal-400">（未选也可写）</span>
+                </label>
+                <span class="text-[10px] text-charcoal-400 font-mono">随时自动暂存</span>
+              </div>
+              <textarea
+                id="feedback-input"
+                rows="2"
+                placeholder="喜欢、顾虑，或希望再调整的地方…（未选也可写）"
+                class="w-full px-3 py-2 text-xs text-charcoal-800 placeholder-charcoal-400 bg-canvas border border-sand-border rounded-lg focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/20 transition-all resize-none"
+              >方案 A 的书封留白比例很舒适，完全避免了裁切。但在极小字号下，正文摘录的行高建议再放大 1px，避免长句阅读疲劳。</textarea>
+            </div>
+
+            <!-- Selection Radios & CTA Actions -->
+            <div class="w-80 flex flex-col justify-between h-full pt-1">
+              <!-- Radio Group for Decision -->
+              <div class="space-y-1.5 mb-2.5">
+                <div class="text-[11px] font-medium text-charcoal-500 uppercase tracking-wide font-mono">选择审阅结论</div>
+                <div class="grid grid-cols-3 gap-1.5">
+                  <!-- Radio 1 -->
+                  <label class="flex items-center justify-center space-x-1.5 px-2 py-1.5 rounded-md border border-sand-border bg-canvas hover:bg-sand-hover cursor-pointer text-xs text-charcoal-700 transition-colors">
+                    <input type="radio" name="design_choice" value="current" class="w-3 h-3 text-primary focus:ring-0">
+                    <span class="text-[11px]">保留当前</span>
+                  </label>
+
+                  <!-- Radio 2 (Selected by default) -->
+                  <label class="flex items-center justify-center space-x-1.5 px-2 py-1.5 rounded-md border border-primary bg-primary-light text-primary cursor-pointer text-xs font-medium transition-colors shadow-xs">
+                    <input type="radio" name="design_choice" value="option_a" checked class="w-3 h-3 text-primary focus:ring-0">
+                    <span class="text-[11px]">方案 A</span>
+                  </label>
+
+                  <!-- Radio 3 -->
+                  <label class="flex items-center justify-center space-x-1.5 px-2 py-1.5 rounded-md border border-sand-border bg-canvas hover:bg-sand-hover cursor-pointer text-xs text-charcoal-700 transition-colors">
+                    <input type="radio" name="design_choice" value="option_b" class="w-3 h-3 text-primary focus:ring-0">
+                    <span class="text-[11px]">方案 B</span>
+                  </label>
+                </div>
+              </div>
+
+              <!-- Action Buttons -->
+              <div class="flex items-center space-x-2">
+                <button class="flex-1 py-2 px-3 bg-primary hover:bg-primary-hover text-white text-xs font-medium rounded-lg text-center transition-colors shadow-sm flex items-center justify-center space-x-1.5">
+                  <i data-lucide="check-circle-2" class="w-3.5 h-3.5"></i>
+                  <span>确认这个选择</span>
+                </button>
+                <button class="py-2 px-3 bg-card hover:bg-sand-tag border border-sand-border text-charcoal-700 text-xs font-normal rounded-lg transition-colors">
+                  继续改稿
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bottom Micro Notice & Auto-save Status -->
+          <div class="flex items-center justify-between text-[11px] text-charcoal-400 pt-1 border-t border-sand-border-subtle">
+            <div class="flex items-center space-x-2">
+              <i data-lucide="info" class="w-3.5 h-3.5 text-charcoal-400"></i>
+              <span>推荐不会自动采用 · 备注随时保存</span>
+            </div>
+            <div class="text-[10px] font-mono text-charcoal-400">
+              已于 14:28 保存草稿至本机
+            </div>
+          </div>
+
+        </div>
+      </footer>
+
+    </main>
+  </div>
+
+  <!-- ==================== FLOATING NOTIFICATION (BOTTOM-RIGHT) ==================== -->
+  <div class="fixed bottom-20 right-8 bg-charcoal-900/90 backdrop-blur text-white text-xs px-3.5 py-2 rounded-full shadow-float flex items-center space-x-2 border border-charcoal-700/50 z-50">
+    <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+    <span class="tracking-wide">还没有提交选择</span>
+    <button class="text-charcoal-400 hover:text-white ml-1 text-xs">×</button>
+  </div>
+
+  <!-- Initialize Lucide icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>

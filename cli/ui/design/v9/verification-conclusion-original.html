@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>子任务详情：Codex 响应式核验弹层 (自适应 Modal/Sheet)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&amp;family=Space+Grotesk:wght@400;500;600&amp;family=Plus+Jakarta+Sans:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            paper: '#fffcf7',
+            'paper-subtle': '#fbf6ee',
+            'paper-card': '#ffffff',
+            'paper-border': '#e7dfd3',
+            'paper-border-soft': '#f0ebe1',
+            ink: '#2b2621',
+            'ink-muted': '#6b645b',
+            'ink-faint': '#9e968b',
+            accent: '#b84b2e',
+            'accent-soft': '#faede8',
+            'brand-blue': '#1e549f',
+            'brand-blue-soft': '#eef4fd',
+            'brand-green': '#1f7a4d',
+            'brand-green-soft': '#edf7f1',
+          },
+          fontFamily: {
+            serif: ['"Noto Serif SC"', 'serif'],
+            sans: ['"Space Grotesk"', '"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #f5efe6;
+      background-image: radial-gradient(#dfd6c8 0.75px, transparent 0.75px);
+      background-size: 16px 16px;
+      color: #2b2621;
+      font-family: "Space Grotesk", "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    .paper-texture {
+      background-color: #fffcf7;
+      box-shadow: 0 4px 20px -2px rgba(80, 65, 45, 0.08), 0 1px 3px rgba(80, 65, 45, 0.05);
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+    details[open] .toggle-chevron {
+      transform: rotate(180deg);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 5px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: #fbf6ee;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #dfd7cc;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+<body class="min-h-screen py-4 md:py-8 flex justify-center items-start px-2 sm:px-4" onkeydown="if(event.key==='Escape'){const m=document.getElementById('evidence-drawer-modal');if(m)m.classList.add('hidden');}">
+<!-- 640px 原生窄面板容器，适配 Codex 右侧栏与 480px 响应式 -->
+<main class="w-full max-w-[640px] paper-texture border border-paper-border rounded-xl flex flex-col overflow-hidden text-[14px] leading-relaxed shadow-lg">
+<!-- 顶栏：导航与只读状态 -->
+<header class="px-5 py-3 border-b border-paper-border bg-paper-subtle flex items-center justify-between gap-3">
+<div class="flex items-center gap-2 text-ink-muted text-xs">
+<a class="flex items-center gap-1 hover:text-accent transition-colors font-medium text-ink" href="#overview">
+<span class="material-symbols-outlined text-[16px]">arrow_back</span>
+<span>返回任务总览</span>
+</a>
+<span class="text-paper-border">/</span>
+<span class="text-ink-muted">子任务详情</span>
+</div>
+<div class="flex items-center gap-3">
+<a class="text-xs font-medium text-ink-muted hover:text-ink flex items-center gap-1 transition-colors" href="#usage">
+<span class="material-symbols-outlined text-[15px] text-ink-faint">data_usage</span>
+<span>用量说明</span>
+</a>
+<div class="h-3 w-px bg-paper-border"></div>
+<div class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-paper border border-paper-border text-ink-muted text-[11px]">
+<span class="w-1.5 h-1.5 rounded-full bg-brand-green"></span>
+<span>只读演示</span>
+</div>
+</div>
+</header>
+<!-- 子任务身份与层级说明卡 -->
+<section class="p-5 border-b border-paper-border bg-paper">
+<!-- 父任务归属面包线 -->
+<div class="flex items-center gap-1.5 text-xs text-ink-faint mb-2">
+<span class="material-symbols-outlined text-[15px] text-accent">folder_open</span>
+<span class="text-ink-muted font-medium">修复报表筛选异常</span>
+<span class="text-ink-faint">›</span>
+<span class="text-ink font-semibold">子任务 2</span>
+</div>
+<!-- 子任务标题与当前状态标签 -->
+<div class="flex items-start justify-between gap-3 mb-2.5">
+<h1 class="text-lg md:text-xl font-bold font-serif text-ink tracking-tight flex items-center gap-2">
+          保留报错前的输入
+        </h1>
+<div class="flex items-center gap-2 shrink-0"><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-medium bg-[#f3efe6] text-ink-muted border border-paper-border"><span class="w-1.5 h-1.5 rounded-full bg-[#8f8577]"></span><span>已停止</span></span><span class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono font-semibold bg-[#edf7f1] text-[#235c43] border border-[#b7dfc9]"><span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]"></span><span>已通过核验</span></span></div>
+</div>
+<!-- 任务要求说明文案 -->
+<p class="text-xs md:text-[13px] text-ink-muted mb-3.5 bg-paper-subtle p-2.5 rounded-lg border border-paper-border-soft">
+<span class="font-medium text-ink">任务说明：</span>请求失败时保留用户已填写的内容，并给出失败提示。不要直接清空。
+      </p>
+<!-- 属性卡片：执行人与独立用量 -->
+<div class="flex items-center justify-between text-xs text-ink-muted border-t border-paper-border-soft pt-3">
+<div class="flex items-center gap-4">
+<div class="flex items-center gap-1.5">
+<span class="text-ink-faint">执行人：</span>
+<span class="inline-flex items-center gap-1 font-medium text-ink">
+<span class="w-4 h-4 rounded bg-brand-blue text-white text-[10px] flex items-center justify-center font-bold">Q</span>
+<span>Qoder</span>
+</span>
+</div>
+<div class="flex items-center gap-1.5">
+<span class="text-ink-faint">子任务用量：</span>
+<span class="font-mono font-medium text-ink">30.8k Token</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 会话内容区 (只保留思考摘要与回复正文，按轮次阅读) -->
+<div class="p-5 flex flex-col gap-4 bg-paper-subtle custom-scroll max-h-[580px] overflow-y-auto" id="session-scroll-area">
+<!-- 较早轮次折叠栏（模拟 Taskboard 聚合收起机制） -->
+<details class="group bg-paper rounded-lg border border-paper-border overflow-hidden transition-all shrink-0">
+<summary class="px-4 py-2.5 flex items-center justify-between cursor-pointer text-xs text-ink-muted hover:text-ink hover:bg-paper-subtle select-none" style="min-height: 40px;">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[16px] text-ink-faint">history</span>
+<span class="font-medium">查看前面的 2 轮上下文记录</span>
+</div>
+<span class="toggle-chevron material-symbols-outlined text-[16px] text-ink-faint transition-transform duration-200">expand_more</span>
+</summary>
+<div class="px-4 py-3 border-t border-paper-border-soft bg-paper text-xs text-ink-muted flex flex-col gap-2">
+<div class="flex items-start gap-2">
+<span class="text-ink-faint shrink-0 font-mono">14:02</span>
+<div><span class="font-medium text-ink">主会话：</span>派发子任务，提出清空筛选与表单异常隔离原则。</div>
+</div>
+<div class="flex items-start gap-2">
+<span class="text-ink-faint shrink-0 font-mono">14:04</span>
+<div><span class="font-medium text-ink">Qoder：</span>排查报表组件的默认生命周期，确认输入框与筛选状态绑定在同一清空函数下。</div>
+</div>
+</div>
+</details>
+<!-- 轮次 1：早期思考与回复 -->
+<article class="bg-paper p-4 rounded-xl border border-paper-border flex flex-col gap-3 shadow-xs shrink-0">
+<div class="flex items-center justify-between text-xs pb-2 border-b border-paper-border-soft">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-brand-blue text-white text-[11px] flex items-center justify-center font-bold font-sans">Q</span>
+<span class="font-semibold text-ink">Qoder</span>
+<span class="text-[11px] text-ink-faint">第 1 轮处理</span>
+</div>
+<time class="text-[11px] text-ink-faint font-mono">14:08</time>
+</div>
+<!-- 公开思考摘要 (默认一条短摘要 + 原生 details/summary 展开收起) -->
+<details class="bg-paper-subtle border border-paper-border-soft rounded-lg overflow-hidden group">
+<summary class="px-3.5 py-2 flex items-center justify-between cursor-pointer hover:bg-[#f6efe4] transition-colors select-none text-xs">
+<div class="flex items-center gap-2 text-ink-muted">
+<span class="material-symbols-outlined text-[16px] text-accent">lightbulb</span>
+<span class="font-medium text-ink">先确认草稿在请求前后的变化。</span>
+</div>
+<div class="flex items-center gap-1 text-[11px] text-ink-faint"><span class="group-open:hidden">展开思考摘要</span><span class="hidden group-open:inline">收起</span><span class="toggle-chevron material-symbols-outlined text-[15px] transition-transform duration-200">expand_more</span></div>
+</summary>
+<div class="px-3.5 py-2.5 border-t border-paper-border-soft bg-paper text-xs text-ink-muted leading-normal">
+<p class="mb-1 text-ink-muted">
+              分别检查请求成功与失败时的表现：成功时照常重置表单；失败时需阻断静默清空，将当前已填数据暂存为草稿快照。
+            </p>
+<p class="text-[11px] text-ink-faint">
+              概述：只对表单提交后的失败分支进行本地缓存保留，不影响正常翻页。
+            </p>
+</div>
+</details>
+<!-- Qoder 朴实回复主体 -->
+<div class="text-[13px] md:text-sm text-ink leading-relaxed">
+          目前请求发出后就会清空输入。我会把清空放到成功之后，失败时保留草稿。
+        </div>
+</article>
+<!-- 轮次 2：主会话补充要求 -->
+<article class="bg-[#fcf9f2] p-4 rounded-xl border border-paper-border flex flex-col gap-2 shrink-0">
+<div class="flex items-center justify-between text-xs pb-1.5 border-b border-paper-border-soft">
+<div class="flex items-center gap-2">
+<span class="w-5 h-5 rounded bg-ink-muted text-white text-[11px] flex items-center justify-center font-bold">主</span>
+<span class="font-semibold text-ink">主会话要求</span>
+</div>
+<time class="text-[11px] text-ink-faint font-mono">14:14</time>
+</div>
+<div class="text-[13px] md:text-sm text-ink leading-relaxed pt-1">
+          失败时提示“请求失败，请重试”，输入内容保持原样。
+        </div>
+</article>
+<!-- 轮次 3：最新处理中进展 (最新思考摘要 + 最新回复) -->
+<article class="bg-paper p-4 rounded-xl border border-paper-border flex flex-col gap-3.5 shadow-sm relative shrink-0"><div class="flex items-center justify-between text-xs pb-2 border-b border-paper-border-soft"><div class="flex items-center gap-2"><span class="w-5 h-5 rounded bg-brand-blue text-white text-[11px] flex items-center justify-center font-bold font-sans">Q</span><span class="font-semibold text-ink">Qoder</span><span class="px-1.5 py-0.5 rounded bg-paper-subtle text-ink-muted text-[10px] font-mono border border-paper-border">尝试 #2 完成</span></div><time class="text-[11px] text-ink-faint font-mono">14:26 · 已定稿</time></div><details class="bg-paper-subtle border border-paper-border-soft rounded-lg overflow-hidden group"><summary class="px-3.5 py-2 flex items-center justify-between cursor-pointer hover:bg-[#f6efe4] transition-colors select-none text-xs"><div class="flex items-center gap-2 text-ink"><span class="material-symbols-outlined text-[15px] text-[#2d6a4f]">task_alt</span><span class="font-medium text-ink">提交失败阻断与草稿保留逻辑已通过测试。</span></div><div class="flex items-center gap-1 text-[11px] text-ink-faint"><span class="group-open:hidden">展开思考摘要</span><span class="hidden group-open:inline">收起</span><span class="toggle-chevron material-symbols-outlined text-[15px] transition-transform duration-200">expand_more</span></div></summary><div class="px-3.5 py-2.5 border-t border-paper-border-soft bg-paper text-xs text-ink-muted leading-relaxed"><p class="mb-1 text-ink-muted">已在表单分发拦截层补充全局 Catch 处理，网络异常或 500 报错时中断清空 hook，并弹出轻提示保留全部字段输入。针对回退历史页面草稿同步补充了 storage 会话锁。</p><p class="text-[11px] text-ink-faint font-mono">覆盖回归：UI 状态复位、超时重试无感、表单草稿持久化校验全部通过。</p></div></details><div class="text-[13px] md:text-sm text-ink leading-relaxed font-normal">已完成修改：仅在 API 返回成功 (200 OK) 时执行清空重置；失败分支捕获后弹窗提示<code class="font-mono px-1 py-0.5 bg-paper-subtle border border-paper-border rounded text-xs text-accent">请求失败，请重试</code>，并保留用户输入的原始草稿，无需重新填写。</div><div class="mt-1 pt-3 border-t border-dashed border-paper-border flex flex-col gap-2.5"><div class="flex items-center justify-between gap-2 px-3 py-1.5 rounded bg-[#fbf8f2] border border-paper-border text-[11px] text-ink-muted"><div class="flex items-center gap-1.5"><span class="material-symbols-outlined text-[14px] text-ink-faint">stop_circle</span><span>已停止 · 保留当前修改与最后结果 (尝试 #2)</span></div><span class="font-mono text-ink-faint text-[10px]">按口径归档</span></div><div aria-label="查看 Codex 核验依据" class="relative flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2 p-2.5 bg-[#fcfbf7] rounded border-2 border-[#2d6a4f]/25 hover:border-[#2d6a4f]/50 transition-all cursor-pointer shadow-xs group/stamp" onclick="window.openEvidenceSheet()" onkeydown="if(event.key==='Enter'||event.key===' '){event.preventDefault();window.openEvidenceSheet();}" role="button" style="transform: rotate(-0.35deg);" tabindex="0"><div class="flex items-center gap-2.5"><div class="w-6 h-6 rounded flex items-center justify-center bg-[#edf7f1] text-[#2d6a4f] border border-[#2d6a4f]/30 shrink-0"><span class="material-symbols-outlined text-[15px]">verified</span></div><div class="flex flex-col"><div class="flex items-center gap-2"><span class="font-mono font-bold text-xs tracking-wide text-[#235c43] flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-[#2d6a4f]"></span>Codex 已核验</span><span class="text-[10px] font-mono text-ink-faint bg-paper px-1.5 py-0.5 rounded border border-paper-border">14:28:12 CST · 示例</span></div><p class="text-[11px] text-ink-muted leading-tight mt-0.5">基于当前子任务交付物与自动化用例执行结果的核验结论</p></div></div><div class="flex items-center gap-2 shrink-0 self-end sm:self-center"><div class="text-[11px] font-medium text-[#2d6a4f] group-hover/stamp:text-[#1b4332] flex items-center gap-0.5 transition-colors"><span>查看结论</span><span class="material-symbols-outlined text-[13px] group-hover/stamp:translate-x-0.5 transition-transform">arrow_forward</span></div></div></div></div></article>
+</div>
+<!-- 悬浮辅助条：回到最新位置按钮（平滑查看历史不被滚回，可一键复位） -->
+<div class="px-5 py-2.5 border-t border-paper-border bg-paper flex items-center justify-between text-xs text-ink-muted">
+<div class="flex items-center gap-1.5 text-ink-faint text-[11px]">
+<span class="material-symbols-outlined text-[14px]">info</span>
+<span>查看历史记录时不会打断当前阅读</span>
+</div>
+<button class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-paper-subtle border border-paper-border hover:bg-paper hover:text-ink text-ink-muted font-medium transition-colors" onclick="document.getElementById('session-scroll-area').scrollTo({top: 9999, behavior: 'smooth'});">
+<span class="material-symbols-outlined text-[14px]">arrow_downward</span>
+<span>回到最新</span>
+</button>
+</div>
+<!-- 底栏：原型状态与任务层级流转说明 -->
+<footer class="px-5 py-3 border-t border-paper-border bg-paper-subtle flex items-center justify-between text-xs text-ink-faint"><div class="flex items-center gap-2 text-ink-faint"><span class="w-1.5 h-1.5 rounded-full bg-ink-faint"></span><span>子任务会话详情</span></div><div class="flex items-center gap-3 text-ink-muted"><a class="hover:text-accent transition-colors font-medium" href="#overview">返回任务总览</a><span>·</span><a class="hover:text-accent transition-colors font-medium" href="#usage">用量说明</a></div></footer><div aria-labelledby="drawer-title" aria-modal="true" class="fixed inset-0 z-50 flex items-end md:items-center justify-center transition-all duration-200" id="evidence-drawer-modal" role="dialog"><div class="absolute inset-0 bg-[#2b2621]/40 backdrop-blur-[2px] transition-opacity" id="drawer-backdrop" onclick="document.getElementById('evidence-drawer-modal').classList.add('hidden')"></div><div class="relative z-10 w-full md:w-[560px] md:max-w-[90vw] max-h-[85dvh] md:max-h-[80vh] bg-[#fdfbf7] rounded-t-2xl md:rounded-xl border border-paper-border shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom md:slide-in-from-top-4 duration-200 pb-[env(safe-area-inset-bottom)]"><div class="px-5 py-3.5 border-b border-paper-border bg-paper-subtle flex items-center justify-between shrink-0"><div class="flex items-center gap-2.5"><div class="w-6 h-6 rounded flex items-center justify-center bg-[#edf7f1] text-[#2d6a4f] border border-[#2d6a4f]/30 shrink-0"><span class="material-symbols-outlined text-[15px]">verified</span></div><div><div class="flex items-center gap-2"><h2 class="text-sm md:text-[15px] font-bold font-serif text-ink" id="drawer-title">核验结论</h2><span class="text-[10px] font-mono px-1.5 py-0.2 rounded bg-[#edf7f1] text-[#235c43] border border-[#b7dfc9] font-medium">Codex 已核验</span></div><p class="text-[10px] font-mono text-ink-faint mt-0.5">核验时间：2025-05-14 14:28:12 CST · 本机只读记录</p></div></div><button aria-label="关闭 (Esc)" class="px-2 py-1 rounded text-ink-muted hover:text-ink hover:bg-paper border border-paper-border text-xs transition-colors flex items-center gap-1 group font-sans" onclick="document.getElementById('evidence-drawer-modal').classList.add('hidden')" type="button"><span class="text-[11px] font-mono text-ink-faint group-hover:text-ink">Esc</span><span class="material-symbols-outlined text-[16px]">close</span></button></div><div class="p-5 overflow-y-auto custom-scroll flex flex-col gap-4 text-xs leading-relaxed text-ink-muted"><div class="flex flex-col gap-2.5"><div class="flex items-center justify-between"><span class="font-semibold text-ink text-[12px] flex items-center gap-1.5"><span class="material-symbols-outlined text-[15px] text-[#2d6a4f]">task_alt</span>核验结果说明</span><span class="text-[10px] font-mono text-ink-faint bg-paper-subtle px-1.5 py-0.5 rounded border border-paper-border">共 3 项全部符合</span></div><div class="border border-paper-border rounded-lg bg-paper divide-y divide-paper-border-soft overflow-hidden shadow-xs"><div class="p-3 flex items-start gap-2.5"><span class="material-symbols-outlined text-[#2d6a4f] text-[16px] shrink-0 mt-0.5">check_circle</span><div class="flex flex-col gap-0.5"><div class="font-medium text-ink text-[12px]">1. 异常阻断与草稿保护</div><div class="text-[11px] text-ink-muted leading-relaxed">表单重置及网络异常时，严格保留用户已填草稿至本地缓存，杜绝 422 报错或接口失败后输入内容被清空。</div></div></div><div class="p-3 flex items-start gap-2.5"><span class="material-symbols-outlined text-[#2d6a4f] text-[16px] shrink-0 mt-0.5">check_circle</span><div class="flex flex-col gap-0.5"><div class="font-medium text-ink text-[12px]">2. 状态落库验证</div><div class="text-[11px] text-ink-muted leading-relaxed">仅在接口返回成功并确认落库后才执行草稿清理；任何网络波动或校验失败均完整回退并保留输入。</div></div></div><div class="p-3 flex items-start gap-2.5"><span class="material-symbols-outlined text-[#2d6a4f] text-[16px] shrink-0 mt-0.5">check_circle</span><div class="flex flex-col gap-0.5"><div class="font-medium text-ink text-[12px]">3. 单元自检通过</div><div class="text-[11px] text-ink-muted leading-relaxed font-mono">相关自动化用例全部通过，覆盖异常复位、重试无感及表单持久化校验。</div></div></div></div></div><div class="p-3 rounded-lg bg-[#fffbf2] border border-[#e8d7b3] flex items-start gap-2.5 text-[#92540c]"><span class="material-symbols-outlined text-[16px] text-[#b45309] shrink-0 mt-0.5">shield_with_heart</span><div class="flex flex-col gap-1"><span class="font-medium text-[11px] text-[#92540c]">未确认范围与免责提醒</span><p class="text-[11px] text-[#b45309] leading-relaxed">未确认范围：本核验仅针对当前子任务交付物进行单点逻辑闭环验证，不包含生产全量集成、跨模块发布或端到端性能压测；后续变动需重新发起核验。</p></div></div></div><div class="px-5 py-3 border-t border-paper-border bg-paper-subtle flex items-center justify-between text-xs shrink-0"><span class="text-[11px] font-mono text-ink-faint">只读记录 · 单点闭环</span><button class="px-3 py-1.5 rounded bg-paper border border-paper-border hover:bg-[#f6efe4] text-ink font-medium transition-colors text-xs" onclick="document.getElementById('evidence-drawer-modal').classList.add('hidden')" type="button">关闭 (Esc)</button></div></div></div>
+</main>
+</body>
+</html>
+

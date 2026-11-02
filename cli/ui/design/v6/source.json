@@ -1,0 +1,40 @@
+{
+  "schemaVersion": 1,
+  "status": "implemented-under-user-redesign-authorization",
+  "project": "14906138420656377633",
+  "designSystem": "assets/1205ac5e9a3648868393485adf51a83a",
+  "screens": [
+    {
+      "page": "board",
+      "screen": "6c6ad2a4663d4a2097c25db1476a0262",
+      "htmlFile": "da8f4b092aaf412ea7ec0eaaf369c27b",
+      "imageFile": "2cc2cc206a1f45e19a27fe3f3e808806"
+    },
+    {
+      "page": "analytics-session",
+      "screen": "3eabc0e454904d80803533f000061e2d",
+      "htmlFile": "ab749b99a0094ac59becee6212c18593",
+      "imageFile": "04402cf8620943959acc2128ad6d82ad"
+    },
+    {
+      "page": "analytics-global",
+      "screen": "906b678d193841eb9da331a5e01e0c27",
+      "htmlFile": "e5b593b2d4dc4a3dbb3b1ee2068d489a",
+      "imageFile": "b3f66e046361429aa8635eda97e1a8de"
+    }
+  ],
+  "transplant": "Exported DOM, generated Tailwind CSS, custom CSS, exact font and icon subsets localized in assets/. Runtime replaces synthetic examples with observed facts and read-only actions.",
+  "overrides": [
+    "User requested frameless Markdown conversation detail, subdued single-line tool list, scroll-loaded history and continuous bottom following. Detail retains prior adopted R5 design.",
+    "No invented cost, savings, skill activation or causal claims; absent metrics stay unknown."
+  ],
+  "files": {
+    "analytics-global-original.html": "5508aedb34d6345eec30ae8ed8f286e88f815868f8e7ce74871eea08eccbe007",
+    "analytics-global.css": "0c8bc8c53a88c84f8f11cffc724a0bf7bc4e39408b5874c5f5260cfb3fb146b6",
+    "analytics-session-original.html": "e41d14d3b5fd127a2b9f87d67f2fade351afe67596a6d69a3e12e11c348770e0",
+    "analytics-session.css": "d2a56a27e36056a3d5f3e9903e26b5217757e630e0815bc8bd48e7fba9d1d0c3",
+    "board-original.html": "ac5912247f757d85badec77e8ec339b59fdcd003b85ecaed67804245967caf46",
+    "board.css": "5fa1f3ad52b63598bd701e2f24ba5f512848d5916c3a2c6618465da59d1a2459",
+    "pages.json": "84ef136c8357a08eadce4fbade7034d9d5afa32ac2b8f200112cbe9c30357137"
+  }
+}

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Stitch 设计审阅"
+  short_description: "多候选画布选稿，保留原话、备注与明确决定"
+  default_prompt: "使用 $stitch-review 为本轮界面改版建立无侧栏、多候选、可平移缩放的本地画布选稿页。"

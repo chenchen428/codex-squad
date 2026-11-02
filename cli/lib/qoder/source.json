@@ -1,0 +1,49 @@
+{
+  "source": "historical private local snapshot of the Agent Bridge Qoder runtime (not a public upstream)",
+  "files": {
+    "qoder-acp-runner.mjs": "acc216b47d63f6b61158852bc863efdb682c38a700356d157c2e23651662e0fc",
+    "qoder-acp-client.mjs": "3294f8e91ad73e596e8a71f0ec558a2af4e73650c4888866a27d4c3dc13a8cb6",
+    "qoder-assistant-segments.mjs": "faaadd7715033d8cd7d5e6d103a0a929d4979dc2e117393caabee15e1a9210b7",
+    "qoder-runtime-env.mjs": "cbeb3188e1bac5294086cb2da9521b7b7cdae8b39171687ff313bf289aac9f8f",
+    "local-agent-command.mjs": "d4bccbae5ce713c63fbff8d19baed0df25791a5e7ceeb90e684a9eab114ce920"
+  },
+  "derived": {
+    "qoder-acp-runner.mjs": [
+      "qoder-acp-runner.mjs",
+      "qoder-assistant-segments.mjs"
+    ],
+    "qoder-acp-client.mjs": [
+      "qoder-acp-client.mjs",
+      "local-agent-command.mjs",
+      "qoder-runtime-env.mjs"
+    ],
+    "qoder-assistant-segments.mjs": [
+      "qoder-assistant-segments.mjs"
+    ],
+    "qoder-executable.mjs": [
+      "qoder-runtime-env.mjs",
+      "local-agent-command.mjs"
+    ]
+  },
+  "removed": [
+    "in-task input queue, reserved inputs and their exports",
+    "manual approval requests, decision events and approval APIs",
+    "read-only materials mode and qoderReadOnlyRuntimeArgs",
+    "machine telemetry on session.started",
+    "thinking-level prefix injection",
+    "appServerModel, appServerCollaborationMode and other generic multi-model branches",
+    "attachments, image and resource_link prompt blocks",
+    "localhost proxy blanking; all explicit proxy environment variables are preserved",
+    "AGENT_BRIDGE_APPEND_SYSTEM_PROMPT and developerInstructions injection",
+    "tool rawOutput fallback for completion content",
+    "agent_thought text forwarding; only one generic progress signal per turn is emitted"
+  ],
+  "changes": [
+    "qoder-executable.mjs resolves an existing qodercli under PATH, ~/.local/bin and ~/.qoder/bin and spawns it directly without a login shell or installer",
+    "qoder-acp-client.mjs sends clientInfo.name codex-squad and keeps a detached process-group lifecycle",
+    "qoder-acp-runner.mjs fixes approval to never + danger-full-access; requests bypassPermissions and falls back once to default only for RPC -32603 with exact unknown permission_mode: yolo details",
+    "qoder-acp-client.mjs preserves RPC error.data as rpcData; mode failures include stage, code and original/fallback details",
+    "qoder-acp-client.mjs records prompt submission only after successful stdin write; runner emits submission metadata without claiming receipt"
+  ],
+  "policy": "Derived snapshot for the self-contained plugin. Keep ACP protocol behavior; do not re-add generic Agent Bridge platform branches."
+}

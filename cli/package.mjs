@@ -1,0 +1,16 @@
+import {cp,mkdir,readFile,rm,writeFile} from 'node:fs/promises';
+import {fileURLToPath} from 'node:url';
+import path from 'node:path';
+const root=fileURLToPath(new URL('../',import.meta.url));
+const manifest=JSON.parse(await readFile(path.join(root,'.codex-plugin/plugin.json'),'utf8'));
+const version=process.argv[2]||manifest.version;
+if(!/^\d+\.\d+\.\d+(?:-[a-zA-Z0-9.-]+)?$/.test(version))throw new Error('Invalid plugin version');
+const output=path.join(root,'dist/plugin');
+await rm(output,{recursive:true,force:true});
+await mkdir(path.join(output,'.codex-plugin'),{recursive:true});
+await writeFile(path.join(output,'.codex-plugin/plugin.json'),JSON.stringify({...manifest,version},null,2)+'\n');
+for(const item of ['skills','README.md','cli/public'])await cp(path.join(root,item),path.join(output,item),{recursive:true});
+await cp(path.join(root,'cli/index.mjs'),path.join(output,'cli/index.mjs'));
+await cp(path.join(root,'cli/lib'),path.join(output,'cli/lib'),{recursive:true});
+await writeFile(path.join(output,'package.json'),JSON.stringify({name:'codex-squad',version,type:'module',bin:{'codex-squad':'cli/index.mjs'},engines:{node:'>=22.5'}},null,2)+'\n');
+console.log(`Packaged ${output} (${version})`);

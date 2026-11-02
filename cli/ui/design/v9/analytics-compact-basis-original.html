@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 周期分析报告 (页内依据与纯净跟进版)</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@500;600;700&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --paper-bg: #fbf9f4;
+      --paper-card: #ffffff;
+      --paper-card-sub: #fdfbf7;
+      --paper-dim: #f4efe2;
+      --ink-primary: #2c2621;
+      --ink-secondary: #6b645b;
+      --ink-tertiary: #928b80;
+      --rust: #b84b2e;
+      --rust-light: #faeee9;
+      --audit-green: #2d6a4f;
+      --audit-green-light: #eaf3ed;
+      --rule-border: #e4decb;
+      --rule-light: #ede7d8;
+      --rule-focus: #c5ba9e;
+      --amber-warn: #b45309;
+      --amber-bg: #fffbeb;
+    }
+
+    body {
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .font-serif-title {
+      font-family: 'Noto Serif SC', Georgia, serif;
+    }
+
+    .font-mono-code {
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* 纸面细微阴影与边线 */
+    .paper-panel {
+      background-color: var(--paper-card);
+      border: 1px solid var(--rule-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(44, 38, 33, 0.03);
+    }
+
+    .paper-subpanel {
+      background-color: var(--paper-card-sub);
+      border: 1px solid var(--rule-light);
+      border-radius: 3px;
+    }
+
+    /* 内部滚动与表头吸顶 */
+    .scroll-table-container {
+      max-height: 360px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule-border) transparent;
+    }
+    .scroll-table-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-table-container::-webkit-scrollbar-thumb {
+      background-color: var(--rule-border);
+      border-radius: 2px;
+    }
+
+    .sticky-th {
+      position: sticky;
+      top: 0;
+      background-color: var(--paper-card-sub);
+      z-index: 10;
+    }
+
+    /* 原生 details 样式定制 */
+    details summary {
+      cursor: pointer;
+      list-style: none;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    /* 行状态与交替行 */
+    tr:hover td {
+      background-color: #faf6ed;
+    }
+
+    .dashed-divider {
+      border-top: 1px dashed var(--rule-border);
+    }
+  </style>
+</head>
+<body class="py-6 px-3 sm:px-4 md:px-6">
+<!-- 640px 容器：自适应 390px 窄视口 -->
+<main class="max-w-[640px] mx-auto space-y-4">
+<!-- 顶部状态栏与元信息 -->
+<header class="border-b border-[var(--rule-border)] pb-3">
+<div class="flex flex-wrap items-center justify-between gap-2 text-xs text-[var(--ink-secondary)] font-mono-code mb-2">
+<div class="flex items-center gap-2">
+<span class="font-bold text-[var(--ink-primary)]">Codex 小队</span>
+<span class="text-[var(--ink-tertiary)]">/</span>
+<span>示例项目</span>
+<span class="bg-[var(--rust-light)] text-[var(--rust)] px-1.5 py-0.5 rounded text-[11px] font-medium border border-[#f0cfc3]">
+            v0.9.3-local.20261027.2
+          </span>
+</div>
+<div class="flex items-center gap-3 text-[11px]">
+<span class="text-[var(--ink-tertiary)]">只读演示 · 本地数据</span>
+</div>
+</div>
+<!-- 导航与主标题 -->
+<div class="flex items-center justify-between pt-1">
+<div class="flex items-center gap-2">
+<span class="font-mono-code text-xs text-[var(--ink-secondary)]">小队任务看板 12</span>
+<span class="bg-[var(--rust)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded tracking-wide">分析 REPORT</span>
+</div>
+<div class="flex items-center gap-2 text-xs font-mono-code">
+<span class="text-[var(--ink-secondary)]">时间窗口:</span>
+<span class="bg-[var(--rust-light)] text-[var(--rust)] font-bold px-2 py-0.5 rounded border border-[#eec8bc]">近 7 天</span>
+<span class="text-[var(--ink-tertiary)] hover:text-[var(--ink-secondary)] cursor-pointer px-1">近 30 天</span>
+<span class="text-[var(--ink-tertiary)] ml-1 pl-2 border-l border-[var(--rule-border)]">更新于 14:48:10</span>
+</div>
+</div>
+<h1 class="font-serif-title text-xl font-bold text-[var(--ink-primary)] mt-2">
+        周期审计分析报告
+      </h1>
+</header>
+<!-- ==========================================
+         [1] 顶部置顶收益：整体净收益 + 页内依据表格
+         ========================================== -->
+<section class="paper-panel p-4 space-y-3.5" id="roi-section">
+<div class="pb-2 border-b border-[var(--rule-light)] space-y-1">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-2">
+<span class="font-serif-title font-bold text-sm text-[var(--ink-primary)] tracking-tight">周期整体净收益</span>
+<span class="text-[10px] font-mono-code px-1.5 py-0.5 bg-[var(--rust-light)] text-[var(--rust)] rounded font-semibold border border-[#eed0c5]">NET BALANCE</span>
+</div>
+<a class="shrink-0 text-xs font-mono-code text-[var(--rust)] hover:underline flex items-center gap-0.5 font-bold" href="#inline-ledger-box" onclick="scrollToLedger()">
+<span>查看计算依据 ↗ (展开折算明细)</span>
+</a>
+</div>
+<div class="flex items-center justify-between text-[11px] font-mono-code text-[var(--ink-tertiary)]">
+<span>8 项可比交付正负相互抵总</span>
+<span>覆盖率 66.7% (8/12 项有历史同类测速基准)</span>
+</div>
+</div>
+<!-- 两个核心大指标：主次错落有致，支持 390px 窄屏自适应折行 -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<!-- 主指标：少用 Codex Token -->
+<div class="paper-subpanel p-3 border-l-4 border-l-[var(--rust)] flex flex-col justify-between">
+<div class="flex items-baseline justify-between">
+<span class="text-xs text-[var(--ink-secondary)] font-medium">预计少用 Codex Token</span>
+<span class="text-[11px] font-mono-code bg-[var(--rust-light)] text-[var(--rust)] px-1.5 py-0.2 rounded font-bold">
+              约 46.9%
+            </span>
+</div>
+<div class="mt-1 flex items-baseline gap-1.5">
+<span class="text-2xl sm:text-3xl font-serif-title font-bold text-[var(--rust)] tracking-tight">750K</span>
+<span class="text-xs font-mono-code text-[var(--ink-secondary)]">Token 净节省</span>
+</div>
+<p class="text-[11px] text-[var(--ink-tertiary)] mt-1.5">
+            降低主模型单步上下文膨胀与轮换损耗
+          </p>
+</div>
+<!-- 次指标：节省处理时间 -->
+<div class="paper-subpanel p-3 border-l-4 border-l-[var(--audit-green)] flex flex-col justify-between">
+<div class="flex items-baseline justify-between">
+<span class="text-xs text-[var(--ink-secondary)] font-medium">预计节省处理时间</span>
+<span class="text-[11px] font-mono-code bg-[var(--audit-green-light)] text-[var(--audit-green)] px-1.5 py-0.2 rounded font-bold">
+              约 40.0%
+            </span>
+</div>
+<div class="mt-1 flex items-baseline gap-1.5">
+<span class="text-2xl sm:text-3xl font-serif-title font-bold text-[var(--ink-primary)] tracking-tight">约 13 分钟</span>
+</div>
+<p class="text-[11px] text-[var(--ink-tertiary)] mt-1.5">
+            子任务异步并发与快速反馈推进
+          </p>
+</div>
+</div>
+<!-- 自然业务观察段落与页内表格定位按钮 -->
+<div class="text-xs text-[var(--ink-secondary)] bg-[var(--paper-card-sub)] p-2.5 rounded border border-[var(--rule-light)]">
+<p class="leading-relaxed font-sans">
+    “在代码补全与单元回归任务中，Qoder 承担了高频试错与初态构建，显著减少了主 Codex 上下文膨胀与等待耗时。”
+  </p>
+</div>
+<!-- 页内依据表格卡片 (与 Token 消耗透视完全一致的风格，无弹窗) -->
+<div class="pt-2 border-t border-[var(--rule-light)]" id="inline-ledger-box">
+<div class="flex items-center justify-between mb-2">
+<div class="flex items-center gap-1.5">
+<span class="text-xs font-serif-title font-bold text-[var(--ink-primary)]">收益计算依据表</span>
+<span class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">(共 8 项已纳评，4 项未计入)</span>
+</div>
+<span class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">点击行内“展开依据”看基线细节</span>
+</div>
+<div class="scroll-table-container border border-[var(--rule-border)] rounded text-xs">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="sticky-th border-b border-[var(--rule-border)] text-[11px] text-[var(--ink-secondary)] font-mono-code">
+<th class="py-2 px-2.5">工作 / 任务</th>
+<th class="py-2 px-2 text-right">预计全Codex</th>
+<th class="py-2 px-2 text-right">实际 Codex / Qoder</th>
+<th class="py-2 px-2 text-right text-[var(--rust)]">净节省</th>
+<th class="py-2 px-2 text-right text-[var(--audit-green)]">省时</th>
+<th class="py-2 px-2.5 text-center">依据</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[var(--rule-light)] font-mono-code text-[11px]">
+<!-- 默认呈现前 3 条可比工作 -->
+<!-- 记录 1 -->
+<tr>
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#01 订单链路排查</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">单元测试与状态守卫回归</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">360.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">168.2K</span> / 
+                  <span class="text-[var(--ink-secondary)]">112.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+191.8K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+4.2m</td>
+<td class="py-2 px-2.5 text-center"><button class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer font-bold inline-flex items-center gap-0.5" onclick="openRoiModal('#01')" type="button">
+<span>详情 ↗</span>
+</button></td>
+</tr>
+<!-- 记录 2 -->
+<tr>
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#02 窄屏布局适配</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">480px 响应式断点回归</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">220.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">94.6K</span> / 
+                  <span class="text-[var(--ink-secondary)]">64.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+125.4K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+2.8m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] space-y-1 w-64 shadow-sm">
+<div><strong class="text-[var(--ink-primary)]">基线来源：</strong>同组件库历史 CSS 重构平均 220K 消耗。</div>
+<div><strong class="text-[var(--ink-primary)]">模型速度：</strong>gpt-6-astra 输出约 52 tok/s；Qoder 承担样式试错。</div>
+</div>
+</details>
+</td>
+</tr>
+<!-- 记录 3 -->
+<tr>
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#03 筛选状态重置自检</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">多维筛选清空断言防退化</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">180.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">62.1K</span> / 
+                  <span class="text-[var(--ink-secondary)]">58.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+117.9K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+2.1m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] space-y-1 w-64 shadow-sm">
+<div><strong class="text-[var(--ink-primary)]">基线来源：</strong>单人自检历史 180K。</div>
+<div><strong class="text-[var(--ink-primary)]">依据分析：</strong>Qoder 编写断言，Codex 负责最终审核一击闭环。</div>
+</div>
+</details>
+</td>
+</tr>
+<!-- 其余 5 项折叠行 (默认隐藏，点击展开全部时展示) -->
+<tr class="extra-roi-row hidden bg-[#faf8f2]">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#04 依赖升级兼容回归</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">TypeScript AST 规则更新</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">240.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">110.0K</span> / 
+                  <span class="text-[var(--ink-secondary)]">85.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+130.0K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+1.8m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] w-64 shadow-sm">
+                      基线同等工具链升级对比，Qoder 承担批量类型修复。
+                    </div>
+</details>
+</td>
+</tr>
+<tr class="extra-roi-row hidden bg-[#faf8f2]">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#05 mockServer 端口重绑</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">沙箱测试环境防冲突改造</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">150.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">72.0K</span> / 
+                  <span class="text-[var(--ink-secondary)]">46.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+78.0K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+1.1m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] w-64 shadow-sm">
+                      基线为单人配置迁移耗时，脚本独立完成。
+                    </div>
+</details>
+</td>
+</tr>
+<tr class="extra-roi-row hidden bg-[#faf8f2]">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#06 表格列宽计算防抖</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">虚拟列表滚动性能微调</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">190.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">92.0K</span> / 
+                  <span class="text-[var(--ink-secondary)]">58.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+98.0K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+1.4m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] w-64 shadow-sm">
+                      基线同类性能调优 190K，DOM 结构微调。
+                    </div>
+</details>
+</td>
+</tr>
+<tr class="extra-roi-row hidden bg-[#faf8f2]">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#07 契约格式验证器</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">JSON Schema 参数守卫补齐</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">130.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">85.0K</span> / 
+                  <span class="text-[var(--ink-secondary)]">38.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">+45.0K</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">+0.6m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded text-[10px] font-sans text-[var(--ink-secondary)] w-64 shadow-sm">
+                      含一次参数修正交接，净收益为正。
+                    </div>
+</details>
+</td>
+</tr>
+<!-- 包含一项具有轻微协同损耗的相抵交付 -->
+<tr class="extra-roi-row hidden bg-[#fff9f7]">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">#08 复杂路由重定向断言</div>
+<div class="text-[10px] text-[var(--rust)] font-sans">多分支跨会话重试</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">130.0K</td>
+<td class="py-2 px-2 text-right">
+<span class="text-[var(--rust)] font-medium">144.0K</span> / 
+                  <span class="text-[var(--ink-secondary)]">42.0K</span>
+</td>
+<td class="py-2 px-2 text-right font-bold text-[#b91c1c]">-14.0K</td>
+<td class="py-2 px-2 text-right font-bold text-[#b91c1c]">-1.2m</td>
+<td class="py-2 px-2.5 text-center">
+<details class="inline-block text-left">
+<summary class="text-[10px] text-[var(--rust)] hover:underline cursor-pointer">详情 ▾</summary>
+<div class="mt-1.5 p-2 bg-[var(--paper-card-sub)] border border-[#f5c2b7] rounded text-[10px] font-sans text-[var(--ink-secondary)] w-64 shadow-sm">
+<strong class="text-[#b91c1c]">相抵负向项：</strong>因两轮上下文格式重对齐产生多余交互，如实扣减总收益。
+                    </div>
+</details>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 表尾操作：展开全部 8 项 -->
+<div class="mt-2 flex items-center justify-between text-[11px] font-mono-code text-[var(--ink-secondary)]">
+<span id="roi-status-text">当前显示 3 / 8 项已纳评工作 (另 4 项缺少同类基线未估算)</span>
+<button class="text-[var(--rust)] hover:underline font-bold flex items-center gap-1" id="toggle-roi-btn" onclick="toggleRoiRows()">
+<span>展开全部 8 项</span>
+<span>▾</span>
+</button>
+</div>
+</div>
+</section>
+<!-- ==========================================
+         实际投入：已记录的 Token 消耗与来源透视
+         ========================================== -->
+<section class="paper-panel p-4 space-y-3">
+<div class="flex items-center justify-between pb-2 border-b border-[var(--rule-light)]">
+<div>
+<h2 class="font-serif-title font-bold text-sm text-[var(--ink-primary)]">已记录的 Token 消耗与来源透视</h2>
+<p class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">当前视图: Codex 宿主模型消耗 · 本机执行记录</p>
+</div>
+<!-- 紧凑切换器 -->
+<div class="flex items-center bg-[var(--paper-card-sub)] p-0.5 rounded border border-[var(--rule-border)] text-xs font-mono-code">
+<button class="px-2.5 py-0.5 bg-white text-[var(--rust)] font-bold rounded shadow-xs border border-[var(--rule-light)]">Codex</button>
+<button class="px-2.5 py-0.5 text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]">Qoder</button>
+<button class="px-2.5 py-0.5 text-[var(--ink-secondary)] hover:text-[var(--ink-primary)]">对比</button>
+</div>
+</div>
+<!-- 核心指标卡 -->
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+<div class="paper-subpanel p-3">
+<div class="flex justify-between items-baseline text-xs text-[var(--ink-secondary)] font-mono-code">
+<span>Codex 记录总量</span>
+<span class="text-[var(--audit-green)] font-semibold">覆盖 84 会话</span>
+</div>
+<div class="text-2xl font-serif-title font-bold text-[var(--ink-primary)] mt-1">382.4K</div>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] mt-1">
+            含输入 294.0K · 输出 88.4K
+          </div>
+</div>
+<div class="paper-subpanel p-3">
+<div class="flex justify-between items-baseline text-xs text-[var(--ink-secondary)] font-mono-code">
+<span>输入命中缓存</span>
+<span class="text-[var(--rust)] font-semibold">61.9% 命中</span>
+</div>
+<div class="text-2xl font-serif-title font-bold text-[var(--ink-primary)] mt-1">182.0K</div>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] mt-1">
+            已包含在输入内，不与输入相加
+          </div>
+</div>
+</div>
+<!-- 比例条 -->
+<div class="space-y-1 pt-1 font-mono-code">
+<div class="flex justify-between text-[11px] text-[var(--ink-tertiary)]">
+<span>Codex 模型分布: gpt-6.1-sol (84%) / gpt-6-astra (16%)</span>
+<span>按记录 Token 排序</span>
+</div>
+<div class="w-full h-2 bg-[#e6dfd1] rounded-full overflow-hidden flex">
+<div class="bg-[var(--audit-green)] h-full" style="width: 48%" title="缓存输入 182.0K"></div>
+<div class="bg-[#3b82f6] h-full" style="width: 29%" title="增量输入 112.0K"></div>
+<div class="bg-[var(--rust)] h-full" style="width: 23%" title="生成输出 88.4K"></div>
+</div>
+<div class="flex flex-wrap gap-x-3 gap-y-1 text-[10px] text-[var(--ink-secondary)] pt-0.5">
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[var(--audit-green)] inline-block"></span>输入内缓存 182.0K</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[#3b82f6] inline-block"></span>输入增量 112.0K</span>
+<span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-[var(--rust)] inline-block"></span>生成输出 88.4K</span>
+</div>
+</div>
+<!-- 真实主要会话列表 -->
+<div class="border border-[var(--rule-light)] rounded overflow-hidden text-xs">
+<div class="bg-[var(--paper-card-sub)] px-3 py-1.5 border-b border-[var(--rule-light)] flex justify-between font-mono-code text-[11px] text-[var(--ink-secondary)]">
+<span>会话名称 / 归属</span>
+<span>消耗 Token (占比)</span>
+</div>
+<div class="divide-y divide-[var(--rule-light)] font-mono-code text-[11px]">
+<div class="px-3 py-2 flex items-center justify-between hover:bg-[var(--paper-card-sub)]">
+<div>
+<div class="font-bold text-[var(--ink-primary)]">#01 订单链路排查</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">小队工作流 · gpt-6.1-sol</div>
+</div>
+<div class="text-right">
+<span class="font-bold text-[var(--ink-primary)]">168.2K</span>
+<span class="text-[10px] text-[var(--ink-tertiary)] block">44.0%</span>
+</div>
+</div>
+<div class="px-3 py-2 flex items-center justify-between hover:bg-[var(--paper-card-sub)]">
+<div>
+<div class="font-bold text-[var(--ink-primary)]">#02 窄屏布局适配</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">小队工作流 · gpt-6-astra</div>
+</div>
+<div class="text-right">
+<span class="font-bold text-[var(--ink-primary)]">94.6K</span>
+<span class="text-[10px] text-[var(--ink-tertiary)] block">24.7%</span>
+</div>
+</div>
+<div class="px-3 py-2 flex items-center justify-between hover:bg-[var(--paper-card-sub)]">
+<div>
+<div class="font-bold text-[var(--ink-primary)]">#03 筛选状态重置自检</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">小队工作流 · gpt-6.1-sol</div>
+</div>
+<div class="text-right">
+<span class="font-bold text-[var(--ink-primary)]">62.1K</span>
+<span class="text-[10px] text-[var(--ink-tertiary)] block">16.2%</span>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- ==========================================
+         [2] 优先跟进这几项工作 (彻底替换原交付效率环图与散点)
+         + 可选折叠的“每天投入了多少”页内表
+         ========================================== -->
+<section class="paper-panel p-4 space-y-3.5">
+<div class="flex items-center justify-between pb-2 border-b border-[var(--rule-light)]">
+<div>
+<h2 class="font-serif-title font-bold text-sm text-[var(--ink-primary)]">优先跟进这几项工作</h2>
+<p class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">投入高且尚未取得核验结论的任务 (最多列出 3 项)</p>
+</div>
+<span class="text-[10px] font-mono-code bg-[var(--rust-light)] text-[var(--rust)] px-1.5 py-0.5 rounded border border-[#efd3c8]">
+          FOCUS NOW
+        </span>
+</div>
+<!-- 浅显说明：帮助用户决定先看哪些任务，不猜返工原因 -->
+<div class="text-xs text-[var(--ink-secondary)] bg-[var(--paper-card-sub)] p-2.5 rounded border border-[var(--rule-light)]">
+<p class="leading-relaxed">
+          下列工作当前已消耗较多 Token 或已执行多轮，但尚未形成最终核验结论。建议优先点击查看结果，确认是否需要人工接入或结项。
+        </p>
+</div>
+<!-- 最多 3 个真实事实项 -->
+<div class="space-y-2.5">
+<!-- 任务 1 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-border)] hover:border-[var(--rule-focus)] transition">
+<div class="flex flex-wrap items-start justify-between gap-1">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#fef3c7] text-[#92400e] rounded font-bold">待核验</span>
+<span class="font-bold text-xs text-[var(--ink-primary)]">修复报表多维联动筛选异常</span>
+</div>
+<div class="text-[11px] font-mono-code text-[var(--ink-secondary)]">
+                归属: #01 订单工作台 · 耗时 21m40s
+              </div>
+</div>
+<a class="text-xs font-mono-code text-[var(--rust)] hover:underline flex items-center gap-0.5 font-bold" href="#01-order">
+<span>查看结果</span>
+<span>↗</span>
+</a>
+</div>
+<div class="mt-2 pt-2 border-t border-[var(--rule-light)] flex items-center justify-between text-[11px] font-mono-code">
+<span class="text-[var(--ink-tertiary)]">已报消耗: <strong class="text-[var(--rust)]">504.8K Token</strong></span>
+<span class="text-[var(--ink-secondary)]">执行事实: <strong>3 轮执行 · 1 次失败</strong></span>
+</div>
+</div>
+<!-- 任务 2 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-border)] hover:border-[var(--rule-focus)] transition">
+<div class="flex flex-wrap items-start justify-between gap-1">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#fee2e2] text-[#991b1b] rounded font-bold">需关注</span>
+<span class="font-bold text-xs text-[var(--ink-primary)]">Qoder 子任务连接心跳超时断开</span>
+</div>
+<div class="text-[11px] font-mono-code text-[var(--ink-secondary)]">
+                归属: #01 订单工作台 · 状态当前挂起
+              </div>
+</div>
+<a class="text-xs font-mono-code text-[var(--rust)] hover:underline flex items-center gap-0.5 font-bold" href="#01-timeout">
+<span>查看结果</span>
+<span>↗</span>
+</a>
+</div>
+<div class="mt-2 pt-2 border-t border-[var(--rule-light)] flex items-center justify-between text-[11px] font-mono-code">
+<span class="text-[var(--ink-tertiary)]">已报消耗: <strong class="text-[var(--rust)]">19.2K Token</strong></span>
+<span class="text-[var(--ink-secondary)]">执行事实: <strong>尝试 2 轮 · 2 次超时</strong></span>
+</div>
+</div>
+<!-- 任务 3 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-border)] hover:border-[var(--rule-focus)] transition">
+<div class="flex flex-wrap items-start justify-between gap-1">
+<div class="space-y-0.5">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#f3f4f6] text-[#374151] rounded font-bold">处理中</span>
+<span class="font-bold text-xs text-[var(--ink-primary)]">Markdown 极长表格增量渲染</span>
+</div>
+<div class="text-[11px] font-mono-code text-[var(--ink-secondary)]">
+                归属: #02 布局适配 · 正在本地试跑
+              </div>
+</div>
+<a class="text-xs font-mono-code text-[var(--rust)] hover:underline flex items-center gap-0.5 font-bold" href="#02-markdown">
+<span>查看结果</span>
+<span>↗</span>
+</a>
+</div>
+<div class="mt-2 pt-2 border-t border-[var(--rule-light)] flex items-center justify-between text-[11px] font-mono-code">
+<span class="text-[var(--ink-tertiary)]">已报消耗: <strong class="text-[var(--rust)]">48.5K Token</strong></span>
+<span class="text-[var(--ink-secondary)]">执行事实: <strong>执行 2 轮 · 0 次报错</strong></span>
+</div>
+</div>
+</div>
+<!-- 可选折叠页内表：每天投入了多少 (无散点/无复杂图例) -->
+<details class="pt-2 border-t border-[var(--rule-light)] group">
+<summary class="flex items-center justify-between text-xs font-mono-code text-[var(--ink-secondary)] hover:text-[var(--ink-primary)] py-1 select-none">
+<span class="font-bold text-[var(--ink-primary)] flex items-center gap-1.5">
+<span>每天投入了多少</span>
+<span class="text-[10px] font-normal text-[var(--ink-tertiary)]">(近 7 天投入分布明细)</span>
+</span>
+<span class="text-[var(--rust)] group-open:rotate-180 transition-transform text-xs">▼</span>
+</summary>
+<div class="mt-2 border border-[var(--rule-border)] rounded overflow-hidden text-xs">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-[var(--paper-card-sub)] border-b border-[var(--rule-border)] text-[11px] font-mono-code text-[var(--ink-secondary)]">
+<th class="py-1.5 px-3">日期</th>
+<th class="py-1.5 px-3 text-right">已报 Token</th>
+<th class="py-1.5 px-3 text-right">未报用量次数</th>
+<th class="py-1.5 px-3 text-right text-[var(--ink-tertiary)]">状态记录</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[var(--rule-light)] font-mono-code text-[11px]">
+<tr>
+<td class="py-1.5 px-3">05-08 (周三)</td>
+<td class="py-1.5 px-3 text-right font-medium">184.2K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">正常上报</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-09 (周四)</td>
+<td class="py-1.5 px-3 text-right font-medium">0.0K</td>
+<td class="py-1.5 px-3 text-right text-[var(--rust)]">2 次缺失</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-tertiary)]">本地离线沙箱</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-10 (周五)</td>
+<td class="py-1.5 px-3 text-right font-medium">312.6K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">正常上报</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-11 (周六)</td>
+<td class="py-1.5 px-3 text-right font-medium">145.8K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">正常上报</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-12 (周日)</td>
+<td class="py-1.5 px-3 text-right font-medium">422.0K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">单日最高</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-13 (周一)</td>
+<td class="py-1.5 px-3 text-right font-medium">298.4K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">正常上报</td>
+</tr>
+<tr>
+<td class="py-1.5 px-3">05-14 (周二)</td>
+<td class="py-1.5 px-3 text-right font-medium">382.4K</td>
+<td class="py-1.5 px-3 text-right text-[var(--ink-secondary)]">0 次</td>
+<td class="py-1.5 px-3 text-right text-[var(--audit-green)]">当前周期截至</td>
+</tr>
+</tbody>
+</table>
+</div>
+</details>
+</section>
+<!-- ==========================================
+         [3] CLI 与工具表现表 (真实 12 条收起与展开，表头总数一致)
+         ========================================== -->
+<section class="paper-panel p-4 space-y-3">
+<div class="flex flex-wrap items-center justify-between gap-2 pb-2 border-b border-[var(--rule-light)]">
+<div>
+<h2 class="font-serif-title font-bold text-sm text-[var(--ink-primary)]">CLI 与工具表现</h2>
+<p class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">总计 640 次调用 · 基于 exit code 与业务回执</p>
+</div>
+<!-- 紧凑下拉筛选与条数统计 -->
+<div class="flex items-center gap-2">
+<label class="text-xs font-mono-code text-[var(--ink-secondary)]" for="cli-filter">筛选命令:</label>
+<select class="bg-[var(--paper-card-sub)] border border-[var(--rule-border)] text-xs font-mono-code rounded px-2 py-0.5 text-[var(--ink-primary)] focus:outline-none focus:border-[var(--rust)]" id="cli-filter" onchange="filterCliRows()">
+<option value="all">全部示例 (共 12 条)</option>
+<option value="node">node 命令</option>
+<option value="python">python3 测试</option>
+<option value="lgb">lgb 能力调用</option>
+<option value="sf">sf 远程日志</option>
+<option value="git">git / 代码仓</option>
+</select>
+</div>
+</div>
+<!-- 表格容器：最大高度 360px 内部滚动，表头固定吸顶 -->
+<div class="scroll-table-container border border-[var(--rule-border)] rounded text-xs">
+<table class="w-full text-left border-collapse" id="cli-table">
+<thead>
+<tr class="sticky-th border-b border-[var(--rule-border)] text-[11px] text-[var(--ink-secondary)] font-mono-code">
+<th class="py-2 px-2.5">完整 CLI / 子命令</th>
+<th class="py-2 px-2 text-right">调用</th>
+<th class="py-2 px-2 text-right">执行成功率</th>
+<th class="py-2 px-2 text-right">业务成功率</th>
+<th class="py-2 px-2.5 text-right">明确失败</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-[var(--rule-light)] font-mono-code text-[11px]">
+<!-- 默认呈现前 5 条 (共 12 条) -->
+<!-- 条目 1 -->
+<tr class="cli-row" data-cat="node">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">node --test foo.test.mjs</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">单元自检 · 测试运行器</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">112</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">99.1%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">98.2%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">1</td>
+</tr>
+<!-- 条目 2 -->
+<tr class="cli-row" data-cat="python">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">python3 -m pytest tests/unit/</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">后端用例自测 · 契约回归</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">86</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">97.7%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">94.2%</td>
+<td class="py-2 px-2.5 text-right text-[var(--rust)]">2</td>
+</tr>
+<!-- 条目 3 -->
+<tr class="cli-row" data-cat="node">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">node build.mjs --target=production</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">本地资源构建 · 打包校验</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">48</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">0</td>
+</tr>
+<!-- 条目 4 -->
+<tr class="cli-row" data-cat="lgb">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">lgb capability invoke</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">模型及辅助能力调起</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">248</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">98.4%</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">91.5%</td>
+<td class="py-2 px-2.5 text-right text-[var(--rust)]">4</td>
+</tr>
+<!-- 条目 5 -->
+<tr class="cli-row" data-cat="sf">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">sf log query --service=billing</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">远程日志查询 · 无明确回执</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">186</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">99.5%</td>
+<td class="py-2 px-2 text-right text-[var(--ink-tertiary)]">— (未确认)</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">1</td>
+</tr>
+<!-- 展开后显示的剩余 7 条示例 (6 到 12 条，真实存在并可被筛选) -->
+<!-- 条目 6 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="git">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">git diff --check core/markdown.ts</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">提交前空白符与语法自检</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">34</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">0</td>
+</tr>
+<!-- 条目 7 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="git">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">a1 repo view --commit=HEAD</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">代码仓状态查询 · 权限受限排查</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">26</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--rust)]">76.9%</td>
+<td class="py-2 px-2 text-right text-[var(--rust)]">76.9%</td>
+<td class="py-2 px-2.5 text-right text-[var(--rust)]">6</td>
+</tr>
+<!-- 条目 8 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="node">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">pnpm exec vite-node sync-daemon.ts</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">本地状态同步守护进程</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">42</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">97.6%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">95.2%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">1</td>
+</tr>
+<!-- 条目 9 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="node">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">npx playwright test tests/e2e/layout.spec.ts</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">480px 容器断点截屏视觉比对</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">18</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">0</td>
+</tr>
+<!-- 条目 10 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="python">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">python3 scripts/check_schema.py</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">数据结构定义一致性检验</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">22</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">95.5%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">95.5%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">1</td>
+</tr>
+<!-- 条目 11 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="sf">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">sf healthcheck --timeout=5s</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">网关链路连通性自测</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">30</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2 text-right text-[var(--ink-tertiary)]">— (未确认)</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">0</td>
+</tr>
+<!-- 条目 12 -->
+<tr class="cli-row extra-cli-row hidden" data-cat="lgb">
+<td class="py-2 px-2.5">
+<div class="font-bold text-[var(--ink-primary)]">lgb dry-run --contract=ued-designer</div>
+<div class="text-[10px] text-[var(--ink-tertiary)] font-sans">技能契约预置与无副作用验签</div>
+</td>
+<td class="py-2 px-2 text-right text-[var(--ink-secondary)]">15</td>
+<td class="py-2 px-2 text-right font-bold text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2 text-right text-[var(--audit-green)]">100.0%</td>
+<td class="py-2 px-2.5 text-right text-[var(--ink-secondary)]">0</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- 表尾操作：清晰反映当前行数，支持真正展开全部 12 条 -->
+<div class="flex items-center justify-between text-[11px] font-mono-code text-[var(--ink-secondary)] pt-1">
+<span id="cli-count-info">显示 5 / 12 条示例命令</span>
+<button class="text-[var(--rust)] hover:underline font-bold flex items-center gap-1" id="toggle-cli-btn" onclick="toggleCliRows()">
+<span id="toggle-cli-label">展开全部 12 条子命令</span>
+<span id="toggle-cli-arrow">▾</span>
+</button>
+</div>
+<!-- 高频失败诊断 -->
+<div class="p-2.5 bg-[#fdf2ee] border border-[#f5cfc4] rounded text-xs">
+<div class="flex items-center justify-between">
+<span class="font-bold text-[var(--rust)] font-mono-code flex items-center gap-1">
+<span>●</span>
+<span>高频失败诊断: a1 repo view (失败 6 次)</span>
+</span>
+<a class="text-[11px] font-mono-code text-[var(--rust)] hover:underline" href="#squad-tasks">
+            查看相关小队 #squad-tasks ↗
+          </a>
+</div>
+<p class="text-[11px] text-[var(--ink-secondary)] mt-1 font-sans leading-relaxed">
+          已驳回错误分类：权限上下文失效 ×4 次、上游响应超时 408 ×2 次。<br/>
+          关联任务：#01 订单链路排查、#04 资料整理 (无需重试，建议先在终端配置权限)。
+        </p>
+</div>
+</section>
+<!-- ==========================================
+         Codex 的观察与建议 (连贯自然点评与折叠证据)
+         ========================================== -->
+<section class="paper-panel p-4 space-y-3">
+<div class="flex items-center justify-between pb-2 border-b border-[var(--rule-light)]">
+<div class="flex items-center gap-2">
+<span class="bg-[var(--rust)] text-white text-[10px] font-bold px-1.5 py-0.5 rounded font-mono-code">CODEX</span>
+<h2 class="font-serif-title font-bold text-sm text-[var(--ink-primary)]">Codex 的观察与建议</h2>
+</div>
+<span class="text-[11px] font-mono-code text-[var(--ink-tertiary)]">基于 7 天周期真实执行日志</span>
+</div>
+<p class="text-xs text-[var(--ink-secondary)] leading-relaxed italic">
+        “小队在多项任务中保持了良好的单轮完成度，但两处特定工具重试与上下文膨胀拉长了总交付周期。以下是针对当前工程链路的针对性观察与优化建议：”
+      </p>
+<!-- 4 条具体建议列表 -->
+<div class="space-y-3 pt-1">
+<!-- 建议 1 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-light)] space-y-1.5 text-xs">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#fef3c7] text-[#92400e] rounded font-bold">观察 01</span>
+<span class="font-bold text-[var(--ink-primary)]">提前在系统提示词前置预置工具规范，避免 codex-squad 技能被重复全量读取</span>
+</div>
+<p class="text-[11px] text-[var(--ink-secondary)] leading-relaxed">
+<strong class="text-[var(--ink-primary)]">建议动作：</strong>将 `codex-squad` 与 `ued-designer` 技能契约移入系统提示词前置，在每次执行前使用 CLI dry-run 验证，消除子任务的重复工具探测时间。
+          </p>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] flex items-center justify-between pt-1">
+<span>关联任务: #02 布局适配、#03 Codex 小队</span>
+<details class="inline-block text-right">
+<summary class="text-[var(--rust)] hover:underline cursor-pointer">▶ 展开查看执行审计证据与验证方式</summary>
+<div class="mt-1 text-left p-2 bg-white border border-[var(--rule-border)] rounded text-[10px] text-[var(--ink-secondary)]">
+                日志证据: 3 次技能重载消耗累计 28.5K Token；验证命令: `lgb capability invoke --cached`。
+              </div>
+</details>
+</div>
+</div>
+<!-- 建议 2 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-light)] space-y-1.5 text-xs">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#fee2e2] text-[#991b1b] rounded font-bold">观察 02</span>
+<span class="font-bold text-[var(--ink-primary)]">在派发前补充参数校验守卫，排查单点工具异常拦截并拦截 422 失败</span>
+</div>
+<p class="text-[11px] text-[var(--ink-secondary)] leading-relaxed">
+<strong class="text-[var(--ink-primary)]">建议动作：</strong>在执行集成回归套件前，对入参进行预先 schema 校验，防止在第 2 轮交付时因参数格式错误导致 Qoder 中断。
+          </p>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] flex items-center justify-between pt-1">
+<span>关联任务: #01 订单工作台 [订单链路排查]</span>
+<details class="inline-block text-right">
+<summary class="text-[var(--rust)] hover:underline cursor-pointer">▶ 展开查看执行审计证据与验证方式</summary>
+<div class="mt-1 text-left p-2 bg-white border border-[var(--rule-border)] rounded text-[10px] text-[var(--ink-secondary)]">
+                日志证据: 记录 2 次 422 状态码，均为必填字段缺失；验证命令: `python3 -m pytest tests/unit/test_schema.py`。
+              </div>
+</details>
+</div>
+</div>
+<!-- 建议 3 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-light)] space-y-1.5 text-xs">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#e0f2fe] text-[#0369a1] rounded font-bold">观察 03</span>
+<span class="font-bold text-[var(--ink-primary)]">对超过 3 轮交互的长任务强制执行交付草稿节点截断</span>
+</div>
+<p class="text-[11px] text-[var(--ink-secondary)] leading-relaxed">
+<strong class="text-[var(--ink-primary)]">建议动作：</strong>当子任务轮次达 3 轮时，自动生成当前草稿快照并切断等待，避免因长悬挂而空耗心跳与监听。
+          </p>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] flex items-center justify-between pt-1">
+<span>关联任务: #01 订单工作台、#08 报表导出排查</span>
+<details class="inline-block text-right">
+<summary class="text-[var(--rust)] hover:underline cursor-pointer">▶ 展开查看执行审计证据与验证方式</summary>
+<div class="mt-1 text-left p-2 bg-white border border-[var(--rule-border)] rounded text-[10px] text-[var(--ink-secondary)]">
+                日志证据: 长任务心跳维持导致多消耗 19.2K 无效 Token；建议引入超时自动转入离线队列。
+              </div>
+</details>
+</div>
+</div>
+<!-- 建议 4 -->
+<div class="paper-subpanel p-3 border border-[var(--rule-light)] space-y-1.5 text-xs">
+<div class="flex items-center gap-1.5">
+<span class="text-[10px] font-mono-code px-1.5 py-0.2 bg-[#dcfce7] text-[#15803d] rounded font-bold">观察 04</span>
+<span class="font-bold text-[var(--ink-primary)]">提升子任务独立工作区的文件切片精度，避免全量 AST 代码重复投送</span>
+</div>
+<p class="text-[11px] text-[var(--ink-secondary)] leading-relaxed">
+<strong class="text-[var(--ink-primary)]">建议动作：</strong>针对资料整理与排版用例，仅发送变更函数切片而不是全量文件，进一步将输入缓存命中率提升至 65% 以上。
+          </p>
+<div class="text-[11px] font-mono-code text-[var(--ink-tertiary)] flex items-center justify-between pt-1">
+<span>关联任务: #04 资料整理</span>
+<details class="inline-block text-right">
+<summary class="text-[var(--rust)] hover:underline cursor-pointer">▶ 展开查看执行审计证据与验证方式</summary>
+<div class="mt-1 text-left p-2 bg-white border border-[var(--rule-border)] rounded text-[10px] text-[var(--ink-secondary)]">
+                日志证据: 单文件全量投送单次达 45KB；改为 diff 切片后预计单次节省 60% 输入 Token。
+              </div>
+</details>
+</div>
+</div>
+</div>
+</section>
+<!-- 页脚规范与物化标记 -->
+<footer class="pt-3 pb-6 border-t border-[var(--rule-border)] flex flex-wrap items-center justify-between gap-2 text-[11px] font-mono-code text-[var(--ink-tertiary)]">
+<div>
+<span>Codex 小队 · 周期分析报告快照 (#2026-R06)</span>
+<span class="mx-1.5">·</span>
+<span class="text-[var(--rust)]">v0.9.3-local.20261027.2</span>
+</div>
+<div>
+<span>2026-10-27 15:10:00 CST</span>
+<span class="mx-1.5">·</span>
+<span>导出已物化完整 HTML</span>
+</div>
+</footer>
+</main>
+<!-- 原生轻量脚本：驱动页内平滑滚动、依据表行展开、CLI 表格 12 条折叠/筛选 -->
+<script>
+    // 1. 平滑滚动到页内依据表格
+    function scrollToLedger() {
+      const target = document.getElementById('inline-ledger-box');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        // 自动展开全部依据行便于查看
+        const extraRows = document.querySelectorAll('.extra-roi-row');
+        extraRows.forEach(row => row.classList.remove('hidden'));
+        const toggleBtn = document.getElementById('toggle-roi-btn');
+        if (toggleBtn) {
+          toggleBtn.innerHTML = '<span>收起至 3 项</span> <span>▲</span>';
+        }
+        const statusText = document.getElementById('roi-status-text');
+        if (statusText) {
+          statusText.textContent = '当前显示全部 8 项已纳评工作 (另 4 项缺少同类基线未估算)';
+        }
+      }
+    }
+
+    // 2. 收益依据表格展开/收起切换 (3 条 <-> 8 条)
+    let roiExpanded = false;
+    function toggleRoiRows() {
+      roiExpanded = !roiExpanded;
+      const extraRows = document.querySelectorAll('.extra-roi-row');
+      const toggleBtn = document.getElementById('toggle-roi-btn');
+      const statusText = document.getElementById('roi-status-text');
+
+      if (roiExpanded) {
+        extraRows.forEach(row => row.classList.remove('hidden'));
+        toggleBtn.innerHTML = '<span>收起至 3 项</span> <span>▲</span>';
+        statusText.textContent = '当前显示全部 8 项已纳评工作 (另 4 项缺少同类基线未估算)';
+      } else {
+        extraRows.forEach(row => row.classList.add('hidden'));
+        toggleBtn.innerHTML = '<span>展开全部 8 项</span> <span>▾</span>';
+        statusText.textContent = '当前显示 3 / 8 项已纳评工作 (另 4 项缺少同类基线未估算)';
+      }
+    }
+
+    // 3. CLI 表格真实 12 条展开/收起切换 (5 条 <-> 12 条)
+    let cliExpanded = false;
+    function toggleCliRows() {
+      cliExpanded = !cliExpanded;
+      const extraRows = document.querySelectorAll('.extra-cli-row');
+      const label = document.getElementById('toggle-cli-label');
+      const arrow = document.getElementById('toggle-cli-arrow');
+      const info = document.getElementById('cli-count-info');
+
+      if (cliExpanded) {
+        extraRows.forEach(row => row.classList.remove('hidden'));
+        label.textContent = '收起至 5 条子命令';
+        arrow.textContent = '▲';
+        info.textContent = '显示全部 12 / 12 条示例命令';
+      } else {
+        extraRows.forEach(row => row.classList.add('hidden'));
+        label.textContent = '展开全部 12 条子命令';
+        arrow.textContent = '▾';
+        info.textContent = '显示 5 / 12 条示例命令';
+      }
+      // 重新应用分类筛选
+      filterCliRows();
+    }
+
+    // 4. CLI 表格分类筛选逻辑
+    function filterCliRows() {
+      const select = document.getElementById('cli-filter');
+      const filter = select.value;
+      const rows = document.querySelectorAll('.cli-row');
+      let visibleCount = 0;
+
+      rows.forEach((row, index) => {
+        const cat = row.getAttribute('data-cat');
+        const isExtra = row.classList.contains('extra-cli-row');
+        const matchesCategory = (filter === 'all' || cat === filter);
+
+        if (matchesCategory) {
+          if (!cliExpanded && isExtra) {
+            row.style.display = 'none';
+          } else {
+            row.style.display = '';
+            visibleCount++;
+          }
+        } else {
+          row.style.display = 'none';
+        }
+      });
+
+      const info = document.getElementById('cli-count-info');
+      if (filter === 'all') {
+        info.textContent = cliExpanded ? '显示全部 12 / 12 条示例命令' : '显示 5 / 12 条示例命令';
+      } else {
+        info.textContent = `当前筛选分类匹配 ${visibleCount} 条`;
+      }
+    }
+  </script>
+<div class="fixed inset-0 z-50 bg-[#2c2621]/45 backdrop-blur-[1px] flex items-center justify-center p-3 sm:p-4 overflow-y-auto" id="roi-modal-backdrop" style="display: flex;">
+<div class="bg-white border border-[var(--rule-border)] shadow-xl rounded-md w-full max-w-[560px] max-h-[85vh] sm:max-h-[80vh] flex flex-col overflow-hidden text-[var(--ink-primary)] my-auto" id="roi-modal-container">
+<!-- 弹框头部 -->
+<div class="px-4 py-3 bg-[var(--paper-card-sub)] border-b border-[var(--rule-light)] flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-mono-code px-1.5 py-0.5 bg-[var(--rust-light)] text-[var(--rust)] rounded font-bold border border-[#f0cfc3]">测算依据</span>
+<h3 class="font-serif-title font-bold text-sm sm:text-base text-[var(--ink-primary)]">这项工作的收益依据</h3>
+</div>
+<button class="text-[var(--ink-tertiary)] hover:text-[var(--ink-primary)] font-mono-code text-sm p-1 rounded hover:bg-[var(--rule-light)]" onclick="closeRoiModal()" title="关闭 (Esc)" type="button">✕</button>
+</div>
+<!-- 弹框正文滚动区 -->
+<div class="p-4 overflow-y-auto space-y-3.5 text-xs font-sans">
+<!-- 工作标头 -->
+<div class="p-2.5 bg-[var(--paper-card-sub)] border border-[var(--rule-border)] rounded">
+<div class="flex items-center justify-between font-mono-code">
+<span class="font-bold text-sm text-[var(--ink-primary)]">#01 订单链路排查</span>
+<span class="text-[11px] text-[var(--audit-green)] font-semibold">已闭环纳入评定</span>
+</div>
+<div class="text-[11px] text-[var(--ink-secondary)] mt-0.5">
+          单元测试与状态守卫回归 · 归属: 订单工作台链路 (gpt-6.1-sol 协作)
+        </div>
+</div>
+<!-- 对比核心数据网格 -->
+<div class="grid grid-cols-2 gap-2 font-mono-code">
+<div class="p-2.5 bg-[var(--paper-card-sub)] border border-[var(--rule-light)] rounded">
+<div class="text-[10px] text-[var(--ink-tertiary)]">纯 Codex 历史基准投入</div>
+<div class="text-base font-bold text-[var(--ink-primary)] mt-1">360.0K <span class="text-[10px] font-normal text-[var(--ink-secondary)]">Token</span></div>
+<div class="text-[10px] text-[var(--ink-tertiary)] mt-0.5">历史 3 次单人排查基线均值</div>
+</div>
+<div class="p-2.5 bg-[var(--paper-card-sub)] border border-[var(--rule-light)] rounded">
+<div class="text-[10px] text-[var(--ink-tertiary)]">本次实际消耗 (Codex / Qoder)</div>
+<div class="text-base font-bold text-[var(--rust)] mt-1">168.2K <span class="text-[10px] font-normal text-[var(--ink-secondary)]">/ 112.0K</span></div>
+<div class="text-[10px] text-[var(--ink-tertiary)] mt-0.5">双模型并发执行统计</div>
+</div>
+</div>
+<!-- 净收益结算条 -->
+<div class="p-2.5 bg-[#fdf2ee] border border-[#f5cfc4] rounded font-mono-code flex items-center justify-between text-xs">
+<div>
+<span class="text-[10px] text-[var(--ink-tertiary)] block">预计净节省 Token</span>
+<span class="text-base font-bold text-[var(--rust)]">+191.8K Token</span>
+</div>
+<div class="h-8 w-px bg-[#eed0c5]"></div>
+<div class="text-right">
+<span class="text-[10px] text-[var(--ink-tertiary)] block">预计节约交付耗时</span>
+<span class="text-base font-bold text-[var(--audit-green)]">+4.2 分钟</span>
+</div>
+</div>
+<!-- 诚实依据与测算逻辑展开说明 -->
+<div class="space-y-2 text-[11px] leading-relaxed text-[var(--ink-secondary)] border-t border-[var(--rule-light)] pt-3">
+<div class="font-bold font-serif-title text-xs text-[var(--ink-primary)]">测算说明与基线依据来源：</div>
+<ul class="space-y-1.5 list-disc list-inside font-sans">
+<li><strong class="text-[var(--ink-primary)]">历史基线来源：</strong>基于该仓库历史 3 次单人同等规格排查日志，平均单次上下文累计达 360K Token。</li>
+<li><strong class="text-[var(--ink-primary)]">单机测速对比：</strong>主 Codex (gpt-6.1-sol) 输出约 48 tok/s，Qoder 承担批量 AST 语法树重建与初态验证，并发吸收试错损耗。</li>
+<li><strong class="text-[var(--ink-primary)]">完整交付核验：</strong>已包含用例 1 次失败重试与最终绿灯通过的全部上下文，无虚构扣减。</li>
+<li><strong class="text-[var(--ink-primary)]">纯净说明：</strong>本计算仅反映单机上下文与执行耗时差额，不关联任何云端外部计费、无营销估算公式。</li>
+</ul>
+</div>
+</div>
+<!-- 弹框底部操作按钮 -->
+<div class="px-4 py-2.5 bg-[var(--paper-card-sub)] border-t border-[var(--rule-light)] flex items-center justify-between font-mono-code text-xs">
+<span class="text-[11px] text-[var(--ink-tertiary)]">按 Esc 键或点击遮罩亦可返回</span>
+<button class="bg-[var(--rust)] hover:bg-[#94381e] text-white px-3 py-1 rounded font-medium transition shadow-xs flex items-center gap-1" onclick="closeRoiModal()" type="button">
+<span>返回计算依据表</span>
+<span>↵</span>
+</button>
+</div>
+</div>
+</div>
+<script>
+  function openRoiModal(task) {
+    const modal = document.getElementById('roi-modal-backdrop');
+    if (modal) modal.style.display = 'flex';
+  }
+  function closeRoiModal() {
+    const modal = document.getElementById('roi-modal-backdrop');
+    if (modal) modal.style.display = 'none';
+  }
+  window.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') closeRoiModal();
+  });
+</script></body>
+</html>

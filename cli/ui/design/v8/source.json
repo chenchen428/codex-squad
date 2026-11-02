@@ -1,0 +1,24 @@
+{
+  "project": "14906138420656377633",
+  "screen": "3c48dd5bb5b54a35adeaae673ad37e5f",
+  "htmlFile": "896088621b5c4455854abc51aea04709",
+  "imageFile": "21e046e0b1a749d19ca36dd756a4686c",
+  "reportedImageViewport": [
+    2560,
+    5512
+  ],
+  "cssViewport": [
+    640,
+    640
+  ],
+  "status": "exported-not-implemented-or-accepted",
+  "note": "Illustrative design data only. Preserve first export layout/details; runtime uses actual frozen analytics and grounded Codex suggestions.",
+  "files": {
+    "stitch-original.html": "06d60cd3ab9b70627a18f6d4396773955d17fb663cd70677611e31b4336e4df5",
+    "stitch-localized.html": "3fcada88c67ad100c1aeb3200e38eb36d1c22ee8f8b4708985ee6b2d1b05e504",
+    "stitch-static.html": "b279a9e43d3bf873d9b870035a89661f431a00f65bf446f9697ee37aa8edc690",
+    "exported.css": "e828ecd46d302c0945118e13b5484da10254275f9b43a09c2243cc37e74b1e3a",
+    "exported-dom.json": "488f5a735dc31d01dbc81ed946213bc6c1a7202777fa33d07c7069eaafad54c5",
+    "stitch-original.png": "a82a6dcfa75f3ebe061fe40dc3d6bbfc7b1b3ff10ec4773c263066579b9d74ed"
+  }
+}

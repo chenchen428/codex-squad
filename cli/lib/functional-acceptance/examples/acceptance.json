@@ -1,0 +1,439 @@
+{
+  "schemaVersion": 1,
+  "report": {
+    "id": "integration-acceptance-local-demo",
+    "title": "理赔新增提现户 · 集成验收示例",
+    "environment": "本地演示",
+    "revision": "Agent页面表达 · 无录制",
+    "example": true
+  },
+  "groups": [
+    {
+      "id": "refund",
+      "title": "退款流水",
+      "requirement": "F-09（演示）"
+    },
+    {
+      "id": "query",
+      "title": "页面查询"
+    },
+    {
+      "id": "states",
+      "title": "状态与边界示例"
+    }
+  ],
+  "recordings": [],
+  "evidence": [
+    {
+      "id": "query-dom",
+      "title": "来源单号筛选页面观察节选",
+      "type": "json",
+      "category": "data",
+      "file": "evidence/query-observation.json",
+      "source": "本地示例浏览器可见观察，非业务数据库"
+    },
+    {
+      "id": "detail-dom",
+      "title": "打款明细页面观察节选",
+      "type": "json",
+      "category": "data",
+      "file": "evidence/detail-observation.json",
+      "source": "本地示例可见弹窗，非业务接口返回"
+    },
+    {
+      "id": "claim-dom",
+      "title": "异常单详情实际DOM观察",
+      "type": "json",
+      "category": "data",
+      "file": "evidence/claim-dom.json",
+      "source": "本地示例实际页面DOM读取，非业务数据库"
+    },
+    {
+      "id": "scope",
+      "title": "示例范围与未执行项",
+      "type": "json",
+      "category": "source",
+      "file": "evidence/scope.json",
+      "source": "本地演示范围声明"
+    }
+  ],
+  "cases": [
+    {
+      "id": "C2",
+      "groupId": "refund",
+      "title": "流水关联理赔单",
+      "requirement": "F-09（演示）",
+      "objective": "从退款流水查看明细、进入关联理赔单并定位异常单；用Agent提供的页面状态表达操作流程，无需录制。",
+      "status": "passed",
+      "preconditions": [
+        "本地演示页面，所有单号/账户/金额为虚构数据"
+      ],
+      "steps": [
+        {
+          "id": "open-detail",
+          "type": "page",
+          "title": "打开流水明细",
+          "page": "退款流水",
+          "action": "点击DEMO-001的查看详情",
+          "expected": "展示对应打款明细",
+          "actual": "已展示DEMO-001、1.00元、演示银行****0001",
+          "status": "passed",
+          "evidenceIds": [
+            "detail-dom"
+          ],
+          "durationMs": 4000,
+          "pageView": {
+            "title": "退款流水",
+            "subtitle": "从对应流水查看付款明细",
+            "breadcrumb": "退款管理 / 流水查询",
+            "fields": [
+              {
+                "label": "来源单号",
+                "value": "DEMO-001"
+              },
+              {
+                "label": "打款状态",
+                "value": "全部"
+              }
+            ],
+            "table": {
+              "columns": [
+                "来源单号",
+                "类型",
+                "金额",
+                "状态",
+                "操作"
+              ],
+              "rows": [
+                [
+                  "DEMO-001",
+                  "理赔打款",
+                  "CNY 1.00",
+                  "已申请",
+                  "查看详情"
+                ]
+              ]
+            },
+            "focus": "查看详情"
+          }
+        },
+        {
+          "id": "open-claim",
+          "type": "page",
+          "title": "点击查看理赔单",
+          "page": "打款详情",
+          "action": "点击关联业务单据中的查看理赔单",
+          "expected": "进入对应理赔单详情",
+          "actual": "已进入本地理赔单详情，异常单4可见",
+          "status": "passed",
+          "evidenceIds": [
+            "claim-dom"
+          ],
+          "durationMs": 4000,
+          "pageView": {
+            "title": "退款流水",
+            "breadcrumb": "退款管理 / 流水明细",
+            "dialog": {
+              "title": "打款详情",
+              "fields": [
+                {
+                  "label": "流水单号",
+                  "value": "DEMO-001"
+                },
+                {
+                  "label": "付款金额",
+                  "value": "CNY 1.00"
+                },
+                {
+                  "label": "收款账户",
+                  "value": "演示银行 ****0001"
+                },
+                {
+                  "label": "关联业务单据",
+                  "value": "DEMO-EXCEPTION-4"
+                }
+              ],
+              "buttons": [
+                "关闭",
+                "查看理赔单"
+              ]
+            },
+            "focus": "查看理赔单"
+          }
+        },
+        {
+          "id": "locate-exception",
+          "type": "page",
+          "title": "自动定位异常单",
+          "page": "理赔单详情",
+          "action": "观察进入后的默认异常单",
+          "expected": "异常单4自动显示",
+          "actual": "当前显示DEMO-EXCEPTION-4与赔付中",
+          "status": "passed",
+          "evidenceIds": [
+            "claim-dom"
+          ],
+          "durationMs": 4000,
+          "pageView": {
+            "title": "理赔单详情",
+            "subtitle": "已定位该笔流水对应的异常单",
+            "breadcrumb": "理赔管理 / 异常单详情",
+            "fields": [
+              {
+                "label": "异常单号",
+                "value": "DEMO-EXCEPTION-4"
+              },
+              {
+                "label": "当前状态",
+                "value": "赔付中"
+              },
+              {
+                "label": "关联流水",
+                "value": "DEMO-001"
+              },
+              {
+                "label": "赔付金额",
+                "value": "CNY 1.00"
+              }
+            ],
+            "buttons": [
+              "返回流水"
+            ],
+            "focus": "DEMO-EXCEPTION-4"
+          }
+        },
+        {
+          "id": "relation",
+          "type": "data",
+          "title": "核对演示单据关系",
+          "action": "读取本地页面展示的演示单据标识",
+          "expected": "异常单号DEMO-EXCEPTION-4",
+          "actual": "DOM观察得到DEMO-EXCEPTION-4；本步骤不是数据库核对",
+          "status": "passed",
+          "evidenceIds": [
+            "claim-dom"
+          ],
+          "durationMs": 4000
+        }
+      ],
+      "checks": [
+        {
+          "id": "destination",
+          "title": "落地页面正确",
+          "expected": "理赔单详情",
+          "actual": "理赔单详情",
+          "status": "passed",
+          "stepId": "open-claim",
+          "evidenceIds": [
+            "claim-dom"
+          ]
+        },
+        {
+          "id": "exception",
+          "title": "异常单自动选中",
+          "expected": "DEMO-EXCEPTION-4",
+          "actual": "DEMO-EXCEPTION-4，状态赔付中",
+          "status": "passed",
+          "stepId": "locate-exception",
+          "evidenceIds": [
+            "claim-dom"
+          ]
+        },
+        {
+          "id": "detail",
+          "title": "金额与演示账户展示一致",
+          "expected": "1.00元、演示银行****0001",
+          "actual": "弹窗显示1.00元、演示银行****0001",
+          "status": "passed",
+          "stepId": "open-detail",
+          "evidenceIds": [
+            "detail-dom"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "Q1",
+      "groupId": "query",
+      "title": "来源单号查询",
+      "objective": "验证本地页面按DEMO-001筛选后只展示一行。",
+      "status": "passed",
+      "steps": [
+        {
+          "id": "query",
+          "type": "page",
+          "title": "查询指定来源单号",
+          "page": "退款流水",
+          "action": "填写DEMO-001并点击查询",
+          "expected": "只展示DEMO-001一行",
+          "actual": "浏览器观察得到共1笔、DEMO-001",
+          "status": "passed",
+          "evidenceIds": [
+            "query-dom"
+          ],
+          "durationMs": 4000,
+          "pageView": {
+            "title": "理赔单详情",
+            "subtitle": "已定位该笔流水对应的异常单",
+            "breadcrumb": "理赔管理 / 异常单详情",
+            "fields": [
+              {
+                "label": "异常单号",
+                "value": "DEMO-EXCEPTION-4"
+              },
+              {
+                "label": "当前状态",
+                "value": "赔付中"
+              },
+              {
+                "label": "关联流水",
+                "value": "DEMO-001"
+              },
+              {
+                "label": "赔付金额",
+                "value": "CNY 1.00"
+              }
+            ],
+            "buttons": [
+              "返回流水"
+            ],
+            "focus": "DEMO-EXCEPTION-4"
+          }
+        }
+      ],
+      "checks": [
+        {
+          "id": "rows",
+          "title": "筛选结果数量",
+          "expected": "1笔",
+          "actual": "1笔",
+          "status": "passed",
+          "stepId": "query",
+          "evidenceIds": [
+            "query-dom"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F1",
+      "groupId": "states",
+      "title": "故意失败断言示例",
+      "objective": "用错误期望展示失败态：本地页面实际赔付中，而此示例故意期望已完成；不是业务缺陷。",
+      "status": "failed",
+      "steps": [
+        {
+          "id": "inspect-state",
+          "type": "page",
+          "title": "查看本地演示状态",
+          "page": "理赔单详情",
+          "action": "观察异常单详情状态",
+          "expected": "显示可见状态",
+          "actual": "实际显示赔付中",
+          "status": "passed",
+          "evidenceIds": [
+            "claim-dom"
+          ],
+          "durationMs": 4000,
+          "pageView": {
+            "title": "理赔单详情",
+            "subtitle": "已定位该笔流水对应的异常单",
+            "breadcrumb": "理赔管理 / 异常单详情",
+            "fields": [
+              {
+                "label": "异常单号",
+                "value": "DEMO-EXCEPTION-4"
+              },
+              {
+                "label": "当前状态",
+                "value": "赔付中"
+              },
+              {
+                "label": "关联流水",
+                "value": "DEMO-001"
+              },
+              {
+                "label": "赔付金额",
+                "value": "CNY 1.00"
+              }
+            ],
+            "buttons": [
+              "返回流水"
+            ],
+            "focus": "DEMO-EXCEPTION-4"
+          }
+        }
+      ],
+      "checks": [
+        {
+          "id": "intentional-failure",
+          "title": "错误期望用于演示失败状态",
+          "expected": "已完成（故意设置的演示期望）",
+          "actual": "赔付中",
+          "status": "failed",
+          "stepId": "inspect-state",
+          "evidenceIds": [
+            "claim-dom"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "B1",
+      "groupId": "states",
+      "title": "真实数据库核对未接入",
+      "objective": "保留本地示例未连接真实业务数据库的阻断边界。",
+      "status": "blocked",
+      "steps": [
+        {
+          "id": "database",
+          "type": "data",
+          "title": "业务数据核对",
+          "action": "获取目标业务系统本次执行数据",
+          "expected": "取得可追溯的真实读库证据",
+          "actual": "本地示例未连接业务数据库，未执行",
+          "status": "blocked",
+          "evidenceIds": [
+            "scope"
+          ],
+          "durationMs": 4000
+        }
+      ],
+      "checks": [
+        {
+          "id": "db-evidence",
+          "title": "业务读库证据",
+          "expected": "真实读库返回",
+          "actual": "未执行，缺少业务系统接入",
+          "status": "blocked",
+          "evidenceIds": [
+            "scope"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "N1",
+      "groupId": "states",
+      "title": "消息通知送达未执行",
+      "objective": "展示没有执行消息链路时的待执行状态。",
+      "status": "not_run",
+      "steps": [
+        {
+          "id": "message",
+          "type": "message",
+          "title": "消息送达核对",
+          "action": "读取本次消息与回执",
+          "expected": "有可核对的送达回执",
+          "actual": "本地示例未接消息服务，尚未执行",
+          "status": "not_run",
+          "evidenceIds": [
+            "scope"
+          ],
+          "durationMs": 4000
+        }
+      ],
+      "checks": []
+    }
+  ]
+}

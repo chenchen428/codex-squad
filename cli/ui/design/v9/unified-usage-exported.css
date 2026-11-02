@@ -1,0 +1,313 @@
+/*
+ * R40–R43 局部设计导出：只记录本次采用的 Stitch 规则，产品样式归属 components.css。
+ * 来源：Stitch project 14906138420656377633
+ * Screen：8bcbc97cf4604b968cf9779809b79683
+ * 原件：design/v9/analytics-unified-usage-original.html
+ * SHA256：d6368af73fc60e336ab285dfa49bb27addf52739800241db13ed8fefa9fa4e9d
+ * 采用范围：四卡 4/2/1、会话分布表壳、轻量表头排序、CLI 搜索 + 分类布局。
+ * 变量映射：--border → --line；--text-sec → --ink-muted；--text-main → --ink；#ffffff → --bg-card。
+ */
+
+/* 四卡：四列在 >=900，两列在 560–899，单列在 <=559。 */
+[data-analysis-report] .token-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+  width: 100%;
+  margin: 16px 0 12px;
+}
+[data-analysis-report] .token-stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 10px;
+  min-width: 0;
+  min-height: 112px;
+  padding: 14px;
+  border: 1px solid var(--line);
+  border-radius: 2px;
+  background: var(--bg-card);
+}
+[data-analysis-report] .token-stat-title {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+[data-analysis-report] .token-stat-lines {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+[data-analysis-report] .token-stat-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 6px;
+  min-width: 0;
+}
+[data-analysis-report] .token-stat-provider {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--rust);
+}
+[data-analysis-report] .token-stat-val {
+  font-family: var(--font-serif);
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.15;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+[data-analysis-report] .token-stat-unit {
+  margin-left: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-muted);
+}
+[data-analysis-report] .token-stat-sub {
+  flex: 1 1 100%;
+  min-height: 1.5em;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+@media (max-width: 899px) {
+  [data-analysis-report] .token-cards-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 559px) {
+  [data-analysis-report] .token-cards-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* 四卡下方的口径说明。 */
+[data-analysis-report] .token-scope-note {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 12px;
+  margin-bottom: 12px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  line-height: 1.6;
+  color: var(--ink-muted);
+}
+
+/* 三模式共用会话分布表壳。 */
+[data-analysis-report] .usage-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+[data-analysis-report] .usage-distribution {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+[data-analysis-report] .usage-distribution-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 10px;
+}
+[data-analysis-report] .usage-distribution-title {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+[data-analysis-report] .usage-distribution-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+[data-analysis-report] .usage-table-wrap {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+[data-analysis-report] .usage-distribution-table {
+  min-width: 560px;
+}
+[data-analysis-report] .usage-group-details {
+  margin-top: 2px;
+}
+
+/* 轻量表头排序：整格是 button，th 用 aria-sort，焦点环向内收。 */
+[data-analysis-report] .editorial-table th.has-sort {
+  padding: 0;
+}
+[data-analysis-report] .sort-btn {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 12px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font: inherit;
+  color: var(--ink-muted);
+  text-align: left;
+  cursor: pointer;
+  transition: color 0.15s ease, background-color 0.15s ease;
+}
+[data-analysis-report] .sort-btn:hover {
+  color: var(--ink);
+  background: var(--bg-subtle);
+}
+[data-analysis-report] th.num-col .sort-btn,
+[data-analysis-report] th.table-action-col .sort-btn {
+  justify-content: flex-end;
+  text-align: right;
+}
+[data-analysis-report] th[aria-sort="ascending"] .sort-btn,
+[data-analysis-report] th[aria-sort="descending"] .sort-btn {
+  color: var(--ink);
+}
+[data-analysis-report] .sort-indicator {
+  font-size: 9.5px;
+  color: var(--ink-faint);
+  transition: color 0.15s ease;
+}
+[data-analysis-report] .sort-indicator.is-active {
+  color: var(--rust);
+}
+[data-analysis-report] .sort-btn:hover .sort-indicator {
+  color: var(--rust);
+}
+[data-analysis-report] .sort-btn:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: -2px;
+  border-radius: 0;
+}
+
+/* CLI 分类 + 输入搜索共用一行，窄屏自动堆叠。 */
+[data-analysis-report] .cli-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  margin-bottom: 8px;
+}
+[data-analysis-report] .cli-controls-main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 8px;
+  min-width: 0;
+}
+[data-analysis-report] .cli-search {
+  display: flex;
+  flex: 1 1 200px;
+  align-items: center;
+  min-width: 0;
+}
+[data-analysis-report] .cli-search-input {
+  width: 100%;
+  min-width: 0;
+  padding: 5px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--bg-card);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  outline: none;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.02);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+[data-analysis-report] .cli-search-input:focus {
+  border-color: var(--rust);
+  box-shadow: 0 0 0 1px rgba(184, 75, 46, 0.2);
+}
+[data-analysis-report] .cli-search-input:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 1px;
+}
+[data-analysis-report] .cli-search-input::placeholder {
+  color: var(--ink-faint);
+}
+[data-analysis-report] .cli-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  max-width: 100%;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+}
+[data-analysis-report] .cli-filter-select {
+  max-width: 100%;
+  padding: 5px 9px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--bg-card);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--ink);
+  outline: none;
+}
+[data-analysis-report] .cli-filter-select:focus-visible {
+  outline: 2px solid var(--rust);
+  outline-offset: 1px;
+}
+[data-analysis-report] .cli-clear {
+  padding: 3px 8px;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: transparent;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--ink-muted);
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+[data-analysis-report] .cli-clear:hover {
+  border-color: var(--rust);
+  color: var(--rust);
+}
+[data-analysis-report] .cli-match-count {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+[data-analysis-report] .cli-results {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+[data-analysis-report] .cli-table th.has-sort {
+  padding: 0;
+}
+[data-analysis-report] .cli-table .sort-btn {
+  padding: 6px 8px;
+}
+@media (max-width: 560px) {
+  [data-analysis-report] .cli-controls-main {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  [data-analysis-report] .cli-search {
+    flex-basis: 100%;
+  }
+  [data-analysis-report] .cli-filter {
+    justify-content: space-between;
+  }
+  [data-analysis-report] .usage-distribution-table {
+    min-width: 520px;
+  }
+}

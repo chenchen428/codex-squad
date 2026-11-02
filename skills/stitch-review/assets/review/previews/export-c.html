@@ -1,0 +1,59 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>方案 C · 正文优先 · 导出片段</title><link rel="stylesheet" href="../fonts.css"><link rel="stylesheet" href="../canvas-export.css"><style>body{width:300px;height:auto;overflow:auto;margin:0}#board-c{box-shadow:none}nav{padding:12px;display:flex;gap:8px;font-size:11px}nav button{padding:5px 10px;border:1px solid #ddd;border-radius:5px;background:white}</style><body><div id="board-c" class="artboard-card relative w-[300px] h-[440px] bg-[#fbf9f5] rounded-[22px] border border-stone-200 shadow-md shadow-slate-200/60 flex flex-col overflow-hidden group cursor-pointer">
+            <!-- 手机微缩外壳/状态栏 -->
+            <div class="h-6 px-4 flex items-center justify-between text-[9px] text-stone-400 font-medium shrink-0 pt-1.5">
+              <span>09:41</span>
+              <div class="flex items-center space-x-1">
+                <span>5G</span>
+                <span class="w-3.5 h-1.5 rounded-sm border border-stone-400 relative inline-block"><span class="absolute inset-0.5 bg-stone-500 rounded-2xs"></span></span>
+              </div>
+            </div>
+
+            <!-- 应用顶部极简沉浸条 -->
+            <div class="px-3.5 py-1 flex items-center justify-between shrink-0 text-stone-400 text-[9px]">
+              <div class="flex items-center space-x-1">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                <span class="text-stone-600">远山与行旅</span>
+              </div>
+              <span class="font-mono">字号 Aa</span>
+            </div>
+
+            <!-- 核心：大面积真实阅读正文排版，纸书温润感 -->
+            <div class="px-4 py-2 flex-1 flex flex-col justify-between">
+              <div class="space-y-2.5">
+                <div class="border-b border-stone-200/70 pb-1">
+                  <div class="serif-title font-bold text-[14px] text-stone-900">第二章 · 古道青苔</div>
+                  <div class="text-[8px] text-stone-400 font-serif mt-0.5">林栖 / 文</div>
+                </div>
+
+                <!-- 正文流 -->
+                <div class="serif-title text-[10px] text-stone-800 leading-[1.65] text-justify space-y-2">
+                  <p class="indent-4">
+                    青石板路被几百年的脚步打磨得发亮，石缝里挤满了厚实苍绿的苔藓。雨后的湿气在树冠间凝结成轻雾。
+                  </p>
+                  <p class="indent-4">
+                    山风吹过时，有冷冽的松针香气扑面而来。行者卸下竹杖，在歇马亭的石凳上暂坐片刻，耳边只剩山涧跌落深潭的空响。
+                  </p>
+                </div>
+              </div>
+
+              <!-- 底部极简翻页与进度指示 -->
+              <div class="pt-2">
+                <div class="w-full bg-stone-200/60 h-1 rounded-full overflow-hidden mb-1.5">
+                  <div class="bg-stone-700 h-full w-[42%]"></div>
+                </div>
+                <div class="flex items-center justify-between text-[8px] text-stone-400">
+                  <span>第 42 / 188 页</span>
+                  <div class="flex space-x-2">
+                    <span class="hover:text-stone-800 cursor-pointer">上一页</span>
+                    <span class="hover:text-stone-800 cursor-pointer">下一页</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- 底部状态小注 -->
+            <div class="bg-stone-100/60 border-t border-stone-200/70 px-3 py-1 flex items-center justify-between text-[9px] text-stone-500">
+              <span>打开即读 · 纯净正文</span>
+              <span class="text-stone-700">纸书排版</span>
+            </div>
+          </div><nav><button onclick="show('default')">常规</button><button onclick="show('empty')">空状态</button><span>导出片段 · 交互示意</span></nav><script>const board=document.getElementById('board-c'),saved=board.innerHTML;function show(state){document.body.dataset.state=state;board.innerHTML=state==='empty'?'<div style="height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;font:14px sans-serif;color:#4c4b45"><h2>从一页文字开始</h2><p style="font-size:11px;margin-top:12px;color:#98968e">尚无阅读内容，先选一本书。</p></div>':saved;history.replaceState(null,'','?state='+state)}show(new URLSearchParams(location.search).get('state')==='empty'?'empty':'default')</script></body></html>

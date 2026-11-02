@@ -1,0 +1,96 @@
+/* Transplanted from duration-chip-original.html
+   Stitch projects/14906138420656377633/screens/e66367f6868f4a0dbb53dd25b482b582
+   Only .time-chip, its five tiers and the 240px footer row are shipped. */
+
+.time-chip {
+  --chip-t1-bg: #edf7f0;
+  --chip-t1-border: #c2e5cf;
+  --chip-t1-text: #246d43;
+  --chip-t2-bg: #fcf6e8;
+  --chip-t2-border: #ebdcb5;
+  --chip-t2-text: #8a651a;
+  --chip-t3-bg: #fdf1e8;
+  --chip-t3-border: #f3d4be;
+  --chip-t3-text: #a65825;
+  --chip-t4-bg: #faece8;
+  --chip-t4-border: #f0c8bd;
+  --chip-t4-text: #b84b2e;
+  --chip-tn-bg: #f5f2eb;
+  --chip-tn-border: #ded7c6;
+  --chip-tn-text: #7d7568;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 5px;
+  border: 1px solid;
+  border-radius: 4px;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px;
+  line-height: 14px;
+  white-space: nowrap;
+  flex-shrink: 0;
+  vertical-align: middle;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+  transition: opacity 0.15s ease;
+}
+
+.time-chip svg {
+  display: block;
+  width: 10px;
+  height: 10px;
+  flex: none;
+}
+
+.time-chip-tier1 {
+  background-color: var(--chip-t1-bg);
+  border-color: var(--chip-t1-border);
+  color: var(--chip-t1-text);
+}
+
+.time-chip-tier2 {
+  background-color: var(--chip-t2-bg);
+  border-color: var(--chip-t2-border);
+  color: var(--chip-t2-text);
+}
+
+.time-chip-tier3 {
+  background-color: var(--chip-t3-bg);
+  border-color: var(--chip-t3-border);
+  color: var(--chip-t3-text);
+}
+
+.time-chip-tier4 {
+  background-color: var(--chip-t4-bg);
+  border-color: var(--chip-t4-border);
+  color: var(--chip-t4-text);
+}
+
+.time-chip-tier-none {
+  background-color: var(--chip-tn-bg);
+  border-color: var(--chip-tn-border);
+  color: var(--chip-tn-text);
+}
+
+.task-card-footer-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding-top: 8px;
+  border-top: 1px solid #f2ede2;
+  width: 100%;
+  min-width: 0;
+}
+
+.task-card-token-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  line-height: 14px;
+  color: #6b645b;
+  white-space: nowrap;
+  flex-shrink: 0;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  cursor: default;
+}

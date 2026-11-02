@@ -1,0 +1,102 @@
+
+    :root {
+      --paper-bg: #fbf9f4;
+      --paper-card: #ffffff;
+      --ink-primary: #2c2621;
+      --ink-secondary: #70685e;
+      --ink-tertiary: #9e9486;
+      --line-subtle: #e6dfd1;
+      --line-strong: #d5cbba;
+      --rust-red: #b84b2e;
+      --rust-red-light: #fbeee9;
+      --running-green: #2d6a4f;
+      --running-green-bg: #edf6f0;
+      --audit-amber: #b07219;
+      --audit-amber-bg: #fdf8ee;
+      --done-blue: #2b6cb0;
+      --done-blue-bg: #ebf4ff;
+    }
+
+    body {
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: 'Noto Sans SC', 'Space Grotesk', -apple-system, sans-serif;
+      margin: 0;
+      padding: 0;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .font-grotesk {
+      font-family: 'Space Grotesk', 'Noto Sans SC', sans-serif;
+    }
+
+    /* 容器查询自适应布局：根据内容主容器宽度而不是屏幕猜测 */
+    .board-container-wrapper {
+      container-type: inline-size;
+      container-name: squadboard;
+    }
+
+    /* 默认及小于 960px 容器：垂直全宽横向泳道从上向下排列，各状态占整行 */
+    .lanes-track {
+      display: flex;
+      flex-direction: column;
+      gap: 1.25rem;
+      width: 100%;
+    }
+
+    .lane-block {
+      width: 100%;
+      background: rgba(255, 255, 255, 0.45);
+      border: 1px solid var(--line-subtle);
+      border-radius: 8px;
+      padding: 0.875rem;
+      box-sizing: border-box;
+    }
+
+    .cards-flow {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      width: 100%;
+    }
+
+    /* 容器 >= 960px 宽度：自然恢复经典 3 列看板布局，每列最小约 280px 并填充 */
+    @container squadboard (min-width: 960px) {
+      .lanes-track {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(280px, 1fr));
+        gap: 1rem;
+        align-items: start;
+      }
+      .lane-block {
+        background: rgba(255, 255, 255, 0.6);
+        min-height: 480px;
+      }
+    }
+
+    /* 针对不支持容器查询的回退：媒体查询 */
+    @media (min-width: 960px) {
+      @supports not (container-type: inline-size) {
+        .lanes-track {
+          display: grid;
+          grid-template-columns: repeat(3, minmax(280px, 1fr));
+          gap: 1rem;
+          align-items: start;
+        }
+        .lane-block {
+          background: rgba(255, 255, 255, 0.6);
+          min-height: 480px;
+        }
+      }
+    }
+
+    /* 聚焦态无障碍保护 */
+    a:focus-visible, button:focus-visible, input:focus-visible {
+      outline: 2px solid var(--rust-red);
+      outline-offset: 2px;
+    }
+  

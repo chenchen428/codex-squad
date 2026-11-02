@@ -1,0 +1,4 @@
+interface:
+  display_name: "功能验收"
+  short_description: "设计测新与回归用例、执行项目测试、整理真实证据并生成HTML验收报告"
+  default_prompt: "使用 $functional-acceptance 完成当前需求的测试、证据核对和HTML验收报告。"

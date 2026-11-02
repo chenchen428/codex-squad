@@ -1,0 +1,26 @@
+{
+  "example": true,
+  "source": "Native browser interactions on local fixture, recorded by rrweb 2.1.1",
+  "capturedAt": "2026-10-30T07:04:57.905Z",
+  "events": 34,
+  "durationMs": 146956,
+  "actions": [
+    {
+      "id": "search-btn",
+      "title": "查询",
+      "timestamp": 1793343789755
+    },
+    {
+      "id": "detail-btn",
+      "title": "查看详情",
+      "timestamp": 1793343810710
+    },
+    {
+      "id": "related-claim",
+      "title": "查看理赔单",
+      "timestamp": 1793343857300
+    }
+  ],
+  "businessAcceptance": false,
+  "fixtureSha256": "a25782e87396262b3da13899eca72b4da90f007e6ed869b29f78e1653a4ff911"
+}

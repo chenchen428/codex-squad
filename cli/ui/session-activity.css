@@ -1,0 +1,36 @@
+.task-status-badge{display:inline-flex;align-items:center;gap:6px;flex:0 0 auto;padding:3px 10px;border:1px solid;border-radius:6px;font-size:12px;font-weight:600;line-height:1.45;letter-spacing:.01em;white-space:nowrap}
+.task-status-badge::before{content:'';width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:currentColor;opacity:.85}
+.session-activity{display:flex;flex-direction:column;gap:6px;min-width:0;max-width:100%;margin:0;padding-top:9px;border-top:1px solid #e7dfd3;color:#6b645b;font-size:12px;line-height:1.55}
+.session-activity-current{display:flex;align-items:center;gap:7px;min-width:0;max-width:100%}
+.session-activity-icon{display:grid;width:14px;height:14px;flex:0 0 14px;place-items:center;color:#8a8177;opacity:.9}
+.session-activity-icon svg{display:block;width:14px;height:14px}
+.session-activity-icon[data-tone="active"]{animation:session-activity-spin 1s linear infinite;color:#1e549f;opacity:1}
+.session-activity-icon[data-tone="success"]{color:#1f7a4d;opacity:1}
+.session-activity-icon[data-tone="waiting"],.session-activity-icon[data-tone="stopped"]{color:#8a5a15}
+.session-activity-icon[data-tone="failed"]{color:#a03b2e;opacity:1}
+.session-activity-status{display:inline-flex;align-items:center;flex:0 0 auto;padding:1px 7px;border:1px solid;border-radius:999px;font-size:11px;font-weight:600;line-height:1.5;white-space:nowrap}
+.session-activity-command{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#6b645b;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.session-activity-command[hidden]{display:none}
+.session-activity[data-state="running"] .session-activity-command{color:#4a443d}
+.session-activity-metrics{display:flex;flex-wrap:wrap;align-items:baseline;gap:3px 14px;min-width:0;max-width:100%;margin:0;padding:0 0 0 21px}
+.session-activity-metric{display:flex;align-items:baseline;gap:5px;min-width:0;max-width:100%}
+.session-activity-metric dt{flex:0 0 auto;color:#8a8177;font-size:11px;white-space:nowrap}
+.session-activity-metric dd{margin:0;min-width:0;color:#6b645b;font-size:11.5px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.task-status-badge[data-tone="active"],.session-activity-status[data-tone="active"]{color:#1e549f;background:#eef4fd;border-color:rgba(30,84,159,.22)}
+.task-status-badge[data-tone="success"],.session-activity-status[data-tone="success"]{color:#1f7a4d;background:#edf5ef;border-color:rgba(31,122,77,.24)}
+.task-status-badge[data-tone="waiting"],.session-activity-status[data-tone="waiting"],.task-status-badge[data-tone="stopped"],.session-activity-status[data-tone="stopped"]{color:#8a5a15;background:#fbf3e2;border-color:rgba(138,90,21,.26)}
+.task-status-badge[data-tone="failed"],.session-activity-status[data-tone="failed"]{color:#a03b2e;background:#fbeeea;border-color:rgba(184,75,46,.24)}
+.task-status-badge[data-tone="neutral"],.session-activity-status[data-tone="neutral"]{color:#6b645b;background:#f4f0e8;border-color:#e7dfd3}
+.handoff-delivery{display:inline-flex;align-items:center;flex:0 0 auto;padding:0 6px;border:1px solid;border-radius:999px;font-size:10.5px;font-weight:600;line-height:1.6;letter-spacing:.01em;white-space:nowrap}
+.handoff-delivery[data-delivery="received"]{color:#1f7a4d;background:#edf5ef;border-color:rgba(31,122,77,.24)}
+.handoff-delivery[data-delivery="sent"]{color:#1e549f;background:#eef4fd;border-color:rgba(30,84,159,.22)}
+.handoff-delivery[data-delivery="pending"]{color:#8a5a15;background:#fbf3e2;border-color:rgba(138,90,21,.26)}
+.handoff-delivery[data-delivery="unconfirmed"]{color:#6b645b;background:#f4f0e8;border-color:#e7dfd3}
+@keyframes session-activity-spin{to{transform:rotate(360deg)}}
+@media(max-width:540px){
+  .session-activity-metrics{padding-left:0;gap:3px 10px}
+  .session-activity-command{font-size:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .session-activity-icon[data-tone="active"]{animation:none}
+}

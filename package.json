@@ -1,0 +1,33 @@
+{
+  "name": "@local/codex-squad",
+  "private": true,
+  "version": "0.12.0",
+  "type": "module",
+  "scripts": {
+    "build": "node cli/build.mjs",
+    "test": "node --test test/*.test.mjs cli/lib/functional-acceptance/scripts/tests/*.test.mjs cli/lib/functional-acceptance/assets/studio/tests/*.test.mjs",
+    "test:acceptance": "node --test test/functional-acceptance.test.mjs cli/lib/functional-acceptance/scripts/tests/*.test.mjs cli/lib/functional-acceptance/assets/studio/tests/*.test.mjs test/acceptance-serve.test.mjs",
+    "check": "tsc --noEmit -p cli/ui/tsconfig.json",
+    "package": "node cli/package.mjs",
+    "verify:package": "node cli/verify-package.mjs",
+    "test:release": "node --experimental-sqlite --test --test-concurrency=1 test/standalone.test.mjs test/local-store.test.mjs test/qoder-runner.test.mjs test/markdown.test.mjs test/review-validator.test.mjs test/host-session.test.mjs test/worker-control.test.mjs test/viewer.test.mjs test/presentation.test.mjs test/polling.test.mjs test/analytics.test.mjs test/board.test.mjs test/page-styles.test.mjs test/session-activity.test.mjs test/conversation-performance.test.mjs test/continuation-display.test.mjs test/qoder-acp-compatibility.test.mjs test/session-history.test.mjs test/analysis-cli.test.mjs test/analysis-runner.test.mjs test/analysis-runs.test.mjs test/analysis-report.test.mjs test/analysis-service.test.mjs test/analysis-ui.test.mjs test/analysis-r53.test.mjs test/viewer-routes.test.mjs test/analysis-background.test.mjs test/runtime.test.mjs test/host-title.test.mjs test/update-check.test.mjs test/runtime-info.test.mjs test/runtime-info-ui.test.mjs test/verification-ui.test.mjs test/runtime-info-reader.test.mjs test/codex-usage.test.mjs test/cli-metrics.test.mjs test/task-read.test.mjs test/handover.test.mjs test/efficiency.test.mjs test/task-closeout.test.mjs test/qoder-cli-usage.test.mjs test/executor-usage.test.mjs test/squad-benefits.test.mjs test/benefit-evidence.test.mjs test/qoder-model-evidence.test.mjs test/table-model.test.mjs test/shell.test.mjs test/conversation.test.mjs test/evidence.test.mjs test/qoder-execution.test.mjs test/regressions.test.mjs test/summary.test.mjs test/viewer-service.test.mjs test/write-scope.test.mjs test/board-duration.test.mjs test/process-identity.test.mjs test/orphan-guards.test.mjs test/qoder-orphan-recovery.test.mjs"
+  },
+  "engines": {
+    "node": ">=22.5"
+  },
+  "devDependencies": {
+    "@types/markdown-it": "14.2.0",
+    "esbuild": "0.19.12",
+    "markdown-it": "15.0.3",
+    "typescript": "5.9.3"
+  },
+  "bin": {
+    "codex-squad": "cli/index.mjs"
+  },
+  "description": "Codex Squad / Codex 小队 — Codex plans and verifies; Qoder executes. Codex 负责规划与核验，Qoder 执行。",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/chenchen428/codex-squad.git"
+  },
+  "homepage": "https://chenchen428.github.io/codex-squad/"
+}

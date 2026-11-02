@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "status": "implementation-authorized-local-design",
+  "project": "14906138420656377633",
+  "designSystem": "assets/1205ac5e9a3648868393485adf51a83a",
+  "source": "stitch",
+  "screen": "projects/14906138420656377633/screens/e66367f6868f4a0dbb53dd25b482b582",
+  "title": "Codex 小队 · 耗时徽标组件规范标本 (Time Chip Specimen)",
+  "file": "cli/ui/design/v9/duration-chip-original.html",
+  "sha256": "4711e51243116d7e8576e4ee32dca89623b5aaadf872abb3aa9d45b646e147eb",
+  "exportedCss": {
+    "file": "cli/ui/design/v9/duration-chip-exported.css",
+    "sha256": "380e5fa0665ee89b9773fde69fb8821f4149db8919536dd0d0ba1ec416fe3246"
+  },
+  "transplant": "Original .time-chip DOM, 10px clock SVG, 2px 5px padding, 4px gap and radius, 10px/14px mono type, five tier colours and the 240px footer row are transplanted; runtime replaces the specimen text with observed durations.",
+  "tiers": {
+    "tier1": { "range": "< 10 minutes", "background": "#edf7f0", "border": "#c2e5cf", "text": "#246d43" },
+    "tier2": { "range": "10–30 minutes", "background": "#fcf6e8", "border": "#ebdcb5", "text": "#8a651a" },
+    "tier3": { "range": "30–60 minutes", "background": "#fdf1e8", "border": "#f3d4be", "text": "#a65825" },
+    "tier4": { "range": ">= 60 minutes", "background": "#faece8", "border": "#f0c8bd", "text": "#b84b2e" },
+    "none": { "range": "not recorded", "background": "#f5f2eb", "border": "#ded7c6", "text": "#7d7568" }
+  },
+  "overrides": [
+    "Tier colour is a display-only duration band; it never replaces or annotates the task status badge.",
+    "Chip text carries only the complete duration; running, accumulated and last-confirmed context lives in title and aria-label so long prefixes cannot push the token value."
+  ]
+}

@@ -1,0 +1,610 @@
+{
+  "schemaVersion": 1,
+  "id": "paper-reading-demo",
+  "revision": "r5-guided-handoff",
+  "title": "阅读应用 · 界面改版",
+  "round": "第 1 轮",
+  "demo": true,
+  "groups": [
+    {
+      "id": "discover",
+      "code": "01",
+      "title": "发现与阅读",
+      "intent": "让封面更完整，让下一步更清楚。",
+      "issues": [
+        {
+          "id": "DEMO-01",
+          "demo": true,
+          "quote": "封面有些挤，希望一眼能看到完整的书。",
+          "page": "发现页",
+          "state": "常规",
+          "viewport": "390 × 844",
+          "evidence": "中性界面示意，尚无产品实测证据",
+          "likes": "安静的色彩与自然的阅读节奏",
+          "dislikes": "演示观察：封面不够完整",
+          "verified": false
+        }
+      ],
+      "options": [
+        {
+          "id": "current",
+          "title": "当前方案",
+          "shortTitle": "保留当前",
+          "version": "v1",
+          "recommended": false,
+          "tradeoff": "保留现有阅读节奏，暂不改变当前结构。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规",
+              "asset": {
+                "id": "export-current-default",
+                "image": "images/export-current-default.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "browser-repaired",
+                "sha256": "b531973dbd15240ee9fd4d114a2ff7c6f99951057fce9d7939e6298e10bd953c",
+                "preview": "previews/export-current.html?state=default",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "displayNote": "990 × 1350 px",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/6971b36177d449ad82e1621395467ea7",
+                "file": "projects/15821091239753499855/files/b470845723fc4d41adae363deddd400a",
+                "originalHTML": {
+                  "path": "design-original.html",
+                  "sha256": "dd84dbf818a3241cc0ed797b5dc8a2d526b6d47df38e86b3cb6037ed53b2c4a0"
+                },
+                "repairs": [
+                  "Extracted left neutral phone mockup from the exact tool export",
+                  "Localized the exported styles, fonts and SVG icons"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 390,
+                    "height": 600
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:14:13.911Z"
+                }
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "export-current-empty",
+                "image": "images/export-current-empty.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "browser-repaired",
+                "sha256": "6a623b9a9d90d0f2979c9c1b6ee36d2dfd1eb364471499667fd50e6459cdc21e",
+                "preview": "previews/export-current.html?state=empty",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "displayNote": "990 × 1350 px",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/6971b36177d449ad82e1621395467ea7",
+                "file": "projects/15821091239753499855/files/b470845723fc4d41adae363deddd400a",
+                "originalHTML": {
+                  "path": "design-original.html",
+                  "sha256": "dd84dbf818a3241cc0ed797b5dc8a2d526b6d47df38e86b3cb6037ed53b2c4a0"
+                },
+                "repairs": [
+                  "Extracted left neutral phone mockup from the exact tool export",
+                  "Localized the exported styles, fonts and SVG icons",
+                  "Local empty-state interaction sample; not a separate Stitch screen"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 390,
+                    "height": 600
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:14:14.019Z"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "title": "方案 A · 留白阅读",
+          "shortTitle": "方案 A",
+          "version": "v2",
+          "recommended": true,
+          "tradeoff": "完整封面与阅读氛围优先；同屏可见书目较少。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规",
+              "asset": {
+                "id": "export-a-default",
+                "image": "images/export-a-default.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "browser-repaired",
+                "sha256": "1bfda91f50cd6449758da44c5d63caa2d5ab933b83d1cee9203d7f5a0a56b56f",
+                "preview": "previews/export-a.html?state=default",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "displayNote": "完整封面 · 呼吸感加强",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/6971b36177d449ad82e1621395467ea7",
+                "file": "projects/15821091239753499855/files/b470845723fc4d41adae363deddd400a",
+                "originalHTML": {
+                  "path": "design-original.html",
+                  "sha256": "dd84dbf818a3241cc0ed797b5dc8a2d526b6d47df38e86b3cb6037ed53b2c4a0"
+                },
+                "repairs": [
+                  "Extracted right neutral phone mockup from the exact tool export",
+                  "Localized the exported styles, fonts and SVG icons"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 390,
+                    "height": 600
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:14:14.142Z"
+                }
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "export-a-empty",
+                "image": "images/export-a-empty.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "browser-repaired",
+                "sha256": "67a68190fbc825d6285d30460668d9f953dbb38984ca4816dc083ef83ff31169",
+                "preview": "previews/export-a.html?state=empty",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "displayNote": "990 × 1350 px",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/6971b36177d449ad82e1621395467ea7",
+                "file": "projects/15821091239753499855/files/b470845723fc4d41adae363deddd400a",
+                "originalHTML": {
+                  "path": "design-original.html",
+                  "sha256": "dd84dbf818a3241cc0ed797b5dc8a2d526b6d47df38e86b3cb6037ed53b2c4a0"
+                },
+                "repairs": [
+                  "Extracted right neutral phone mockup from the exact tool export",
+                  "Localized the exported styles, fonts and SVG icons",
+                  "Local empty-state interaction sample; not a separate Stitch screen"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 390,
+                    "height": 600
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:14:14.234Z"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "title": "方案 B · 目录优先",
+          "shortTitle": "方案 B",
+          "version": "v2",
+          "recommended": false,
+          "tradeoff": "同屏浏览更高效；减少封面表现和叙事空间。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规",
+              "asset": {
+                "id": "export-b-default",
+                "image": "images/export-b-default.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "illustration",
+                "sha256": "1ae8a620b18420e62b30114e0229b2038311b55d129f60be161eb421331e28d9",
+                "preview": "previews/export-b.html?state=default",
+                "displaySource": "本地演示候选",
+                "displayNote": "990 × 1350 px"
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "export-b-empty",
+                "image": "images/export-b-empty.png",
+                "width": 990,
+                "height": 1350,
+                "kind": "illustration",
+                "sha256": "67a68190fbc825d6285d30460668d9f953dbb38984ca4816dc083ef83ff31169",
+                "preview": "previews/export-b.html?state=empty",
+                "displaySource": "本地演示候选",
+                "displayNote": "990 × 1350 px"
+              }
+            }
+          ]
+        },
+        {
+          "id": "c",
+          "title": "方案 C · 正文优先",
+          "shortTitle": "方案 C",
+          "version": "v2",
+          "recommended": false,
+          "tradeoff": "进入即读正文，减少视觉干扰；封面展示与目录效率较弱。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规",
+              "asset": {
+                "id": "canvas-c-default",
+                "image": "images/canvas-c-default.png",
+                "width": 900,
+                "height": 1323,
+                "kind": "browser-repaired",
+                "sha256": "41b652fcde653eef606b5096aba6c7b3613851f48e92647883bd1ec25c13a5e8",
+                "preview": "previews/export-c.html?state=default",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/4951d6ee6699411593f678d3a0ed3216",
+                "file": "projects/15821091239753499855/files/77f0d8830c7545cd82f5c4a88492983f",
+                "originalHTML": {
+                  "path": "canvas-original.html",
+                  "sha256": "6a80520fd5b8a91924a129e9215e3794b056557e0777abc6f5b3b9381b046157"
+                },
+                "repairs": [
+                  "Extracted complete neutral C artboard from the canvas tool export",
+                  "Removed demo selection handlers in the standalone preview"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 1440,
+                    "height": 1000
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:31:13.206Z"
+                }
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "canvas-c-empty",
+                "image": "images/canvas-c-empty.png",
+                "width": 900,
+                "height": 1320,
+                "kind": "browser-repaired",
+                "sha256": "08e2f0e650e7b65dd4042e7d25247d4a8d1ca560effa54edf3f0c4eb171e7a9d",
+                "preview": "previews/export-c.html?state=empty",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "projectId": "15821091239753499855",
+                "screen": "projects/15821091239753499855/screens/4951d6ee6699411593f678d3a0ed3216",
+                "file": "projects/15821091239753499855/files/77f0d8830c7545cd82f5c4a88492983f",
+                "originalHTML": {
+                  "path": "canvas-original.html",
+                  "sha256": "6a80520fd5b8a91924a129e9215e3794b056557e0777abc6f5b3b9381b046157"
+                },
+                "repairs": [
+                  "Extracted complete neutral C artboard from the canvas tool export",
+                  "Removed demo selection handlers in the standalone preview",
+                  "Locally authored empty state for interaction demonstration"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 1440,
+                    "height": 1000
+                  },
+                  "deviceScaleFactor": 3,
+                  "capturedAt": "2026-10-22T13:31:13.208Z"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "not-started",
+        "captures": []
+      }
+    },
+    {
+      "id": "library",
+      "code": "02",
+      "title": "书架与长页",
+      "intent": "完整看见列表，也让每一本书容易找到。",
+      "issues": [
+        {
+          "id": "DEMO-02",
+          "demo": true,
+          "quote": "长页面的末尾也需要一起看，不能只比较中间一段。",
+          "page": "书架页",
+          "state": "常规",
+          "viewport": "390 × 844",
+          "evidence": "中性界面示意，尚无产品实测证据",
+          "likes": "安静的色彩与自然的阅读节奏",
+          "dislikes": "演示观察：长页对照不方便",
+          "verified": false
+        }
+      ],
+      "options": [
+        {
+          "id": "current",
+          "title": "当前方案",
+          "shortTitle": "保留当前",
+          "version": "v1",
+          "recommended": false,
+          "tradeoff": "保留现有阅读节奏，暂不改变当前结构。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规 · 完整长页",
+              "asset": {
+                "id": "library-current-default",
+                "image": "images/library-current-default.svg",
+                "width": 390,
+                "height": 1510,
+                "kind": "illustration",
+                "sha256": "0396021ce88060d17686bffd915370489b3d30ba8cd9e68fb7f61473814873da",
+                "preview": "previews/library-current.html?state=default"
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "library-current-empty",
+                "image": "images/library-current-empty.svg",
+                "width": 390,
+                "height": 844,
+                "kind": "illustration",
+                "sha256": "ef17d078c2f4f16f49492db1cc117c8e87fb5def15db5717642ef200970d04f4",
+                "preview": "previews/library-current.html?state=empty"
+              }
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "title": "方案 A · 封面与进度",
+          "shortTitle": "方案 A",
+          "version": "v2",
+          "recommended": true,
+          "tradeoff": "封面和阅读进度更易识别；列表更长，需要滚动。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规 · 完整长页",
+              "asset": {
+                "id": "library-a-default",
+                "image": "images/library-a-default.svg",
+                "width": 390,
+                "height": 1460,
+                "kind": "illustration",
+                "sha256": "a243ae5466c11da7571a78ddcf117190ccb0345a3c89cfafd1cbf866f753334f",
+                "preview": "previews/library-a.html?state=default"
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "library-a-empty",
+                "image": "images/library-a-empty.svg",
+                "width": 390,
+                "height": 844,
+                "kind": "illustration",
+                "sha256": "ef17d078c2f4f16f49492db1cc117c8e87fb5def15db5717642ef200970d04f4",
+                "preview": "previews/library-a.html?state=empty"
+              }
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "title": "方案 B · 轻量目录",
+          "shortTitle": "方案 B",
+          "version": "v2",
+          "recommended": false,
+          "tradeoff": "同屏浏览更高效；减少封面表现和叙事空间。",
+          "states": [
+            {
+              "id": "default",
+              "label": "常规 · 完整长页",
+              "asset": {
+                "id": "library-b-default",
+                "image": "images/library-b-default.svg",
+                "width": 390,
+                "height": 1280,
+                "kind": "illustration",
+                "sha256": "9ed6ab10b18568cbe6aa9c7022a3035ee1c1109873673e4a03c6741e70e1b843",
+                "preview": "previews/library-b.html?state=default"
+              }
+            },
+            {
+              "id": "empty",
+              "label": "空状态",
+              "asset": {
+                "id": "library-b-empty",
+                "image": "images/library-b-empty.svg",
+                "width": 390,
+                "height": 844,
+                "kind": "illustration",
+                "sha256": "ef17d078c2f4f16f49492db1cc117c8e87fb5def15db5717642ef200970d04f4",
+                "preview": "previews/library-b.html?state=empty"
+              }
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "not-started",
+        "captures": []
+      }
+    },
+    {
+      "id": "desktop",
+      "code": "03",
+      "title": "桌面端 · 阅读工作台",
+      "intent": "宽屏原稿直接上画布，比较书架、阅读和笔记的布局。",
+      "viewport": {
+        "width": 1440,
+        "height": 900
+      },
+      "issues": [
+        {
+          "id": "desktop-example",
+          "quote": "桌面稿按横向比例呈现，比较读写同屏与书架优先。",
+          "page": "桌面阅读工作台",
+          "state": "default",
+          "viewport": {
+            "width": 1440,
+            "height": 900
+          },
+          "evidence": "中性演示要求，不是真实产品问题。",
+          "likes": [],
+          "dislikes": [],
+          "verified": false,
+          "demo": true
+        }
+      ],
+      "options": [
+        {
+          "id": "current",
+          "title": "当前方案 · 桌面示例",
+          "shortTitle": "当前",
+          "version": "v1",
+          "recommended": false,
+          "tradeoff": "密集书架便于同时浏览更多书目；阅读和笔记入口分散。",
+          "states": [
+            {
+              "id": "default",
+              "label": "1440 × 900",
+              "asset": {
+                "id": "desktop-current-flat-v1",
+                "image": "images/desktop-current.png",
+                "width": 1440,
+                "height": 900,
+                "kind": "browser-repaired",
+                "sha256": "b7d0a57af47fae6e9c480b7d638d6603de0a4231452ee14eec6fbe3c81f5d935",
+                "preview": "previews/desktop-current.html",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "projectId": "15821091239753499855",
+                "screen": "5a72a5f724064415b6a239c914658319",
+                "file": "projects/15821091239753499855/files/c1088104e0bd4b61ac69a5b7156c32ad",
+                "originalHTML": {
+                  "path": "desktop-original.html",
+                  "sha256": "57394b91a9ee555b0c1f7af4198c28eabe31c8630c1dc9cf5e4eac3e9d6fbc3a"
+                },
+                "repairs": [
+                  "从原始导出 HTML 的 #desktop-current 容器提取中性桌面示意，不是独立 screen 或真实产品截图。",
+                  "移除来源容器装饰边框、示例焦点、外层阴影和选择 onclick；保留内部页面布局。",
+                  "复用导出编译 CSS 与本地字体渲染；预览为静态设计，不连接业务。"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 720,
+                    "height": 450
+                  },
+                  "deviceScaleFactor": 2,
+                  "capturedAt": "2026-10-22T14:47:53.748157+00:00"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "a",
+          "title": "方案 A · 读写同屏",
+          "shortTitle": "方案 A",
+          "version": "v2",
+          "recommended": true,
+          "tradeoff": "正文、书架和笔记三栏同屏；书目总览面积较少。",
+          "states": [
+            {
+              "id": "default",
+              "label": "1440 × 900",
+              "asset": {
+                "id": "desktop-a-flat-v1",
+                "image": "images/desktop-a.png",
+                "width": 1440,
+                "height": 900,
+                "kind": "browser-repaired",
+                "sha256": "5dfb59bba7e099a443e7d4a568935b80a5a600e03d7ed03e29ee40c48f6f6db5",
+                "preview": "previews/desktop-a.html",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "projectId": "15821091239753499855",
+                "screen": "5a72a5f724064415b6a239c914658319",
+                "file": "projects/15821091239753499855/files/c1088104e0bd4b61ac69a5b7156c32ad",
+                "originalHTML": {
+                  "path": "desktop-original.html",
+                  "sha256": "57394b91a9ee555b0c1f7af4198c28eabe31c8630c1dc9cf5e4eac3e9d6fbc3a"
+                },
+                "repairs": [
+                  "从原始导出 HTML 的 #desktop-a 容器提取中性桌面示意，不是独立 screen 或真实产品截图。",
+                  "移除来源容器装饰边框、示例焦点、外层阴影和选择 onclick；保留内部页面布局。",
+                  "复用导出编译 CSS 与本地字体渲染；预览为静态设计，不连接业务。"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 720,
+                    "height": 450
+                  },
+                  "deviceScaleFactor": 2,
+                  "capturedAt": "2026-10-22T14:47:53.748157+00:00"
+                }
+              }
+            }
+          ]
+        },
+        {
+          "id": "b",
+          "title": "方案 B · 书架与笔记",
+          "shortTitle": "方案 B",
+          "version": "v2",
+          "recommended": false,
+          "tradeoff": "书架与最近笔记同时可见；正文阅读需另打开。",
+          "states": [
+            {
+              "id": "default",
+              "label": "1440 × 900",
+              "asset": {
+                "id": "desktop-b-flat-v1",
+                "image": "images/desktop-b.png",
+                "width": 1440,
+                "height": 900,
+                "kind": "browser-repaired",
+                "sha256": "0774f22691631bbecfd59dc1163e77bb68a9d8b2dcc24355d76b8f2f2765f03a",
+                "preview": "previews/desktop-b.html",
+                "displaySource": "Stitch 示意 · 浏览器稿",
+                "projectId": "15821091239753499855",
+                "screen": "5a72a5f724064415b6a239c914658319",
+                "file": "projects/15821091239753499855/files/c1088104e0bd4b61ac69a5b7156c32ad",
+                "originalHTML": {
+                  "path": "desktop-original.html",
+                  "sha256": "57394b91a9ee555b0c1f7af4198c28eabe31c8630c1dc9cf5e4eac3e9d6fbc3a"
+                },
+                "repairs": [
+                  "从原始导出 HTML 的 #desktop-b 容器提取中性桌面示意，不是独立 screen 或真实产品截图。",
+                  "移除来源容器装饰边框、示例焦点、外层阴影和选择 onclick；保留内部页面布局。",
+                  "复用导出编译 CSS 与本地字体渲染；预览为静态设计，不连接业务。"
+                ],
+                "render": {
+                  "viewport": {
+                    "width": 720,
+                    "height": 450
+                  },
+                  "deviceScaleFactor": 2,
+                  "capturedAt": "2026-10-22T14:47:53.748157+00:00"
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "implementation": {
+        "status": "not-started",
+        "captures": []
+      }
+    }
+  ]
+}

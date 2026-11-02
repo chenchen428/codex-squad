@@ -1,0 +1,105 @@
+  <!-- A. 顶部细进度指示 (加载时激活) -->
+  <div class="squad-progress-rail">
+    <div class="squad-progress-bar" id="squadProgressBar"></div>
+  </div>
+
+  <!-- B. 统一顶部上下文元信息行 (38px 恒定高度) -->
+  <header class="squad-meta-bar">
+    <div class="squad-meta-left">
+      <span class="squad-meta-badge" id="squadContextBadge">Codex 小队</span>
+      <span class="text-stone-400">/</span>
+      <span class="font-medium text-stone-700" id="squadSessionTitle">codex-squad · 修复报表筛选异常</span>
+    </div>
+    <div class="squad-meta-right">
+      <div class="squad-sync-indicator">
+        <span class="squad-pulse-dot" id="squadPulseDot"></span>
+        <span id="squadSyncText">3秒自动同步</span>
+      </div>
+      <span class="squad-meta-badge bg-white text-stone-500">只读演示</span>
+    </div>
+  </header>
+
+  <!-- C. 统一加载提示条 (非阻塞保留旧内容) -->
+  <div class="squad-loading-banner" id="squadLoadingBanner" style="display: none;">
+    <div class="squad-loading-banner-inner">
+      <div class="squad-spinner"></div>
+      <span id="squadLoadingLabel">正在从本机守护进程同步执行增量数据…</span>
+    </div>
+    <span class="text-[10.5px] opacity-75 font-mono">14:38:02 LIVE</span>
+  </div>
+
+  <!-- D. 错误重试状态条 (网络/本地 IPC 异常) -->
+  <div class="squad-error-banner" id="squadErrorBanner" style="display: none;">
+    <div class="flex items-center gap-2">
+      <svg class="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+      <span>无法获取本机 Qoder 增量数据 (超时)</span>
+    </div>
+    <button class="squad-btn-retry" onclick="retrySync()">重试同步</button>
+  </div>
+
+  <!-- E. 统一全局主导航 (46px 高度，小队任务看板 / 分析，陶土色底线) -->
+  <nav class="squad-main-nav">
+    <div class="squad-nav-tabs">
+      <a class="squad-nav-tab active" id="navTabBoard" onclick="switchView('board')">
+        <span>小队任务看板</span>
+        <span class="squad-tab-count">16</span>
+      </a>
+      <a class="squad-nav-tab" id="navTabAnalytics" onclick="switchView('analytics-current')">
+        <span>分析</span>
+        <span class="squad-tab-count">28.0m</span>
+      </a>
+    </div>
+
+    <div class="squad-nav-actions">
+      <!-- 汇总状态指示 -->
+      <div class="hidden sm:flex items-center gap-2 text-[11px] text-stone-500 font-mono">
+        <span>运行 <b class="text-emerald-700 font-semibold">3</b></span>
+        <span>待验收 <b class="text-amber-700 font-semibold">4</b></span>
+      </div>
+      <!-- 刷新按钮 -->
+      <button class="squad-btn-refresh" id="squadRefreshBtn" title="立刻刷新数据" onclick="triggerManualRefresh()">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- F. 二级插槽：分析页专用 Segmented Control & 时间筛选 (仅在分析视图激活) -->
+  <div class="squad-sub-bar" id="analyticsSubBar" style="display: none;">
+    <!-- 双段范围切换 -->
+    <div class="squad-segment-group">
+      <button class="squad-segment-btn active" id="segCurrentSession" onclick="switchAnalyticsScope('current')">当前会话</button>
+      <button class="squad-segment-btn" id="segAllAggregate" onclick="switchAnalyticsScope('all')">
+        <span>整体</span>
+        <span class="text-[9.5px] px-1 py-0.5 rounded bg-stone-200/60 text-stone-600 font-mono">12</span>
+      </button>
+    </div>
+
+    <!-- 时间粒度切换与口径信息 -->
+    <div class="flex items-center gap-3">
+      <div class="squad-range-group">
+        <button class="squad-range-btn" onclick="setRange(this)">近7天</button>
+        <button class="squad-range-btn" onclick="setRange(this)">近30天</button>
+        <button class="squad-range-btn active" onclick="setRange(this)">全部</button>
+      </div>
+      <span class="text-[10px] text-stone-400 font-mono hidden sm:inline" id="cutoffTimeLabel">截至 14:38</span>
+    </div>
+  </div>
+
+  <!-- G. 二级插槽：详情页专属 Breadcrumb 导航 (沿看板分支，返回看板与总览) -->
+  <div class="squad-breadcrumb-bar" id="subtaskBreadcrumbBar" style="display: none;">
+    <div class="squad-breadcrumb-left">
+      <a class="squad-back-link" onclick="switchView('board')">
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+        <span>返回看板</span>
+      </a>
+      <span class="squad-breadcrumb-separator">/</span>
+      <span class="text-stone-500">子任务 #02</span>
+      <span class="squad-breadcrumb-separator">·</span>
+      <span class="squad-breadcrumb-current truncate max-w-[200px]">保留报错前的输入</span>
+    </div>
+    <div class="flex items-center gap-2 font-mono text-[11px] text-stone-500">
+      <span class="px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200/50">Qoder</span>
+      <span>30.8k tok</span>
+    </div>
+  </div>
+

@@ -1,0 +1,1886 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队 · 周期分析 (Warm Editorial 刊页版)</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Noto+Serif+SC:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<style>
+    :root {
+      --bg-paper: #fbf9f4;
+      --bg-subtle: #f5f0e6;
+      --bg-card: #ffffff;
+      --ink: #22201d;
+      --ink-muted: #6c665e;
+      --ink-faint: #9c9589;
+      --line: #e4decb;
+      --line-strong: #d2c8b0;
+      --rust: #b84b2e;
+      --rust-soft: #f7ebe7;
+      --ochre: #c08a3e;
+      --ochre-soft: #faf4e8;
+      --ochre-border: #ebd8b6;
+      --forest: #2d6a4f;
+      --forest-soft: #eaf3ee;
+      --border: #e4decb;
+      --text-sec: #6b645b;
+      --text-main: #22201d;
+      --font-serif: "Newsreader", "Noto Serif SC", Songti SC, Georgia, serif;
+      --font-sans: "Space Grotesk", -apple-system, BlinkMacSystemFont, "PingFang SC", "Segoe UI", sans-serif;
+      --font-mono: "Space Mono", SFMono-Regular, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-paper);
+      color: var(--ink);
+      font-family: var(--font-sans);
+      line-height: 1.5;
+      font-size: 13px;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+    }
+
+    /* 刊页容器：默认适配 Codex 589px 宿主面板，兼容 390px 移动与 1100px 宽屏 */
+    .sheet-root {
+      width: 100%;
+      max-width: 589px;
+      margin: 0 auto;
+      background: var(--bg-paper);
+      min-height: 100vh;
+      border-left: 1px solid var(--line);
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    @media (min-width: 1024px) {
+      .sheet-root {
+        max-width: 880px; /* 在宽屏展开阅读跨栏时释放非对称视觉张力 */
+      }
+    }
+
+    @media (max-width: 480px) {
+      .sheet-root {
+        border-left: none;
+        border-right: none;
+      }
+    }
+
+    /* 顶部统一刊头与导航 */
+    .masthead {
+      padding: 16px 20px 12px;
+      border-bottom: 1px solid var(--line);
+      background: var(--bg-paper);
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      padding: 2px 6px;
+      background: var(--bg-subtle);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+      color: var(--ink-muted);
+    }
+
+    .session-crumb {
+      font-size: 12px;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .session-crumb b {
+      color: var(--ink);
+      font-weight: 600;
+    }
+
+    .nav-tabs {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .nav-tab {
+      font-size: 12.5px;
+      text-decoration: none;
+      color: var(--ink-muted);
+      padding-bottom: 2px;
+      position: relative;
+      transition: color 0.15s ease;
+    }
+
+    .nav-tab:hover {
+      color: var(--ink);
+    }
+
+    .nav-tab.active {
+      color: var(--rust);
+      font-weight: 600;
+    }
+
+    .nav-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -13px;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--rust);
+    }
+
+    .version-tag {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--ink-faint);
+    }
+
+    /* 融为一体的期次与时间控制器 */
+    .edition-bar {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: baseline;
+      padding-top: 10px;
+      gap: 8px;
+    }
+
+    .edition-title {
+      font-family: var(--font-serif);
+      font-size: 20px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .edition-title .sub {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-weight: 400;
+    }
+
+    .control-cluster {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .pill-filters {
+      display: flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      padding: 1px;
+    }
+
+    .pill-btn {
+      border: none;
+      background: transparent;
+      padding: 3px 9px;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      color: var(--ink-muted);
+      cursor: pointer;
+      border-radius: 3px;
+      transition: all 0.15s;
+    }
+
+    .pill-btn.active {
+      background: var(--bg-card);
+      color: var(--ink);
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+    }
+
+    .timestamp-cue {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink-faint);
+    }
+
+    /* 主体版面 */
+    .sheet-body {
+      padding: 16px 20px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    /* =========================================================
+       第1章：小队收益（当前周期整体净收益·负收益刊页焦点）
+       ========================================================= */
+    .section-lead-story {
+      background: var(--bg-card);
+      border: 1px solid var(--ochre-border);
+      border-top: 3px solid var(--ochre);
+      border-radius: 3px;
+      padding: 16px 18px 14px;
+      position: relative;
+    }
+
+    .story-kicker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+
+    .stamp-label {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--ochre);
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .stamp-label::before {
+      content: '';
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      background: var(--ochre);
+      border-radius: 50%;
+    }
+
+    .coverage-tag {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+      background: var(--ochre-soft);
+      padding: 2px 7px;
+      border-radius: 2px;
+    }
+
+    /* 非对称错落排版的大数字 */
+    .metrics-duo {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      align-items: baseline;
+      padding-bottom: 14px;
+      border-bottom: 1px dashed var(--line);
+    }
+
+    @media (max-width: 440px) {
+      .metrics-duo {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+    }
+
+    .metric-hero {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .metric-caption {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .metric-value-row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .metric-num-big {
+      font-family: var(--font-serif);
+      font-size: 34px;
+      font-weight: 600;
+      line-height: 1;
+      color: var(--ochre);
+      letter-spacing: -0.02em;
+    }
+
+    .metric-delta {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ochre);
+      font-weight: 700;
+      background: var(--ochre-soft);
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+
+    .metric-secondary {
+      display: flex;
+      flex-direction: column;
+      padding-left: 12px;
+      border-left: 1px solid var(--line);
+    }
+
+    @media (max-width: 440px) {
+      .metric-secondary {
+        border-left: none;
+        padding-left: 0;
+        border-top: 1px dashed var(--line);
+        padding-top: 8px;
+      }
+    }
+
+    .metric-num-mid {
+      font-family: var(--font-serif);
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1.1;
+      color: var(--ink);
+    }
+
+    /* 真实事实观察与对比关系 */
+    .story-narrative {
+      margin-top: 10px;
+      font-size: 12.5px;
+      color: var(--ink);
+      line-height: 1.55;
+    }
+
+    .story-narrative b {
+      color: var(--rust);
+    }
+
+    .story-footer-note {
+      margin-top: 8px;
+      font-size: 11px;
+      color: var(--ink-muted);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    /* =========================================================
+       第2章：收益依据明细表（默认3行，可展开至32行，单项弹层）
+       ========================================================= */
+    .ledger-block {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      overflow: hidden;
+    }
+
+    .ledger-header {
+      padding: 10px 14px;
+      background: var(--bg-subtle);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .ledger-header h3 {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .ledger-count {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: var(--ink-muted);
+    }
+
+    .table-scroll-wrap {
+      overflow-x: auto;
+      max-height: none;
+      transition: max-height 0.25s ease;
+    }
+
+    .table-scroll-wrap.expanded {
+      max-height: 360px;
+      overflow-y: auto;
+    }
+
+    .editorial-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11.5px;
+      text-align: left;
+    }
+
+    .editorial-table th {
+      background: var(--bg-paper);
+      padding: 7px 12px;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--ink-muted);
+      border-bottom: 1px solid var(--line);
+      white-space: nowrap;
+      position: sticky;
+      top: 0;
+      z-index: 5;
+    }
+
+    .editorial-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: middle;
+      color: var(--ink);
+    }
+
+    .editorial-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .editorial-table tr:hover td {
+      background: #faf7f0;
+    }
+
+    .cell-title {
+      font-weight: 500;
+      max-width: 190px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .status-dot {
+      display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+
+    .status-dot.done { background: var(--forest); }
+    .status-dot.pending { background: var(--ochre); }
+
+    .tag-status {
+      font-family: var(--font-mono);
+      font-size: 9.5px;
+      padding: 1px 4px;
+      border-radius: 2px;
+      margin-left: 4px;
+    }
+    .tag-status.done { background: var(--forest-soft); color: var(--forest); }
+    .tag-status.pending { background: var(--ochre-soft); color: var(--ochre); }
+
+    .num-col {
+      font-family: var(--font-mono);
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .num-neg {
+      color: var(--ochre);
+      font-weight: 600;
+    }
+
+    .num-na {
+      color: var(--ink-faint);
+    }
+
+    .btn-evidence {
+      background: transparent;
+      border: 1px solid var(--line-strong);
+      font-size: 10.5px;
+      font-family: var(--font-sans);
+      color: var(--rust);
+      padding: 2px 7px;
+      border-radius: 2px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s;
+    }
+
+    .btn-evidence:hover {
+      background: var(--rust-soft);
+      border-color: var(--rust);
+    }
+
+    .ledger-toggle-row {
+      padding: 8px 14px;
+      background: var(--bg-paper);
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+    }
+
+    .btn-inline-toggle {
+      border: none;
+      background: transparent;
+      font-family: var(--font-sans);
+      color: var(--rust);
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-inline-toggle:hover {
+      text-decoration: underline;
+    }
+
+    /* =========================================================
+       第3章：Token 消耗去向（Codex / Qoder / 对比 3态切换叙事）
+       ========================================================= */
+    .section-consumption {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 16px 18px;
+    }
+
+    .consumption-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+
+    .segment-switch {
+      display: inline-flex;
+      background: var(--bg-subtle);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 1px;
+    }
+
+    .segment-btn {
+      border: none;
+      background: transparent;
+      padding: 3px 10px;
+      font-size: 11px;
+      font-family: var(--font-sans);
+      color: var(--ink-muted);
+      cursor: pointer;
+      border-radius: 2px;
+      transition: all 0.15s;
+    }
+
+    .segment-btn.active {
+      background: var(--bg-card);
+      color: var(--rust);
+      font-weight: 700;
+      box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    }
+
+    /* 四卡区域响应式网格与统计卡片样式 */
+    .token-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      width: 100%;
+      margin: 16px 0;
+    }
+
+    @media (max-width: 899px) {
+      .token-cards-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (max-width: 588px) {
+      .token-cards-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .token-stat-card {
+      border: 1px solid var(--border, #e4decb);
+      background: #ffffff;
+      padding: 14px;
+      min-height: 112px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border-radius: 2px;
+      box-sizing: border-box;
+    }
+
+    .token-stat-title {
+      font-family: 'Space Mono', monospace;
+      font-size: 10.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-sec, #6b645b);
+      margin-bottom: 6px;
+    }
+
+    .token-stat-val {
+      font-family: 'Newsreader', serif;
+      font-size: 24px;
+      font-weight: 700;
+      color: var(--text-main, #22201d);
+      line-height: 1.15;
+    }
+
+    .token-stat-sub {
+      font-family: 'Space Mono', monospace;
+      font-size: 10.5px;
+      color: var(--text-sec, #6b645b);
+      margin-top: 4px;
+    }
+
+    /* 表头轻量排序样式 */
+    th.sortable {
+      cursor: pointer;
+      user-select: none;
+      transition: color 0.15s ease, background-color 0.15s ease;
+    }
+
+    th.sortable:hover {
+      color: var(--ink);
+      background-color: var(--bg-subtle);
+    }
+
+    .sort-indicator {
+      display: inline-block;
+      font-size: 10px;
+      color: var(--ink-faint);
+      margin-left: 3px;
+      transition: color 0.15s ease;
+    }
+
+    th.sortable:hover .sort-indicator {
+      color: var(--rust);
+    }
+
+    /* 精致搜索框与下拉选择框 */
+    .cli-bar-controls input[type="text"],
+    .cli-bar-controls input[type="search"],
+    #cliSearchInput {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 9px;
+      border: 1px solid var(--line-strong);
+      background: #ffffff;
+      border-radius: 2px;
+      color: var(--ink);
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .cli-bar-controls input[type="text"]:focus,
+    .cli-bar-controls input[type="search"]:focus,
+    #cliSearchInput:focus {
+      border-color: var(--rust);
+      box-shadow: 0 0 0 1px rgba(184, 75, 46, 0.2);
+    }
+
+    .cli-bar-controls input::placeholder {
+      color: var(--ink-faint);
+    }
+
+    /* 明确主次的消耗叙事排版 */
+    .narrative-headline {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--line);
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .headline-total {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+    }
+
+    .headline-total .label {
+      font-size: 12px;
+      color: var(--ink-muted);
+    }
+
+    .headline-total .val {
+      font-family: var(--font-serif);
+      font-size: 28px;
+      font-weight: 700;
+      color: var(--ink);
+      line-height: 1;
+    }
+
+    .headline-meta {
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink-muted);
+    }
+
+    /* 分解条带与命中率 */
+    .breakdown-strip-box {
+      margin-bottom: 14px;
+    }
+
+    .progress-bar-stack {
+      height: 8px;
+      width: 100%;
+      background: var(--bg-subtle);
+      border-radius: 4px;
+      overflow: hidden;
+      display: flex;
+      margin-bottom: 8px;
+    }
+
+    .bar-cache { background: var(--forest); width: 98.2%; }
+    .bar-input-raw { background: var(--ochre); width: 1.5%; }
+    .bar-output { background: var(--rust); width: 0.3%; }
+
+    .strip-legend {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 4px 8px;
+      background: var(--bg-paper);
+      border: 1px solid var(--line);
+      border-radius: 2px;
+    }
+
+    .legend-left {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: var(--ink-muted);
+    }
+
+    .legend-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+    }
+
+    .legend-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    /* 会话消耗排行：紧凑横向条带 */
+    .session-rank-lead {
+      margin-top: 14px;
+    }
+
+    .sub-section-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--ink);
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .rank-bar-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .rank-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .rank-meta-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11.5px;
+    }
+
+    .rank-name {
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .rank-name .mono-id {
+      font-family: var(--font-mono);
+      color: var(--rust);
+      font-weight: 600;
+    }
+
+    .rank-nums {
+      font-family: var(--font-mono);
+      color: var(--ink-muted);
+    }
+
+    .rank-track {
+      height: 5px;
+      background: var(--bg-subtle);
+      border-radius: 2px;
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .rank-fill {
+      height: 100%;
+      background: var(--ink-muted);
+      border-radius: 2px;
+    }
+
+    .rank-fill.p1 { width: 56.4%; background: var(--rust); }
+    .rank-fill.p2 { width: 24.2%; background: var(--ochre); }
+    .rank-fill.p3 { width: 12.8%; background: var(--ink-muted); }
+
+    /* =========================================================
+       第4章：周期观察与优化建议（刊页书卷式点评，穿插节奏）
+       ========================================================= */
+    .section-advisory {
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--rust);
+      background: #fdfcf9;
+      border-radius: 3px;
+      padding: 16px 18px;
+    }
+
+    .advisory-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 8px;
+    }
+
+    .advisory-title {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+      letter-spacing: -0.01em;
+    }
+
+    .advisory-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      color: var(--rust);
+      background: var(--rust-soft);
+      padding: 1px 6px;
+      border-radius: 2px;
+    }
+
+    .advisory-judgment {
+      font-size: 13px;
+      color: var(--ink);
+      line-height: 1.6;
+      margin-bottom: 14px;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--line);
+      font-family: var(--font-serif);
+    }
+
+    .advisory-item-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .advisory-card {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 10px 12px;
+      border-radius: 2px;
+    }
+
+    .advisory-card-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .advisory-card-head .title-left {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+    }
+
+    .idx-num {
+      font-family: var(--font-mono);
+      color: var(--rust);
+      font-size: 11px;
+    }
+
+    .advisory-card-text {
+      font-size: 12px;
+      color: var(--ink-muted);
+      line-height: 1.5;
+    }
+
+    .advisory-card-foot {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 4px;
+      font-size: 10.5px;
+      color: var(--ink-faint);
+    }
+
+    .link-evidence {
+      color: var(--rust);
+      text-decoration: none;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .link-evidence:hover {
+      text-decoration: underline;
+    }
+
+    /* =========================================================
+       第5章：CLI 命令表现（真实命令、过滤器、失败诊断）
+       ========================================================= */
+    .section-cli {
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      border-radius: 3px;
+      padding: 14px 16px;
+    }
+
+    .cli-bar-controls {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .select-cli-filter {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 4px 8px;
+      background: #ffffff;
+      border: 1px solid var(--line-strong);
+      border-radius: 2px;
+      color: var(--ink);
+      outline: none;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.02);
+      transition: border-color 0.15s ease;
+    }
+
+    .select-cli-filter:focus {
+      border-color: var(--rust);
+    }
+
+    .cli-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 11px;
+      font-family: var(--font-mono);
+    }
+
+    .cli-table th {
+      background: var(--bg-paper);
+      padding: 6px 8px;
+      font-size: 10px;
+      text-transform: uppercase;
+      color: var(--ink-muted);
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+    }
+
+    .cli-table td {
+      padding: 7px 8px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .cli-name-cell {
+      color: var(--ink);
+      font-weight: 500;
+    }
+
+    .cli-diag-banner {
+      margin-top: 10px;
+      padding: 8px 10px;
+      background: var(--ochre-soft);
+      border: 1px solid var(--ochre-border);
+      border-radius: 2px;
+      font-size: 11px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .cli-diag-banner b {
+      color: var(--ochre);
+    }
+
+    /* 页脚 */
+    .sheet-footer {
+      margin-top: auto;
+      padding: 14px 20px;
+      border-top: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--ink-faint);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* =========================================================
+       弹层：单项收益计算依据（>=768px居中，<768px底部Sheet）
+       ========================================================= */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(34, 32, 29, 0.45);
+      z-index: 100;
+      backdrop-filter: blur(2px);
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+
+    .modal-overlay.open {
+      display: flex;
+    }
+
+    .modal-sheet {
+      background: var(--bg-paper);
+      border: 1px solid var(--line-strong);
+      width: 100%;
+      max-width: 560px;
+      max-height: 80vh;
+      border-radius: 4px;
+      box-shadow: 0 12px 36px rgba(0,0,0,0.15);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      animation: modalFadeIn 0.2s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 767px) {
+      .modal-overlay {
+        align-items: flex-end;
+        padding: 0;
+      }
+      .modal-sheet {
+        max-width: 100%;
+        max-height: 85dvh;
+        border-radius: 8px 8px 0 0;
+        border-bottom: none;
+        animation: sheetSlideUp 0.25s ease-out;
+      }
+      @keyframes sheetSlideUp {
+        from { transform: translateY(100%); }
+        to { transform: translateY(0); }
+      }
+    }
+
+    .modal-head {
+      padding: 14px 18px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-head h4 {
+      font-family: var(--font-serif);
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--ink);
+    }
+
+    .btn-close-modal {
+      border: none;
+      background: transparent;
+      font-size: 18px;
+      line-height: 1;
+      color: var(--ink-muted);
+      cursor: pointer;
+      padding: 4px 6px;
+    }
+
+    .modal-body {
+      padding: 16px 18px;
+      overflow-y: auto;
+      font-size: 12.5px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .audit-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      background: var(--bg-card);
+      border: 1px solid var(--line);
+      padding: 10px;
+      border-radius: 3px;
+    }
+
+    .audit-item {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .audit-item .k {
+      font-size: 11px;
+      color: var(--ink-muted);
+      font-family: var(--font-mono);
+    }
+
+    .audit-item .v {
+      font-size: 14px;
+      font-family: var(--font-mono);
+      font-weight: 700;
+      color: var(--ink);
+    }
+
+    .audit-notes {
+      font-size: 11.5px;
+      color: var(--ink-muted);
+      background: var(--bg-subtle);
+      padding: 8px 10px;
+      border-radius: 2px;
+      border-left: 2px solid var(--ochre);
+    }
+
+    .modal-foot {
+      padding: 10px 18px;
+      background: var(--bg-card);
+      border-top: 1px solid var(--line);
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .btn-primary-action {
+      background: var(--ink);
+      color: var(--bg-paper);
+      border: none;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-family: var(--font-sans);
+      border-radius: 2px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+<div class="sheet-root" id="app">
+<!-- 统一顶栏：品牌、会话切片、双 Tab 与版本 -->
+<header class="masthead">
+<div class="brand-row">
+<div class="brand-left">
+<span class="brand-badge">Codex 小队</span>
+<span class="session-crumb">/ <b>梳理 Codex 小队分析模块</b></span>
+</div>
+<div class="nav-tabs">
+<a class="nav-tab" href="#kanban">小队任务看板</a>
+<a class="nav-tab active" href="#analysis">分析</a>
+<span class="version-tag">v0.9.3-local.20261027.12</span>
+</div>
+</div>
+<!-- 融为一体的期次标题与区间切换 -->
+<div class="edition-bar">
+<div class="edition-title">小队的投入与回报<span class="sub">周期统计：10月20日 – 10月27日</span></div>
+<div class="control-cluster">
+<div class="pill-filters" id="dateFilters">
+<button class="pill-btn active" onclick="switchPeriod('7d', this)">近 7 天</button>
+<button class="pill-btn" onclick="switchPeriod('30d', this)">近 30 天</button>
+<button class="pill-btn" onclick="switchPeriod('all', this)">全部</button>
+</div>
+<span class="timestamp-cue">更新于 14:48:10</span>
+</div>
+</div>
+</header>
+<!-- 主体内容刊页 -->
+<main class="sheet-body"><!-- § 01 章节：收益与投入核算 (暖赭纸色排版，非对称大字号，无外盒) -->
+<section class="section-editorial-chapter" id="sec-roi" style="padding-bottom: 24px; border-bottom: 1px solid var(--line);">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 14px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<span style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--rust); letter-spacing: 0.08em;">§ 01</span>
+<h2 style="font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--ink); margin: 0;">交付净收益与相抵核算</h2>
+</div>
+<span style="font-family: var(--font-mono); font-size: 11px; color: var(--ink-muted); background: #f0e9dc; padding: 2px 8px; border-radius: 2px;">覆盖 1 / 7 次已完成交付</span>
+</div>
+<!-- 暖赭纸面焦点版面，彻底打破方盒，采用印记细线与大字号 -->
+<div style="background: #f7efe4; border-top: 2px solid var(--ochre); padding: 18px 20px; border-radius: 2px; margin-bottom: 16px;">
+<div style="font-family: var(--font-mono); font-size: 10px; color: var(--ochre); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; font-weight: 700;">● 周期实际相抵测算（高于单人历史基线）</div>
+<div style="display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 20px; align-items: end; border-bottom: 1px dashed #e2d7c3; padding-bottom: 16px;">
+<div>
+<div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 4px;">预计多用 Codex Token</div>
+<div style="display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;">
+<span id="tokenRoiVal" style="font-family: var(--font-serif); font-size: 50px; font-weight: 700; line-height: 1; color: var(--ochre); letter-spacing: -0.02em;">20.93M</span>
+<span id="tokenRoiPct" style="font-family: var(--font-mono); font-size: 13px; font-weight: 600; color: var(--ochre); background: #eee1cf; padding: 2px 7px; border-radius: 2px;">约 231.4%</span>
+</div>
+</div>
+<div style="padding-left: 16px; border-left: 1px solid #e5dccb;">
+<div style="font-size: 12px; color: var(--ink-muted); margin-bottom: 4px;">预计多投入处理时间</div>
+<div style="display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap;">
+<span id="timeRoiVal" style="font-family: var(--font-serif); font-size: 28px; font-weight: 700; line-height: 1.1; color: var(--ink);">约 54 分钟</span>
+<span style="font-family: var(--font-mono); font-size: 11.5px; font-weight: 600; color: var(--ink-muted);">约 150.2%</span>
+</div>
+</div>
+</div>
+<!-- 真实基线比例对照条 (9.04M vs 29.97M) -->
+<div style="margin-top: 14px;">
+<div style="display: flex; justify-content: space-between; font-size: 11px; font-family: var(--font-mono); color: var(--ink-muted); margin-bottom: 5px;">
+<span>纯 Codex 历史测速基线: <b>9.04M</b></span>
+<span>本次实际投入: <b style="color: var(--ochre);">29.97M</b></span>
+</div>
+<div style="display: flex; height: 7px; background: #e7ddca; border-radius: 2px; overflow: hidden;">
+<div style="width: 30.1%; background: var(--forest);" title="基线 9.04M"></div>
+<div style="width: 69.9%; background: var(--ochre);" title="本次超额 20.93M"></div>
+</div>
+</div>
+<p style="margin-top: 12px; font-size: 12.5px; color: var(--ink); line-height: 1.6;">
+          本期 1 个完整交付已有可比较的历史基线；本次投入高于基线。另 6 个已完成交付缺少历史基线，按规范未估算。
+        </p>
+</div>
+<!-- 收益核算基准明细表（极简刊印线，无卡片框，默认3行） -->
+<div>
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+<span style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--ink); text-transform: uppercase;">交付任务收益明细表</span>
+<span id="ledgerCountLabel" style="font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-faint);">当前显示 3 / 32 项交付</span>
+</div>
+<div class="table-scroll-wrap" id="ledgerTableWrap" style="border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+<table class="editorial-table">
+<thead>
+<tr>
+<th>工作 / 任务</th>
+<th class="num-col">预计全 Codex</th>
+<th class="num-col">实际 Codex / Qoder</th>
+<th class="num-col">预计多用</th>
+<th class="num-col">多投入</th>
+<th style="text-align: right;">依据</th>
+</tr>
+</thead>
+<tbody id="ledgerTbody">
+<tr>
+<td>
+<div class="cell-title">
+<span class="status-dot done"></span>
+<b>评测 B1</b>｜Codex 小队业务工单分析工作台
+                    <span class="tag-status done">已完成</span>
+</div>
+</td>
+<td class="num-col">9.04M</td>
+<td class="num-col">29.97M / 12.36M</td>
+<td class="num-col" style="color: var(--ochre); font-weight: 600;">20.93M</td>
+<td class="num-col" style="color: var(--ochre); font-weight: 600;">54分钟</td>
+<td style="text-align: right;">
+<button class="btn-evidence" onclick="openEvidence('B1')">依据</button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="cell-title">
+<span class="status-dot pending"></span>
+                    理赔新增提现户需求
+                    <span class="tag-status pending">进行中</span>
+</div>
+</td>
+<td class="num-col num-na">基线未上报</td>
+<td class="num-col">248.54M / 136.04M</td>
+<td class="num-col num-na">未估算</td>
+<td class="num-col num-na">未估算</td>
+<td style="text-align: right;">
+<button class="btn-evidence" onclick="openEvidence('P2')">详情</button>
+</td>
+</tr>
+<tr>
+<td>
+<div class="cell-title">
+<span class="status-dot pending"></span>
+                    梳理 Codex 小队分析模块
+                    <span class="tag-status pending">进行中</span>
+</div>
+</td>
+<td class="num-col num-na">基线未上报</td>
+<td class="num-col">306.84M / 369.75M</td>
+<td class="num-col num-na">未估算</td>
+<td class="num-col num-na">未估算</td>
+<td style="text-align: right;">
+<button class="btn-evidence" onclick="openEvidence('P3')">详情</button>
+</td>
+</tr>
+<!-- 额外折叠行 -->
+<tr class="extra-row" style="display: none;">
+<td><div class="cell-title"><span class="status-dot done"></span>单测用例覆盖补全回归<span class="tag-status done">已完成</span></div></td>
+<td class="num-col num-na">缺基准</td>
+<td class="num-col">42.10M / 18.20M</td>
+<td class="num-col num-na">未估算</td>
+<td class="num-col num-na">未估算</td>
+<td style="text-align: right;"><button class="btn-evidence" onclick="openEvidence('P4')">详情</button></td>
+</tr>
+<tr class="extra-row" style="display: none;">
+<td><div class="cell-title"><span class="status-dot done"></span>虚拟滚动列表视口越界修复<span class="tag-status done">已完成</span></div></td>
+<td class="num-col num-na">缺基准</td>
+<td class="num-col">18.60M / 9.40M</td>
+<td class="num-col num-na">未估算</td>
+<td class="num-col num-na">未估算</td>
+<td style="text-align: right;"><button class="btn-evidence" onclick="openEvidence('P5')">详情</button></td>
+</tr>
+<tr class="extra-row" style="display: none;">
+<td><div class="cell-title"><span class="status-dot done"></span>Markdown 解析边界测试<span class="tag-status done">已完成</span></div></td>
+<td class="num-col num-na">缺基准</td>
+<td class="num-col">12.80M / 8.10M</td>
+<td class="num-col num-na">未估算</td>
+<td class="num-col num-na">未估算</td>
+<td style="text-align: right;"><button class="btn-evidence" onclick="openEvidence('P6')">详情</button></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+<span style="font-size: 11px; color: var(--ink-faint);">* 缺单人历史基准交付项均标记为「未估算」</span>
+<button class="btn-inline-toggle" id="btnToggleLedger" onclick="toggleLedgerRows()">
+            展开全部 32 项交付 ↓
+          </button>
+</div>
+</div>
+</section>
+<!-- § 02 章节：Token 消耗去向（真实大数 11.96B，其中缓存，无卡片框） -->
+<section class="section-editorial-chapter" id="sec-consumption" style="padding-bottom: 24px; border-bottom: 1px solid var(--line);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; flex-wrap: wrap; gap: 8px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<span style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--rust); letter-spacing: 0.08em;">§ 02</span>
+<h2 style="font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--ink); margin: 0;">Token 消耗去向</h2>
+</div>
+<div class="segment-switch">
+<button class="segment-btn active" id="btnTokenCodex" onclick="switchConsumptionView('codex', this)">Codex</button>
+<button class="segment-btn" id="btnTokenQoder" onclick="switchConsumptionView('qoder', this)">Qoder</button>
+<button class="segment-btn" id="btnTokenDiff" onclick="switchConsumptionView('diff', this)">对比</button>
+</div>
+</div>
+<!-- 4 个核心用量事实卡片：严格 4 列 (>=900px) / 2 列 (589-899px) / 1 列 (<589px) -->
+<div class="token-cards-grid" id="tokenCardsGrid">
+<div class="token-stat-card">
+<div class="token-stat-title">已记录总 TOKEN</div>
+<div class="token-stat-val" id="cardValTotal">11.96B</div>
+<div class="token-stat-sub" id="cardSubTotal">100% 周期记录总量</div>
+</div>
+<div class="token-stat-card">
+<div class="token-stat-title">输入</div>
+<div class="token-stat-val" id="cardValInput">11.93B</div>
+<div class="token-stat-sub" id="cardSubInput">占总用量 99.7%</div>
+</div>
+<div class="token-stat-card">
+<div class="token-stat-title">其中缓存</div>
+<div class="token-stat-val" id="cardValCache">11.72B</div>
+<div class="token-stat-sub" id="cardSubCache">占输入 98.2% (缓存命中)</div>
+</div>
+<div class="token-stat-card">
+<div class="token-stat-title">输出</div>
+<div class="token-stat-val" id="cardValOutput">30.03M</div>
+<div class="token-stat-sub" id="cardSubOutput">占总用量 0.3% (补全生成)</div>
+</div>
+</div>
+<div id="tokenScopeNote" style="display: flex; justify-content: space-between; align-items: center; font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-faint); margin-bottom: 14px; padding-bottom: 8px; border-bottom: 1px dashed var(--line);">
+<span id="tokenModelCue">当前主体：Codex (主协同与复杂状态推进)</span>
+<span id="tokenCoverageCue">覆盖已读取 100 / 2,973 个会话</span>
+</div>
+<!-- 统一会话分布表壳：Codex / Qoder / 对比 3 态共用同一套表头、折叠与排序 -->
+<div style="margin-top: 10px;">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 8px;">
+<span id="sessionTableHeading" style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--ink); text-transform: uppercase;">消耗集中会话排行 (Top 3)</span>
+<span id="tokenSessionCountLabel" style="font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-faint);">当前显示 3 / 100 个已采纳会话</span>
+</div>
+<div class="table-scroll-wrap" id="tokenSessionWrap" style="border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);">
+<table class="editorial-table" id="tokenSessionTable">
+<thead id="tokenSessionThead">
+<tr>
+<th class="sortable" onclick="sortSessionTable(0)">会话 / 任务主题 <span class="sort-indicator">↕</span></th>
+<th class="num-col sortable" onclick="sortSessionTable(1)">用量消耗 <span class="sort-indicator">↓</span></th>
+<th class="num-col sortable" onclick="sortSessionTable(2)">占比 <span class="sort-indicator">↕</span></th>
+</tr>
+</thead>
+<tbody id="tokenSessionTbody">
+<tr>
+<td><div class="cell-title"><b>1.</b> 继续升级 Compass TDD Workspace</div></td>
+<td class="num-col" style="font-weight:600;">3.34B</td>
+<td class="num-col">27.9%</td>
+</tr>
+<tr>
+<td><div class="cell-title"><b>2.</b> 【理赔】完成剩余工单归因</div></td>
+<td class="num-col" style="font-weight:600;">1.87B</td>
+<td class="num-col">15.7%</td>
+</tr>
+<tr>
+<td><div class="cell-title"><b>3.</b> 【DataPages】设计问题分析产品化方案</div></td>
+<td class="num-col" style="font-weight:600;">1.65B</td>
+<td class="num-col">13.8%</td>
+</tr>
+<tr class="extra-session-row" style="display: none;">
+<td><div class="cell-title"><b>4.</b> 单元测试用例补全与 mock 回归</div></td>
+<td class="num-col" style="font-weight:600;">0.82B</td>
+<td class="num-col">6.9%</td>
+</tr>
+<tr class="extra-session-row" style="display: none;">
+<td><div class="cell-title"><b>5.</b> 接口 Schema 兼容性自动化比对</div></td>
+<td class="num-col" style="font-weight:600;">0.61B</td>
+<td class="num-col">5.1%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+<span style="font-size: 11px; color: var(--ink-faint);">* 点击表头支持轻量排序，统一折叠机制</span>
+<button class="btn-inline-toggle" id="btnToggleSession" onclick="toggleSessionRows()">
+        展开更多会话 ↓
+      </button>
+</div>
+</div>
+</section>
+<!-- § 03 章节：Codex 的观察与调优点评（温和手卷印记风格，无卡片框） -->
+<section class="section-editorial-chapter" id="sec-cli-reordered" style="padding-bottom: 24px; border-bottom: 1px solid var(--line);">
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<span style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--rust); letter-spacing: 0.08em;">§ 03</span>
+<h2 style="font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--ink); margin: 0;">技能与 CLI 表现</h2>
+</div>
+<span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-muted);">共调用 4,642 次</span>
+</div>
+<!-- 紧凑搜索框与分类过滤器 -->
+<div class="cli-bar-controls" style="margin-bottom: 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px;">
+<div style="display: flex; align-items: center; gap: 8px;">
+<input id="cliSearchInput" oninput="handleCliSearch()" placeholder="搜索 CLI 或子命令" style="font-family: var(--font-mono); font-size: 11px; padding: 4px 8px; border: 1px solid var(--line-strong); background: var(--bg-paper); border-radius: 2px; color: var(--ink); outline: none; width: 170px;" type="text"/>
+<select class="select-cli-filter" id="cliCategoryFilter" onchange="handleCliFilterChange()">
+<option value="all">全部类别 (All)</option>
+<option value="vcs">版本控制 (Git)</option>
+<option value="fs">校验/文件 (Checksum)</option>
+<option value="test">测试运行 (Test)</option>
+</select>
+</div>
+<span id="cliMatchedCount" style="font-family: var(--font-mono); font-size: 10.5px; color: var(--ink-faint);">默认展示调用 Top 3 指令</span>
+</div>
+<div class="cli-scroll-wrap table-scroll-wrap" id="cliWrap" style="border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); transition: max-height 0.25s ease;">
+<table class="cli-table" id="cliMasterTable">
+<thead>
+<tr>
+<th class="sortable" onclick="sortCliTable(0)">命令 <span class="sort-indicator" id="cliSortInd0">↕</span></th>
+<th class="sortable" onclick="sortCliTable(1)" style="text-align: right;">调用 <span class="sort-indicator" id="cliSortInd1">↓</span></th>
+<th class="sortable" onclick="sortCliTable(2)" style="text-align: right;">执行成功率 <span class="sort-indicator" id="cliSortInd2">↕</span></th>
+<th class="sortable" onclick="sortCliTable(3)" style="text-align: right;">业务确认 <span class="sort-indicator" id="cliSortInd3">↕</span></th>
+<th class="sortable" onclick="sortCliTable(4)" style="text-align: right;">明确失败 <span class="sort-indicator" id="cliSortInd4">↕</span></th>
+</tr>
+</thead>
+<tbody id="cliTbody">
+<tr data-cat="vcs">
+<td class="cli-name-cell">git show</td>
+<td data-val="1667" style="text-align: right; font-weight:600;">1,667</td>
+<td data-val="96.3" style="text-align: right; color: var(--forest); font-weight: 600;">96.3%</td>
+<td data-val="0" style="text-align: right; color: var(--ink-faint);">业务未确认</td>
+<td data-val="5" style="text-align: right; color: var(--rust);">5</td>
+</tr>
+<tr data-cat="vcs">
+<td class="cli-name-cell">git</td>
+<td data-val="1549" style="text-align: right; font-weight:600;">1,549</td>
+<td data-val="93.7" style="text-align: right; color: var(--forest); font-weight: 600;">93.7%</td>
+<td data-val="0" style="text-align: right; color: var(--ink-faint);">业务未确认</td>
+<td data-val="4" style="text-align: right; color: var(--rust);">4</td>
+</tr>
+<tr data-cat="fs">
+<td class="cli-name-cell">shasum</td>
+<td data-val="1426" style="text-align: right; font-weight:600;">1,426</td>
+<td data-val="98.3" style="text-align: right; color: var(--forest); font-weight: 600;">98.3%</td>
+<td data-val="0" style="text-align: right; color: var(--ink-faint);">业务未确认</td>
+<td data-val="2" style="text-align: right; color: var(--rust);">2</td>
+</tr>
+<tr class="extra-cli-row" data-cat="test" style="display: none;">
+<td class="cli-name-cell">node --test</td>
+<td data-val="312" style="text-align: right; font-weight:600;">312</td>
+<td data-val="97.8" style="text-align: right; color: var(--forest); font-weight: 600;">97.8%</td>
+<td data-val="0" style="text-align: right; color: var(--ink-faint);">业务未确认</td>
+<td data-val="7" style="text-align: right; color: var(--rust);">7</td>
+</tr>
+<tr class="extra-cli-row" data-cat="test" style="display: none;">
+<td class="cli-name-cell">pytest</td>
+<td data-val="188" style="text-align: right; font-weight:600;">188</td>
+<td data-val="95.2" style="text-align: right; color: var(--forest); font-weight: 600;">95.2%</td>
+<td data-val="0" style="text-align: right; color: var(--ink-faint);">业务未确认</td>
+<td data-val="9" style="text-align: right; color: var(--rust);">9</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div style="display: flex; justify-content: space-between; align-items: center; padding-top: 8px;">
+<span style="font-size: 11px; color: var(--ink-faint);">* 点击表头字段可进行倒序/正序排序</span>
+<button class="btn-inline-toggle" id="btnToggleCli" onclick="toggleCliRows()">
+      展开更多指令 ↓
+    </button>
+</div>
+</section>
+<!-- § 04 章节：CLI 工具具体表现 (前3行真实数据，无卡片框，支持展开) -->
+<section class="section-editorial-chapter" id="sec-advisory-reordered">
+<div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 12px;">
+<div style="display: flex; align-items: baseline; gap: 8px;">
+<span style="font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--rust); letter-spacing: 0.08em;">§ 04</span>
+<h2 style="font-family: var(--font-serif); font-size: 21px; font-weight: 600; color: var(--ink); margin: 0;">Codex 的观察与调优点评</h2>
+</div>
+<span style="font-family: var(--font-mono); font-size: 10.5px; color: var(--rust); background: var(--rust-soft); padding: 2px 7px; border-radius: 2px;">基于 7 天执行事实</span>
+</div>
+<div style="background: #faf6ee; border-left: 3px solid var(--rust); padding: 14px 18px; margin-bottom: 16px;">
+<p style="font-family: var(--font-serif); font-size: 15px; color: var(--ink); line-height: 1.6; margin: 0;">
+      “本周期内跨模型协同在业务原型搭建上展现了较高的推进速度，但在深层逻辑校验与复杂状态处理中，若单次派发意图混合过多，容易引发多轮反复修改与重写开销。”
+    </p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 14px;">
+<div style="padding-bottom: 10px; border-bottom: 1px dashed var(--line);">
+<div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+<span style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--rust);">01.</span>
+<span style="font-size: 13.5px; font-weight: 600; color: var(--ink);">局部界面修改先明确验收范围</span>
+</div>
+<p style="font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; margin: 0;">
+        避免跨组件混合提交，单次聚焦独立边界。在将复杂补丁交付给执行端之前，先理清单次变动的局部断言，减少大范围连锁回退。
+      </p>
+</div>
+<div style="padding-bottom: 10px; border-bottom: 1px dashed var(--line);">
+<div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+<span style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--rust);">02.</span>
+<span style="font-size: 13.5px; font-weight: 600; color: var(--ink);">续接先读检查点并保留已有成果</span>
+</div>
+<p style="font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; margin: 0;">
+        遇到连续异常时，先从本地有效快照或草稿恢复，不盲目追加提示词全量重跑。保持已有稳定产物，仅重试失败环节。
+      </p>
+</div>
+<div>
+<div style="display: flex; align-items: baseline; gap: 8px; margin-bottom: 4px;">
+<span style="font-family: var(--font-mono); font-size: 12px; font-weight: 700; color: var(--rust);">03.</span>
+<span style="font-size: 13.5px; font-weight: 600; color: var(--ink);">工具执行结果与业务验收分开记录</span>
+</div>
+<p style="font-size: 12.5px; color: var(--ink-muted); line-height: 1.55; margin: 0;">
+        将命令行自动化执行状态与最终业务功能核验结果独立列出，避免执行混同。自动化指令成功仅代表命令无崩溃，业务完备性需独立复核。
+      </p>
+</div>
+</div>
+</section></main>
+<!-- 刊页底栏 -->
+<footer class="sheet-footer">
+<span>Codex 小队 · 周期分析快照 (#2026-R08)</span>
+<span>v0.9.3-local.20261027.2</span>
+</footer>
+<!-- 6. 响应式弹层：单项收益计算依据 (>=768px 居中 560px 对话框，<768px 底部 85dvh Sheet) -->
+<div class="modal-overlay" id="evidenceModal" onclick="closeModalOnBg(event)">
+<div class="modal-sheet">
+<div class="modal-head">
+<h4 id="modalTitle">核算依据详情 · 评测 B1</h4>
+<button class="btn-close-modal" onclick="closeEvidence()">×</button>
+</div>
+<div class="modal-body"><div class="audit-grid">
+<div class="audit-item">
+<span class="k">纯 Codex 历史测速基准</span>
+<span class="v">9.04M Token</span>
+</div>
+<div class="audit-item">
+<span class="k">基准预估处理时间</span>
+<span class="v">约 36 分钟</span>
+</div>
+<div class="audit-item">
+<span class="k">本次实际协同消耗</span>
+<span class="v" style="color:var(--ochre);">Codex 29.97M / Qoder 12.36M</span>
+</div>
+<div class="audit-item">
+<span class="k">本次实际耗时</span>
+<span class="v" style="color:var(--ochre);">约 90 分钟</span>
+</div>
+</div>
+<div class="audit-notes" id="modalNotes">
+<b>核算依据与复测记录：</b><br/>
+          • 历史基线测定：依据同代码库历史 3 次单人同等工作量人工复测记录，基线均值为 9.04M Token。<br/>
+          • 投入对比结论：本次协同模式实际消耗 29.97M，高于 9.04M 基线，预计多用 20.93M，处理时间多投入约 54 分钟。<br/>
+          • 统计规范说明：仅在此项具备完整历史基线，如实核算并标记为「预计多用」；其余无基线任务一律不予估算。
+        </div>
+<div style="font-size: 11.5px; color: var(--ink-muted);">
+          关联任务记录：<span style="color:var(--rust); font-weight:600;">评测 B1｜Codex 小队业务工单分析工作台</span>
+</div></div>
+<div class="modal-foot">
+<button class="btn-primary-action" onclick="closeEvidence()">完成审阅</button>
+</div>
+</div>
+</div>
+</div>
+<script>
+  // 1. 日期周期切换
+  function switchPeriod(period, btn) {
+    document.querySelectorAll('#dateFilters .pill-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    
+    // 真实响应：更新标题与周期数据示意
+    const roiVal = document.getElementById('tokenRoiVal');
+    const roiPct = document.getElementById('tokenRoiPct');
+    const timeVal = document.getElementById('timeRoiVal');
+    const timePct = document.getElementById('timeRoiPct');
+
+    if (period === '30d') {
+      roiVal.textContent = '38.40M';
+      roiPct.textContent = '约 184.2%';
+      timeVal.textContent = '约 110 分钟';
+      if (timePct) timePct.textContent = '约 132.0%';
+    } else if (period === 'all') {
+      roiVal.textContent = '52.10M';
+      roiPct.textContent = '约 165.0%';
+      timeVal.textContent = '约 160 分钟';
+      if (timePct) timePct.textContent = '约 120.5%';
+    } else {
+      roiVal.textContent = '20.93M';
+      roiPct.textContent = '约 231.4%';
+      timeVal.textContent = '约 54 分钟';
+      if (timePct) timePct.textContent = '约 150.2%';
+    }
+  }
+
+  // 2. 收益依据表格 3 行折叠/展开至 32 项
+  let isLedgerExpanded = false;
+  function toggleLedgerRows() {
+    isLedgerExpanded = !isLedgerExpanded;
+    const extraRows = document.querySelectorAll('.extra-row');
+    const wrap = document.getElementById('ledgerTableWrap');
+    const btn = document.getElementById('btnToggleLedger');
+    const label = document.getElementById('ledgerCountLabel');
+
+    extraRows.forEach(row => {
+      row.style.display = isLedgerExpanded ? 'table-row' : 'none';
+    });
+
+    if (isLedgerExpanded) {
+      wrap.classList.add('expanded');
+      btn.textContent = '收起至 3 项 ↑';
+      label.textContent = '当前显示 6 / 32 项 (其余 26 项已纳评)';
+    } else {
+      wrap.classList.remove('expanded');
+      btn.textContent = '展开全部 32 项交付 ↓';
+      label.textContent = '当前显示 3 / 32 项交付';
+    }
+  }
+
+  // 3. Token 消耗视图切换 (Codex / Qoder / 对比)
+  function switchConsumptionView(view, btn) {
+    document.querySelectorAll('.segment-switch .segment-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    const cardValTotal = document.getElementById('cardValTotal');
+    const cardSubTotal = document.getElementById('cardSubTotal');
+    const cardValInput = document.getElementById('cardValInput');
+    const cardSubInput = document.getElementById('cardSubInput');
+    const cardValCache = document.getElementById('cardValCache');
+    const cardSubCache = document.getElementById('cardSubCache');
+    const cardValOutput = document.getElementById('cardValOutput');
+    const cardSubOutput = document.getElementById('cardSubOutput');
+    const modelCue = document.getElementById('tokenModelCue');
+
+    if (view === 'qoder') {
+      cardValTotal.textContent = '518.15M';
+      cardSubTotal.textContent = '100% Qoder 独立执行总量';
+      cardValInput.textContent = '482.10M';
+      cardSubInput.textContent = '占总用量 93.0%';
+      cardValCache.textContent = '378.45M';
+      cardSubCache.textContent = '占输入 78.5% (缓存命中)';
+      cardValOutput.textContent = '36.05M';
+      cardSubOutput.textContent = '占总用量 7.0% (补全生成)';
+      if (modelCue) modelCue.textContent = '当前主体：Qoder (专注单测与局部补丁回归)';
+    } else if (view === 'diff') {
+      cardValTotal.innerHTML = '<span style="font-size:20px;">11.96B</span> <span style="font-size:12px;font-family:var(--font-mono);color:var(--text-sec);font-weight:normal;">/ 518M</span>';
+      cardSubTotal.textContent = 'Codex 95.8% · Qoder 4.2%';
+      cardValInput.innerHTML = '<span style="font-size:20px;">11.93B</span> <span style="font-size:12px;font-family:var(--font-mono);color:var(--text-sec);font-weight:normal;">/ 482M</span>';
+      cardSubInput.textContent = '输入量比值 24.7x';
+      cardValCache.innerHTML = '<span style="font-size:20px;">11.72B</span> <span style="font-size:12px;font-family:var(--font-mono);color:var(--text-sec);font-weight:normal;">/ 378M</span>';
+      cardSubCache.textContent = '命中率 98.2% vs 78.5%';
+      cardValOutput.innerHTML = '<span style="font-size:20px;">30.03M</span> <span style="font-size:12px;font-family:var(--font-mono);color:var(--text-sec);font-weight:normal;">/ 36.1M</span>';
+      cardSubOutput.textContent = '输出比 0.83x (Qoder生成偏多)';
+      if (modelCue) modelCue.textContent = '协同对比：Codex 承担宏观与复核 · Qoder 承接细分单测';
+    } else {
+      cardValTotal.textContent = '11.96B';
+      cardSubTotal.textContent = '100% 周期记录总量';
+      cardValInput.textContent = '11.93B';
+      cardSubInput.textContent = '占总用量 99.7%';
+      cardValCache.textContent = '11.72B';
+      cardSubCache.textContent = '占输入 98.2% (缓存命中)';
+      cardValOutput.textContent = '30.03M';
+      cardSubOutput.textContent = '占总用量 0.3% (补全生成)';
+      if (modelCue) modelCue.textContent = '当前主体：Codex (主协同与复杂状态推进)';
+    }
+  }
+
+  // 会话表展开/收起
+  let isSessionExpanded = false;
+  function toggleSessionRows() {
+    isSessionExpanded = !isSessionExpanded;
+    const extraRows = document.querySelectorAll('.extra-session-row');
+    const wrap = document.getElementById('tokenSessionWrap');
+    const btn = document.getElementById('btnToggleSession');
+    const label = document.getElementById('tokenSessionCountLabel');
+
+    extraRows.forEach(row => {
+      row.style.display = isSessionExpanded ? 'table-row' : 'none';
+    });
+
+    if (isSessionExpanded) {
+      wrap.classList.add('expanded');
+      btn.textContent = '收起会话 ↑';
+      label.textContent = '当前显示 5 / 100 个已采纳会话';
+    } else {
+      wrap.classList.remove('expanded');
+      btn.textContent = '展开更多会话 ↓';
+      label.textContent = '当前显示 3 / 100 个已采纳会话';
+    }
+  }
+
+  // CLI 表展开/收起
+  let isCliExpanded = false;
+  function toggleCliRows() {
+    isCliExpanded = !isCliExpanded;
+    const extraRows = document.querySelectorAll('.extra-cli-row');
+    const wrap = document.getElementById('cliWrap');
+    const btn = document.getElementById('btnToggleCli');
+    const label = document.getElementById('cliMatchedCount');
+
+    extraRows.forEach(row => {
+      row.style.display = isCliExpanded ? 'table-row' : 'none';
+    });
+
+    if (isCliExpanded) {
+      wrap.classList.add('expanded');
+      btn.textContent = '收起指令 ↑';
+      label.textContent = '展示全部 5 项常用指令';
+    } else {
+      wrap.classList.remove('expanded');
+      btn.textContent = '展开更多指令 ↓';
+      label.textContent = '默认展示调用 Top 3 指令';
+    }
+  }
+
+  // CLI 搜索与筛选
+  function handleCliSearch() {
+    const term = document.getElementById('cliSearchInput').value.trim().toLowerCase();
+    const rows = document.querySelectorAll('#cliTbody tr');
+    rows.forEach(r => {
+      const name = r.querySelector('.cli-name-cell').textContent.toLowerCase();
+      r.style.display = name.includes(term) ? 'table-row' : 'none';
+    });
+  }
+
+  function handleCliFilterChange() {
+    const cat = document.getElementById('cliCategoryFilter').value;
+    const rows = document.querySelectorAll('#cliTbody tr');
+    rows.forEach(r => {
+      if (cat === 'all' || r.getAttribute('data-cat') === cat) {
+        r.style.display = 'table-row';
+      } else {
+        r.style.display = 'none';
+      }
+    });
+  }
+
+  // 单项核算依据弹层 (Modal / Bottom Sheet)
+  function openEvidence(taskId) {
+    const modal = document.getElementById('evidenceModal');
+    const title = document.getElementById('modalTitle');
+    const notes = document.getElementById('modalNotes');
+
+    if (taskId === 'B1') {
+      title.textContent = '核算依据详情 · 评测 B1 业务工单分析工作台';
+      notes.innerHTML = '<b>测算说明与基准依据：</b><br>• 历史基准依据：基于同仓库历史 3 次工单回归日志，单次纯 Codex 历史测速基准为 9.04M。<br>• 本次负收益因由：第 2 轮中出现多维筛选参数校验 422 报错，导致 Qoder 代码未能闭环，主 Codex 接入后全量重写增加了 20.93M 上下文。<br>• 真实协同事实：Qoder 耗费 12.36M 进行单测，但协同并未达成省耗，如实计入负收益。';
+    } else if (taskId === 'P2') {
+      title.textContent = '交付详情 · 理赔新增提现户需求 (未完成)';
+      notes.innerHTML = '<b>当前进度与未纳评说明：</b><br>• 状态：待确认 PR 补丁，当前周期尚未完结。<br>• 消耗记录：Codex 248.54M，Qoder 136.04M。<br>• 因无单人历史 baseline，按审慎原则不计算任何省耗比例。';
+    } else {
+      title.textContent = '交付详情 · 梳理 Codex 小队分析模块 (未完成)';
+      notes.innerHTML = '<b>当前进度与未纳评说明：</b><br>• 状态：进行中，涉及 12 个分析组件与样式重构。<br>• 消耗记录：Codex 306.84M，Qoder 369.75M。<br>• 待整体交付并完成回归后，若有历史可比项再行核算。';
+    }
+
+    modal.classList.add('open');
+  }
+
+  function closeEvidence() {
+    document.getElementById('evidenceModal').classList.remove('open');
+  }
+
+  function closeModalOnBg(e) {
+    if (e.target.id === 'evidenceModal') {
+      closeEvidence();
+    }
+  }
+
+  // 键盘 Esc 快捷退出弹层
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeEvidence();
+    }
+  });
+</script>
+</body></html>

@@ -1,0 +1,7 @@
+{
+  "example": true,
+  "businessBackendConnected": false,
+  "databaseExecuted": false,
+  "messageServiceExecuted": false,
+  "description": "仅展示虚构本地页面状态与示例操作，不代表理赔业务完成或预发/生产验收。"
+}

@@ -1,0 +1,90 @@
+
+    :root {
+      --paper-bg: #fbf9f4;
+      --paper-card: #ffffff;
+      --paper-card-sub: #fdfbf7;
+      --paper-dim: #f4efe2;
+      --ink-primary: #2c2621;
+      --ink-secondary: #6b645b;
+      --ink-tertiary: #928b80;
+      --rust: #b84b2e;
+      --rust-light: #faeee9;
+      --audit-green: #2d6a4f;
+      --audit-green-light: #eaf3ed;
+      --rule-border: #e4decb;
+      --rule-light: #ede7d8;
+      --rule-focus: #c5ba9e;
+      --amber-warn: #b45309;
+      --amber-bg: #fffbeb;
+    }
+
+    body {
+      background-color: var(--paper-bg);
+      color: var(--ink-primary);
+      font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      line-height: 1.5;
+    }
+
+    .font-serif-title {
+      font-family: 'Noto Serif SC', Georgia, serif;
+    }
+
+    .font-mono-code {
+      font-family: 'Space Mono', monospace;
+    }
+
+    /* 纸面细微阴影与边线 */
+    .paper-panel {
+      background-color: var(--paper-card);
+      border: 1px solid var(--rule-border);
+      border-radius: 4px;
+      box-shadow: 0 1px 3px rgba(44, 38, 33, 0.03);
+    }
+
+    .paper-subpanel {
+      background-color: var(--paper-card-sub);
+      border: 1px solid var(--rule-light);
+      border-radius: 3px;
+    }
+
+    /* 内部滚动与表头吸顶 */
+    .scroll-table-container {
+      max-height: 360px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--rule-border) transparent;
+    }
+    .scroll-table-container::-webkit-scrollbar {
+      width: 4px;
+    }
+    .scroll-table-container::-webkit-scrollbar-thumb {
+      background-color: var(--rule-border);
+      border-radius: 2px;
+    }
+
+    .sticky-th {
+      position: sticky;
+      top: 0;
+      background-color: var(--paper-card-sub);
+      z-index: 10;
+    }
+
+    /* 原生 details 样式定制 */
+    details summary {
+      cursor: pointer;
+      list-style: none;
+    }
+    details summary::-webkit-details-marker {
+      display: none;
+    }
+
+    /* 行状态与交替行 */
+    tr:hover td {
+      background-color: #faf6ed;
+    }
+
+    .dashed-divider {
+      border-top: 1px dashed var(--rule-border);
+    }
+  

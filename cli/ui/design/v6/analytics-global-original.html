@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+
+<html lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Codex 小队分析 · 整体看板</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;1,6..72,400&amp;family=Space+Grotesk:wght@400;500;600;700&amp;family=Space+Mono:ital,wght@0,400;0,700;1,400&amp;family=Noto+Serif+SC:wght@400;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          "colors": {
+            "on-tertiary-container": "#ffefdf",
+            "on-primary": "#ffffff",
+            "primary-fixed": "#ffdbd2",
+            "inverse-on-surface": "#f8f0e3",
+            "secondary-fixed-dim": "#95d4b3",
+            "outline-variant": "#dec0b9",
+            "on-error": "#ffffff",
+            "tertiary-fixed-dim": "#f8bb6a",
+            "on-background": "#1f1b14",
+            "primary-fixed-dim": "#ffb4a1",
+            "on-error-container": "#93000a",
+            "on-tertiary": "#ffffff",
+            "on-surface": "#1f1b14",
+            "surface-variant": "#eae1d5",
+            "surface-container-high": "#f0e7db",
+            "on-secondary-container": "#316e52",
+            "secondary": "#2c694e",
+            "surface-tint": "#a43c21",
+            "outline": "#8a716b",
+            "on-secondary-fixed-variant": "#0e5138",
+            "on-surface-variant": "#57423c",
+            "on-secondary": "#ffffff",
+            "on-secondary-fixed": "#002114",
+            "tertiary-fixed": "#ffddb5",
+            "surface": "#fff8f1",
+            "surface-container-low": "#fbf2e6",
+            "background": "#fff8f1",
+            "secondary-fixed": "#b1f0ce",
+            "secondary-container": "#aeeecb",
+            "on-primary-fixed": "#3c0800",
+            "surface-container": "#f5ede0",
+            "surface-dim": "#e1d9cd",
+            "on-tertiary-fixed": "#2a1800",
+            "inverse-primary": "#ffb4a1",
+            "surface-container-highest": "#eae1d5",
+            "primary": "#983419",
+            "on-primary-fixed-variant": "#84250b",
+            "surface-container-lowest": "#ffffff",
+            "primary-container": "#b84b2e",
+            "on-primary-container": "#ffede9",
+            "tertiary-container": "#94641a",
+            "on-tertiary-fixed-variant": "#643f00",
+            "error-container": "#ffdad6",
+            "surface-bright": "#fff8f1",
+            "inverse-surface": "#343028",
+            "tertiary": "#774c00",
+            "error": "#ba1a1a",
+            /* Hand-corrected Editorial Papercraft Tokens */
+            "paper-white": "#fffcf7",
+            "paper-cream": "#fbf8f3",
+            "paper-bone": "#f6f3ee",
+            "paper-rule": "#ded5c4",
+            "paper-rule-light": "#e8e2d6",
+            "ink-primary": "#2c2621",
+            "ink-secondary": "#6b645b",
+            "ink-muted": "#91897e",
+            "stamp-rust": "#983419",
+            "stamp-terracotta": "#b84b2e",
+            "stamp-sage": "#2c694e"
+          },
+          "borderRadius": {
+            "DEFAULT": "0.125rem",
+            "lg": "0.25rem",
+            "xl": "0.5rem",
+            "full": "0.75rem"
+          },
+          "spacing": {
+            "gutter": "1.5rem",
+            "gutter-mobile": "1rem",
+            "space-md": "1rem",
+            "margin-tablet": "2rem",
+            "space-xs": "0.25rem",
+            "space-xl": "2.5rem",
+            "space-sm": "0.5rem",
+            "margin": "3rem",
+            "margin-mobile": "1.25rem",
+            "space-lg": "1.5rem"
+          },
+          "fontFamily": {
+            "headline-act-mobile": ["Space Grotesk", "sans-serif"],
+            "headline-act": ["Space Grotesk", "sans-serif"],
+            "display-lg-mobile": ["Space Grotesk", "sans-serif"],
+            "body-prose-md": ["Newsreader", "Noto Serif SC", "serif"],
+            "caption-footnote": ["Newsreader", "Noto Serif SC", "serif"],
+            "label-stamp": ["Space Mono", "monospace"],
+            "headline-scene": ["Newsreader", "Noto Serif SC", "serif"],
+            "body-sans": ["Space Grotesk", "Noto Serif SC", "sans-serif"],
+            "annotation-cue": ["Space Mono", "monospace"],
+            "display-lg": ["Space Grotesk", "sans-serif"],
+            "body-prose-lg": ["Newsreader", "Noto Serif SC", "serif"]
+          },
+          "fontSize": {
+            "headline-act-mobile": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+            "headline-act": ["2rem", { "lineHeight": "2.5rem", "letterSpacing": "-0.02em", "fontWeight": "600" }],
+            "display-lg-mobile": ["2.25rem", { "lineHeight": "2.75rem", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+            "body-prose-md": ["1rem", { "lineHeight": "1.65rem", "letterSpacing": "0", "fontWeight": "400" }],
+            "caption-footnote": ["0.8125rem", { "lineHeight": "1.25rem", "letterSpacing": "0.01em", "fontWeight": "400" }],
+            "label-stamp": ["0.75rem", { "lineHeight": "1rem", "letterSpacing": "0.08em", "fontWeight": "700" }],
+            "headline-scene": ["1.5rem", { "lineHeight": "2rem", "letterSpacing": "0", "fontWeight": "500" }],
+            "body-sans": ["0.9375rem", { "lineHeight": "1.5rem", "letterSpacing": "0", "fontWeight": "400" }],
+            "annotation-cue": ["0.8125rem", { "lineHeight": "1.25rem", "letterSpacing": "0.02em", "fontWeight": "400" }],
+            "display-lg": ["3.25rem", { "lineHeight": "3.75rem", "letterSpacing": "-0.03em", "fontWeight": "700" }],
+            "body-prose-lg": ["1.25rem", { "lineHeight": "2rem", "letterSpacing": "0.01em", "fontWeight": "400" }]
+          }
+        }
+      }
+    }
+  </script>
+<style>
+    body {
+      background-color: #f6f3ee;
+      color: #2c2621;
+      font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+      -webkit-font-smoothing: antialiased;
+    }
+    .paper-canvas {
+      width: 100%;
+      max-width: 640px;
+      min-width: 320px;
+      margin: 0 auto;
+      background-color: #fffcf7;
+      box-shadow: 0 1px 3px rgba(44, 38, 33, 0.04), 0 12px 28px -6px rgba(44, 38, 33, 0.06);
+    }
+    .rule-dotted-x {
+      background-image: linear-gradient(to right, #ded5c4 40%, rgba(255,255,255,0) 0%);
+      background-position: bottom;
+      background-size: 6px 1px;
+      background-repeat: repeat-x;
+    }
+    .rule-dashed-diag {
+      background-image: repeating-linear-gradient(45deg, #ded5c4 0, #ded5c4 1px, transparent 0, transparent 6px);
+    }
+  </style>
+</head>
+<body class="selection:bg-primary-fixed selection:text-ink-primary font-body-sans py-0 md:py-6 text-on-surface">
+<!-- 640px 原生紧凑面板主体容器 (480px 自适应良好，无多余大框，无侧栏) -->
+<main class="paper-canvas border-x border-paper-rule min-h-screen flex flex-col">
+<!-- 01. 顶栏主导航 -->
+<header class="w-full px-4 pt-3.5 pb-3 border-b border-paper-rule bg-paper-white sticky top-0 z-40">
+<div class="flex items-center justify-between gap-2">
+<div class="flex items-center gap-1.5">
+<a class="px-2.5 py-1 text-[13px] font-medium text-ink-secondary hover:text-ink-primary transition-colors" href="#">
+            小队任务看板
+          </a>
+<span class="text-paper-rule text-xs">/</span>
+<a class="px-2.5 py-1 text-[13px] font-semibold text-stamp-rust border-b-2 border-stamp-rust flex items-center gap-1" href="#">
+<span>分析</span>
+<span class="font-label-stamp text-[10px] bg-primary-fixed text-stamp-rust px-1 py-0.2 rounded-sm leading-tight">ACTIVE</span>
+</a>
+</div>
+<div class="flex items-center gap-2">
+<div class="hidden sm:flex items-center gap-1 text-[11px] font-label-stamp text-ink-muted">
+<span class="inline-block w-1.5 h-1.5 rounded-full bg-secondary animate-pulse"></span>
+<span>3秒自动同步</span>
+</div>
+<button class="p-1 text-ink-secondary hover:text-stamp-rust transition-colors hover:rotate-180 duration-300" title="立即刷新数据">
+<span class="material-symbols-outlined text-[16px] leading-none" data-icon="refresh">refresh</span>
+</button>
+</div>
+</div>
+<div class="mt-1 flex items-center justify-between text-[11px] text-ink-muted px-1 font-annotation-cue">
+<span>示例数据 · 设计预览</span>
+<span class="truncate max-w-[260px]">当前电脑绑定会话 · 守护进程在线</span>
+</div>
+</header>
+<!-- 02. 视图切换器 & 范围筛选器 -->
+<section class="px-4 py-2.5 bg-paper-cream border-b border-paper-rule flex flex-col gap-2">
+<div class="flex items-center justify-between gap-2">
+<!-- 标签页切换 -->
+<div class="inline-flex p-0.5 bg-paper-bone border border-paper-rule rounded">
+<button class="px-3 py-1 text-xs text-ink-secondary hover:text-ink-primary transition-colors">
+            当前会话
+          </button>
+<button class="px-3 py-1 text-xs font-semibold text-paper-white bg-stamp-rust rounded-sm shadow-xs flex items-center gap-1">
+<span>整体</span>
+<span class="font-label-stamp text-[9px] opacity-90 tracking-tighter">ACTIVE</span>
+</button>
+</div>
+<!-- 紧凑时间范围筛选 -->
+<div class="inline-flex items-center text-xs font-annotation-cue border border-paper-rule rounded overflow-hidden bg-paper-white">
+<button class="px-2 py-0.5 text-ink-secondary hover:bg-paper-bone border-r border-paper-rule">近7天</button>
+<button class="px-2 py-0.5 text-ink-secondary hover:bg-paper-bone border-r border-paper-rule">近30天</button>
+<button class="px-2 py-0.5 font-semibold text-stamp-rust bg-primary-fixed">全部</button>
+</div>
+</div>
+<div class="flex items-center justify-between text-[11px] text-ink-muted font-annotation-cue px-0.5">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[13px] text-ink-muted" data-icon="schedule">schedule</span>
+          数据截至：今日 14:38
+        </span>
+<span>仅含本机已绑定会话 (12/12)</span>
+</div>
+</section>
+<!-- 03. 顶部洞察条 (赤陶色浅底细框) -->
+<div class="mx-4 mt-3 p-2.5 bg-[#fbf2ec] border border-[#dec0b9] rounded-sm flex items-start gap-2.5">
+<span class="material-symbols-outlined text-stamp-rust text-[18px] shrink-0 mt-0.5" data-icon="warning">warning</span>
+<div class="flex-1 text-xs leading-relaxed text-ink-primary font-body-sans">
+<strong class="font-semibold text-stamp-rust">高频问题集中：</strong>
+        失败尝试集中在 3 个会话，可先检查这些交办的共同边界。
+        <a class="inline-flex items-center gap-0.5 font-label-stamp text-[11px] text-stamp-rust hover:underline underline-offset-2 ml-1 font-semibold" href="#session-rank">
+          [查看对应会话 ↓]
+        </a>
+</div>
+</div>
+<!-- 04. 核心指标 (4个紧凑 KPI 卡片) -->
+<section class="px-4 pt-3.5 pb-2">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 核心指标 · AGGREGATE KPI ]</span>
+<span class="text-[11px] font-annotation-cue text-ink-muted">口径: 已报离散总成</span>
+</div>
+<div class="grid grid-cols-2 gap-2">
+<!-- KPI 1 -->
+<div class="p-2.5 bg-paper-cream border border-paper-rule rounded-sm hover:border-stamp-terracotta transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-ink-secondary">已报 Token</span>
+<span class="font-label-stamp text-[10px] text-stamp-sage bg-secondary-fixed/50 px-1 py-0.2 rounded">16/22 尝试已报</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-act text-2xl font-bold text-ink-primary tracking-tight">28.0</span>
+<span class="font-label-stamp text-xs text-ink-secondary">m</span>
+</div>
+<div class="mt-1.5 pt-1.5 border-t border-paper-rule-light text-[10.5px] font-annotation-cue text-ink-muted flex justify-between">
+<span>入 26.8m</span>
+<span>·</span>
+<span>出 1.2m</span>
+<span>·</span>
+<span>缓存占 72.4%</span>
+</div>
+</div>
+<!-- KPI 2 -->
+<div class="p-2.5 bg-paper-cream border border-paper-rule rounded-sm hover:border-stamp-terracotta transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-ink-secondary">绑定会话</span>
+<span class="font-label-stamp text-[10px] text-ink-muted bg-paper-bone px-1 py-0.2 border border-paper-rule-light rounded">只读审计</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-act text-2xl font-bold text-ink-primary tracking-tight">12</span>
+<span class="font-label-stamp text-xs text-ink-secondary">个</span>
+</div>
+<div class="mt-1.5 pt-1.5 border-t border-paper-rule-light text-[10.5px] font-annotation-cue text-ink-muted flex justify-between">
+<span class="text-secondary font-medium">活跃 3</span>
+<span>·</span>
+<span>归档 9</span>
+<span>·</span>
+<span title="主 Codex 会话未纳入计量">主序不计</span>
+</div>
+</div>
+<!-- KPI 3 -->
+<div class="p-2.5 bg-paper-cream border border-paper-rule rounded-sm hover:border-stamp-terracotta transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-ink-secondary">子任务概况</span>
+<span class="font-label-stamp text-[10px] text-stamp-rust bg-primary-fixed px-1 py-0.2 rounded">4 需关注</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-act text-2xl font-bold text-ink-primary tracking-tight">45</span>
+<span class="font-label-stamp text-xs text-ink-secondary">个</span>
+</div>
+<div class="mt-1.5 pt-1.5 border-t border-paper-rule-light text-[10.5px] font-annotation-cue text-ink-muted flex justify-between">
+<span>已验 18</span>
+<span>·</span>
+<span>进行 14</span>
+<span>·</span>
+<span>待验 9</span>
+</div>
+</div>
+<!-- KPI 4 -->
+<div class="p-2.5 bg-paper-cream border border-paper-rule rounded-sm hover:border-stamp-terracotta transition-colors">
+<div class="flex items-center justify-between">
+<span class="text-[11px] text-ink-secondary">执行尝试</span>
+<span class="font-label-stamp text-[10px] text-ink-secondary bg-paper-bone px-1 py-0.2 rounded">均 6.6 次/会话</span>
+</div>
+<div class="mt-1 flex items-baseline gap-1">
+<span class="font-headline-act text-2xl font-bold text-ink-primary tracking-tight">79</span>
+<span class="font-label-stamp text-xs text-ink-secondary">次</span>
+</div>
+<div class="mt-1.5 pt-1.5 border-t border-paper-rule-light text-[10.5px] font-annotation-cue text-ink-muted flex justify-between">
+<span>续接 34</span>
+<span>·</span>
+<span class="text-stamp-rust font-medium">失败 5</span>
+<span>·</span>
+<span>中断 0</span>
+</div>
+</div>
+</div>
+<!-- 严格口径提示 -->
+<div class="mt-2 text-[10.5px] font-annotation-cue text-ink-muted leading-tight border-l-2 border-paper-rule pl-2 py-0.5">
+        口径：仅统计当前电脑已绑定的 12 个会话中 Qoder 成员已上报数据，主 Codex 决策不计入 Token 消耗。
+      </div>
+</section>
+<!-- 05. 跨会话用量与尝试数趋势 (离散按日图表) -->
+<section class="mx-4 my-2 p-3 bg-paper-white border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 跨会话趋势 · DAILY USAGE &amp; ATTEMPTS ]</span>
+<span class="font-label-stamp text-[10px] text-ink-muted">T-6 至 T-0 (7日离散)</span>
+</div>
+<!-- 图例与声明 -->
+<div class="flex flex-wrap items-center justify-between gap-1 pb-2 border-b border-paper-rule-light text-[11px] font-annotation-cue text-ink-secondary">
+<div class="flex items-center gap-3">
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 bg-ink-primary inline-block rounded-[1px]"></span>
+            输入 Token
+          </span>
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 bg-stamp-terracotta inline-block rounded-[1px]"></span>
+            输出 Token
+          </span>
+<span class="flex items-center gap-1">
+<span class="w-2.5 h-2.5 rule-dashed-diag border border-paper-rule inline-block rounded-[1px]"></span>
+            未上报缺省
+          </span>
+<span class="flex items-center gap-1">
+<span class="w-2 h-2 rounded-full border border-stamp-rust bg-paper-white inline-block"></span>
+            尝试次数
+          </span>
+</div>
+</div>
+<!-- 柱线组合图表容器 (紧凑手工排版，非机器插值) -->
+<div class="pt-3 pb-1">
+<div class="h-36 w-full flex items-end justify-between gap-2 px-1 relative">
+<!-- 背景基准线 -->
+<div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-40">
+<div class="border-b border-paper-rule w-full h-0"></div>
+<div class="border-b border-paper-rule border-dashed w-full h-0"></div>
+<div class="border-b border-paper-rule w-full h-0"></div>
+</div>
+<!-- T-6 -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-ink-muted mb-1 opacity-0 group-hover:opacity-100 transition-opacity">11次</span>
+<div class="w-2 h-2 rounded-full border-2 border-stamp-rust bg-paper-white mb-2" title="尝试 11 次"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch">
+<div class="w-full bg-stamp-terracotta h-2.5" title="输出 0.18m"></div>
+<div class="w-full bg-ink-primary h-14" title="输入 3.4m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-secondary">T-6</span>
+</div>
+<!-- T-5 (未上报缺省数据) -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-stamp-rust mb-1">缺省</span>
+<div class="w-1.5 h-1.5 rounded-full bg-ink-muted/50 mb-2" title="无上报尝试记录"></div>
+<div class="w-full max-w-[28px] h-16 rule-dashed-diag border border-paper-rule border-dashed flex items-center justify-center" title="T-5 未上报数据，不使用插值算法虚构">
+<span class="font-label-stamp text-[9px] text-ink-muted bg-paper-white/80 px-0.5">N/A</span>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-muted">T-5</span>
+</div>
+<!-- T-4 -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-ink-muted mb-1 opacity-0 group-hover:opacity-100 transition-opacity">14次</span>
+<div class="w-2 h-2 rounded-full border-2 border-stamp-rust bg-paper-white mb-2" title="尝试 14 次"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch">
+<div class="w-full bg-stamp-terracotta h-3" title="输出 0.22m"></div>
+<div class="w-full bg-ink-primary h-20" title="输入 4.8m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-secondary">T-4</span>
+</div>
+<!-- T-3 -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-ink-muted mb-1 opacity-0 group-hover:opacity-100 transition-opacity">8次</span>
+<div class="w-2 h-2 rounded-full border-2 border-stamp-rust bg-paper-white mb-2" title="尝试 8 次"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch">
+<div class="w-full bg-stamp-terracotta h-1.5" title="输出 0.11m"></div>
+<div class="w-full bg-ink-primary h-10" title="输入 2.1m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-secondary">T-3</span>
+</div>
+<!-- T-2 -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-ink-muted mb-1 opacity-0 group-hover:opacity-100 transition-opacity">19次</span>
+<div class="w-2.5 h-2.5 rounded-full border-2 border-stamp-rust bg-stamp-rust mb-2" title="尝试 19 次 (峰值)"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch">
+<div class="w-full bg-stamp-terracotta h-4" title="输出 0.31m"></div>
+<div class="w-full bg-ink-primary h-24" title="输入 6.5m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-secondary">T-2</span>
+</div>
+<!-- T-1 -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default">
+<span class="text-[9px] font-label-stamp text-ink-muted mb-1 opacity-0 group-hover:opacity-100 transition-opacity">15次</span>
+<div class="w-2 h-2 rounded-full border-2 border-stamp-rust bg-paper-white mb-2" title="尝试 15 次"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch">
+<div class="w-full bg-stamp-terracotta h-3" title="输出 0.24m"></div>
+<div class="w-full bg-ink-primary h-18" title="输入 4.9m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp text-ink-secondary">T-1</span>
+</div>
+<!-- T-0 (今日) -->
+<div class="flex-1 flex flex-col items-center h-full justify-end z-10 group cursor-default bg-paper-cream/60 rounded-t-sm">
+<span class="text-[9px] font-label-stamp text-stamp-rust font-bold mb-1">12次</span>
+<div class="w-2.5 h-2.5 rounded-full border-2 border-stamp-rust bg-primary-fixed mb-2" title="今日尝试 12 次"></div>
+<div class="w-full max-w-[28px] flex flex-col justify-end items-stretch border-x border-stamp-terracotta/30">
+<div class="w-full bg-stamp-terracotta h-2" title="输出 0.14m"></div>
+<div class="w-full bg-ink-primary h-16" title="输入 5.1m"></div>
+</div>
+<span class="mt-2 text-[10px] font-label-stamp font-bold text-stamp-rust">今日</span>
+</div>
+</div>
+</div>
+<div class="mt-2 pt-2 border-t border-paper-rule-light text-[10px] font-annotation-cue text-ink-muted flex items-center justify-between">
+<span>* 真实离散采样：未上报日期显示为缺省斜线，严禁平滑插值插值算法造数据。</span>
+<span>最大单日: 6.81m Token</span>
+</div>
+</section>
+<!-- 06. 执行与完成状态分布 (非机械图表，分阶段结构条) -->
+<section class="mx-4 my-2 p-3 bg-paper-cream border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 任务状态结构 · 45 SUBTASKS ]</span>
+<span class="text-[10px] font-annotation-cue text-ink-muted bg-paper-white px-1.5 py-0.5 border border-paper-rule">构造示例</span>
+</div>
+<!-- 配比条 -->
+<div class="w-full h-3 bg-paper-bone border border-paper-rule rounded-[2px] flex overflow-hidden">
+<div class="bg-secondary" style="width: 40.0%;" title="已验收: 18 (40.0%)"></div>
+<div class="bg-ink-primary" style="width: 31.1%;" title="处理中: 14 (31.1%)"></div>
+<div class="bg-[#c08a3e]" style="width: 20.0%;" title="待验收: 9 (20.0%)"></div>
+<div class="bg-stamp-rust" style="width: 8.9%;" title="需关注: 4 (8.9%)"></div>
+</div>
+<!-- 状态细项指标 -->
+<div class="grid grid-cols-5 gap-1 pt-2.5 text-center">
+<div class="p-1">
+<div class="text-[11px] text-ink-secondary">已验收</div>
+<div class="font-headline-act text-sm font-bold text-secondary">18</div>
+<div class="text-[9px] font-label-stamp text-ink-muted">40.0%</div>
+</div>
+<div class="p-1 border-l border-paper-rule-light">
+<div class="text-[11px] text-ink-secondary">处理中</div>
+<div class="font-headline-act text-sm font-bold text-ink-primary">14</div>
+<div class="text-[9px] font-label-stamp text-ink-muted">31.1%</div>
+</div>
+<div class="p-1 border-l border-paper-rule-light">
+<div class="text-[11px] text-ink-secondary">待验收</div>
+<div class="font-headline-act text-sm font-bold text-[#c08a3e]">9</div>
+<div class="text-[9px] font-label-stamp text-ink-muted">20.0%</div>
+</div>
+<div class="p-1 border-l border-paper-rule-light bg-primary-fixed/30 rounded-xs">
+<div class="text-[11px] text-stamp-rust font-semibold">需关注</div>
+<div class="font-headline-act text-sm font-bold text-stamp-rust">4</div>
+<div class="text-[9px] font-label-stamp text-stamp-rust">8.9%</div>
+</div>
+<div class="p-1 border-l border-paper-rule-light">
+<div class="text-[11px] text-ink-muted">已停止</div>
+<div class="font-headline-act text-sm font-bold text-ink-muted">0</div>
+<div class="text-[9px] font-label-stamp text-ink-muted">0.0%</div>
+</div>
+</div>
+</section>
+<!-- 07. Token 来源与模型消耗结构 -->
+<section class="mx-4 my-2 p-3 bg-paper-white border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 消耗来源与模型 · TOKEN COMPOSITION ]</span>
+<span class="font-label-stamp text-[10px] text-secondary">Qoder 本地已验证</span>
+</div>
+<div class="flex flex-col gap-2.5 text-xs">
+<!-- 维度卡片 -->
+<div class="p-2 bg-paper-bone border border-paper-rule rounded-sm flex items-start justify-between gap-3">
+<div>
+<div class="font-semibold text-ink-primary flex items-center gap-1.5">
+<span>Qoder (DeepSeek-Flash)</span>
+<span class="font-label-stamp text-[9px] bg-paper-white border border-paper-rule px-1 py-0.2 text-ink-secondary">执行成员</span>
+</div>
+<div class="text-[11px] text-ink-muted font-annotation-cue mt-0.5">
+              区分状态：已上报 28.0m · 另有 6 次尝试因网络超时为「实际未报数据」
+            </div>
+</div>
+<div class="text-right shrink-0 font-label-stamp">
+<span class="text-sm font-bold text-ink-primary">28,042,118</span>
+<span class="block text-[10px] text-ink-muted">TOKENS</span>
+</div>
+</div>
+<!-- 上下文缓存细述 -->
+<div class="p-2 border border-dashed border-paper-rule rounded-sm bg-paper-cream/50">
+<div class="flex items-center justify-between font-label-stamp text-[11px]">
+<span class="text-ink-secondary font-semibold">输入上下文缓存命中</span>
+<span class="text-stamp-rust font-bold">19.4m / 26.8m (命中率 72.4%)</span>
+</div>
+<div class="w-full bg-paper-bone h-1.5 border border-paper-rule my-1.5 rounded-full overflow-hidden">
+<div class="bg-stamp-terracotta h-full" style="width: 72.4%;"></div>
+</div>
+<div class="text-[10.5px] font-annotation-cue text-ink-muted leading-tight">
+            特别说明：上下文缓存属于“输入 Token”的一部分，已完整包含在总输入中，严格避免重复累加。
+          </div>
+</div>
+</div>
+</section>
+<!-- 08. 会话排行 (可切换排序) -->
+<section class="mx-4 my-2 p-3 bg-paper-white border border-paper-rule rounded-sm" id="session-rank">
+<div class="flex items-center justify-between pb-2 border-b border-paper-rule">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 会话排行 · SESSIONS ]</span>
+<!-- 排序切换按钮 -->
+<div class="inline-flex text-[11px] font-annotation-cue border border-paper-rule rounded bg-paper-bone">
+<button class="px-2 py-0.5 font-semibold text-stamp-rust bg-primary-fixed">按已报Token</button>
+<button class="px-2 py-0.5 text-ink-secondary hover:text-ink-primary border-l border-paper-rule">按任务数</button>
+</div>
+</div>
+<!-- 数据隐私保护原则提示 -->
+<div class="my-2 px-2 py-1 bg-paper-cream border-l-2 border-ink-muted text-[10px] font-annotation-cue text-ink-muted">
+        安全边界：脱敏视图。不展示跨会话上下文命令，不生成跨会话穿透链接，杜绝会话间串扰。
+      </div>
+<!-- 表格内容 (针对 640px 紧凑设计) -->
+<div class="overflow-x-auto -mx-1">
+<table class="w-full text-left border-collapse text-xs">
+<thead>
+<tr class="border-b border-paper-rule-light font-label-stamp text-[10px] text-ink-muted">
+<th class="py-1.5 px-2">会话短标题</th>
+<th class="py-1.5 px-1 text-center">任务</th>
+<th class="py-1.5 px-1 text-center">尝试</th>
+<th class="py-1.5 px-1 text-center">失败</th>
+<th class="py-1.5 px-2 text-right">已报Token</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-paper-rule-light">
+<!-- 当前会话 (第一行轻强调) -->
+<tr class="bg-[#fcf5ef] hover:bg-[#faefe5] transition-colors">
+<td class="py-2 px-2">
+<div class="font-medium text-stamp-rust flex items-center gap-1">
+<span>修复报表筛选异常</span>
+<span class="font-label-stamp text-[9px] bg-stamp-rust text-paper-white px-1 py-0.2 rounded">当前</span>
+</div>
+<a class="text-[10px] font-annotation-cue text-stamp-terracotta hover:underline mt-0.5 inline-block" href="#">
+                  ← 返回本会话执行页
+                </a>
+</td>
+<td class="py-2 px-1 text-center font-label-stamp">6</td>
+<td class="py-2 px-1 text-center font-label-stamp">14</td>
+<td class="py-2 px-1 text-center font-label-stamp text-stamp-rust font-semibold">2</td>
+<td class="py-2 px-2 text-right font-label-stamp font-medium">6.4m</td>
+</tr>
+<!-- 其他脱敏会话 1 -->
+<tr class="hover:bg-paper-bone/40 transition-colors">
+<td class="py-2 px-2 text-ink-primary font-body-sans">
+<div class="truncate max-w-[190px]">统一CLI模块构建</div>
+<span class="text-[10px] font-annotation-cue text-ink-muted">已归档 · 覆盖度 100%</span>
+</td>
+<td class="py-2 px-1 text-center font-label-stamp">8</td>
+<td class="py-2 px-1 text-center font-label-stamp">12</td>
+<td class="py-2 px-1 text-center font-label-stamp text-stamp-rust font-semibold">2</td>
+<td class="py-2 px-2 text-right font-label-stamp">5.2m</td>
+</tr>
+<!-- 其他脱敏会话 2 -->
+<tr class="hover:bg-paper-bone/40 transition-colors">
+<td class="py-2 px-2 text-ink-primary font-body-sans">
+<div class="truncate max-w-[190px]">Markdown长代码渲染自检</div>
+<span class="text-[10px] font-annotation-cue text-ink-muted">进行中 · 覆盖度 80%</span>
+</td>
+<td class="py-2 px-1 text-center font-label-stamp">5</td>
+<td class="py-2 px-1 text-center font-label-stamp">9</td>
+<td class="py-2 px-1 text-center font-label-stamp text-ink-muted">0</td>
+<td class="py-2 px-2 text-right font-label-stamp">4.1m</td>
+</tr>
+<!-- 其他脱敏会话 3 -->
+<tr class="hover:bg-paper-bone/40 transition-colors">
+<td class="py-2 px-2 text-ink-primary font-body-sans">
+<div class="truncate max-w-[190px]">只读沙箱端口防御</div>
+<span class="text-[10px] font-annotation-cue text-stamp-rust">3次未报 · 覆盖度 62%</span>
+</td>
+<td class="py-2 px-1 text-center font-label-stamp">7</td>
+<td class="py-2 px-1 text-center font-label-stamp">11</td>
+<td class="py-2 px-1 text-center font-label-stamp text-stamp-rust font-semibold">1</td>
+<td class="py-2 px-2 text-right font-label-stamp">3.8m</td>
+</tr>
+<!-- 其他脱敏会话 4 -->
+<tr class="hover:bg-paper-bone/40 transition-colors">
+<td class="py-2 px-2 text-ink-primary font-body-sans">
+<div class="truncate max-w-[190px]">Git Hook 语义规范拦截</div>
+<span class="text-[10px] font-annotation-cue text-ink-muted">已归档 · 覆盖度 100%</span>
+</td>
+<td class="py-2 px-1 text-center font-label-stamp">4</td>
+<td class="py-2 px-1 text-center font-label-stamp">6</td>
+<td class="py-2 px-1 text-center font-label-stamp text-ink-muted">0</td>
+<td class="py-2 px-2 text-right font-label-stamp">2.9m</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="mt-2 text-right">
+<span class="text-[10px] font-annotation-cue text-ink-muted">显示前 5 / 共 12 个会话</span>
+</div>
+</section>
+<!-- 09. 技能与工具使用 (复用原页面结构与口径) -->
+<section class="mx-4 my-2 p-3 bg-paper-cream border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 技能与工具使用 · TOOLS AUDIT ]</span>
+<span class="font-label-stamp text-[10px] text-ink-muted">只读本地探针</span>
+</div>
+<div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+<!-- 技能访问 -->
+<div class="p-2.5 bg-paper-white border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-ink-primary">技能文件访问</span>
+<span class="font-label-stamp text-xs text-secondary font-bold">142 次</span>
+</div>
+<p class="mt-1 text-[11px] font-annotation-cue text-ink-secondary leading-snug">
+            统计口径：仅为经确认的技能指令文件本地读取记录，不代表模型已激活执行成功。
+          </p>
+<div class="mt-2 pt-1.5 border-t border-paper-rule-light flex justify-between text-[10px] font-annotation-cue text-ink-muted">
+<span>核心覆盖: 7/8 技能</span>
+<span>无非法跨域读取</span>
+</div>
+</div>
+<!-- 工具调用 -->
+<div class="p-2.5 bg-paper-white border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between">
+<span class="font-semibold text-ink-primary">外部工具调用</span>
+<span class="font-label-stamp text-xs text-ink-primary font-bold">842 次</span>
+</div>
+<div class="mt-1 flex items-center justify-between text-[11px] font-annotation-cue">
+<span class="text-ink-secondary">调用失败: <span class="text-stamp-rust font-semibold">12 次</span></span>
+<span class="text-stamp-rust font-label-stamp">失败率 1.4%</span>
+</div>
+<div class="mt-2 pt-1.5 border-t border-paper-rule-light text-[10px] font-annotation-cue text-ink-muted leading-tight">
+            分母说明：以已上报返回的执行器应答事件为真实验收分母。
+          </div>
+</div>
+</div>
+</section>
+<!-- 10. 下一步行动建议 (基于整体数据的严谨建议，无过度夸张营销) -->
+<section class="mx-4 my-2 p-3 bg-paper-white border border-paper-rule rounded-sm">
+<div class="flex items-center justify-between mb-2">
+<span class="font-label-stamp text-xs text-ink-secondary tracking-wider">[ 行动建议 · OBJECTIVE DIRECTIVES ]</span>
+<span class="font-label-stamp text-[10px] text-stamp-terracotta">非因果承诺 · 仅供审校</span>
+</div>
+<div class="flex flex-col gap-2">
+<!-- 建议 1 -->
+<div class="p-2 bg-paper-cream border-l-2 border-stamp-rust border-y border-r border-paper-rule text-xs">
+<div class="flex items-center gap-1.5 font-semibold text-ink-primary font-body-sans">
+<span class="font-label-stamp text-stamp-rust text-[11px]">01</span>
+<span>检查 3 个高失败会话的交办边界</span>
+</div>
+<p class="mt-1 text-[11px] font-annotation-cue text-ink-secondary leading-normal">
+            失败主要集中于多参数复合校验与未定义空状态。建议在初始派发时，由主 Codex 预填输入契约格式再转交执行。
+          </p>
+</div>
+<!-- 建议 2 -->
+<div class="p-2 bg-paper-cream border-l-2 border-[#c08a3e] border-y border-r border-paper-rule text-xs">
+<div class="flex items-center gap-1.5 font-semibold text-ink-primary font-body-sans">
+<span class="font-label-stamp text-[#c08a3e] text-[11px]">02</span>
+<span>梳理输入上下文缓存命中率偏低的会话</span>
+</div>
+<p class="mt-1 text-[11px] font-annotation-cue text-ink-secondary leading-normal">
+            部分独立运行的长任务缺少公共规则头，导致模型无法命中系统缓存，重复解析全量 AST 代码树。
+          </p>
+</div>
+<!-- 建议 3 -->
+<div class="p-2 bg-paper-cream border-l-2 border-secondary border-y border-r border-paper-rule text-xs">
+<div class="flex items-center gap-1.5 font-semibold text-ink-primary font-body-sans">
+<span class="font-label-stamp text-secondary text-[11px]">03</span>
+<span>完善长续接会话的交接断点</span>
+</div>
+<p class="mt-1 text-[11px] font-annotation-cue text-ink-secondary leading-normal">
+            针对连续续接超过 5 次的单会话，建议主动将其归档并按子功能拆分为新会话，避免会话状态膨胀。
+          </p>
+</div>
+</div>
+</section>
+<!-- 11. 底部可折叠口径说明与数据状态 -->
+<footer class="mt-auto border-t border-paper-rule bg-paper-bone px-4 py-3 text-[11px] text-ink-muted">
+<details class="group cursor-pointer">
+<summary class="list-none flex items-center justify-between font-label-stamp text-ink-secondary hover:text-ink-primary">
+<span class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]" data-icon="info">info</span>
+            [ 口径细则与未接入空态说明 ]
+          </span>
+<span class="material-symbols-outlined text-[16px] group-open:rotate-180 transition-transform" data-icon="expand_more">expand_more</span>
+</summary>
+<div class="mt-2 pt-2 border-t border-paper-rule-light font-annotation-cue space-y-1.5 text-[10.5px] leading-relaxed">
+<p>• <strong>未接入说明：</strong>如本地某会话未上报 Token，则该会话仅统计任务存在性，用量列记为 N/A，严禁估算假数据填充。</p>
+<p>• <strong>只读边界：</strong>本分析面板不具备会话远程销毁、强制重试或跨域注入权限，所有数据为本地代理进程审计日志解析输出。</p>
+<p>• <strong>缓存去重：</strong>命中缓存之上下文不二次追加到账单，本视图严格与提供商协议对齐。</p>
+</div>
+</details>
+<div class="mt-3 pt-2 border-t border-paper-rule-light flex flex-wrap items-center justify-between gap-1 font-annotation-cue text-[10px]">
+<span>Codex Squad · 本机工作环境分析视图 (v1.0.4-editorial)</span>
+<span>2025-05-18 14:38:02 CST</span>
+</div>
+</footer>
+</main>
+</body></html>

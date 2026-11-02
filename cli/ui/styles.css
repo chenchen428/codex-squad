@@ -1,0 +1,71 @@
+/* Only runtime states and unbounded real text; adopted page CSS remains unchanged. */
+.data-notice{margin:12px 20px;padding:10px 12px;border:1px solid #ded5c4;background:#fbf6ee;color:#6b645b;font:12px/1.6 sans-serif;overflow-wrap:anywhere}
+.live h1,.live h2,.live h3,.live h4,.live p,.live [data-message]{overflow-wrap:anywhere;min-width:0}
+.live [data-task]{cursor:pointer}
+.live [data-message]>.message-plain{white-space:pre-wrap;overflow-wrap:anywhere}
+.live :focus-visible{outline:2px solid #1e549f;outline-offset:-2px}
+.live #session-scroll-area{overflow-anchor:none}
+.board-page #root,.analysis-page #root{display:contents}
+
+/* Session detail fills the viewport; the outer card and page gutters are removed. */
+.live.session-page-body{display:block;padding:0;background:#fffcf7;background-image:none}
+.live .session-page{width:100%;max-width:none;height:100vh;height:100dvh;margin:0;border:0;border-radius:0;box-shadow:none}
+.live .session-page #session-scroll-area{flex:1 1 auto;min-height:0;max-height:none;overflow-x:hidden}
+
+/* Assistant messages render Markdown; plain handoff text keeps pre-wrap. */
+.live .message-markdown{min-width:0;max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.live .message-markdown>:first-child{margin-top:0}
+.live .message-markdown>:last-child{margin-bottom:0}
+.live .message-markdown p{margin:.55em 0}
+.live .message-markdown h1,.live .message-markdown h2,.live .message-markdown h3,.live .message-markdown h4,.live .message-markdown h5,.live .message-markdown h6{margin:1.05em 0 .4em;font-weight:700;line-height:1.35;letter-spacing:-.01em}
+.live .message-markdown h1{font-size:1.4em}
+.live .message-markdown h2{font-size:1.2em;padding-bottom:.25em;border-bottom:1px solid #f0ebe1}
+.live .message-markdown h3{font-size:1.05em}
+.live .message-markdown h4,.live .message-markdown h5,.live .message-markdown h6{font-size:1em}
+.live .message-markdown ul,.live .message-markdown ol{margin:.5em 0;padding-left:1.4em}
+.live .message-markdown ul{list-style:disc}
+.live .message-markdown ol{list-style:decimal}
+.live .message-markdown li{margin:.18em 0}
+.live .message-markdown li>ul,.live .message-markdown li>ol{margin:.15em 0}
+.live .message-markdown blockquote{margin:.65em 0;padding:.1em 0 .1em .85em;border-left:3px solid #ded5c4;color:#6b645b}
+.live .message-markdown blockquote p{margin:.25em 0}
+.live .message-markdown hr{margin:1em 0;border:0;border-top:1px solid #e7dfd3}
+.live .message-markdown a{color:#1e549f;text-decoration:underline;text-underline-offset:2px;overflow-wrap:anywhere}
+.live .message-markdown a:hover{color:#173f77}
+.live .message-markdown code{padding:.08em .32em;border:1px solid #e7dfd3;border-radius:4px;background:#f0ebe1;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:.88em;white-space:break-spaces;overflow-wrap:anywhere}
+.live .message-markdown pre{margin:.65em 0;padding:10px 12px;max-width:100%;overflow-x:auto;border:1px solid #e7dfd3;border-radius:8px;background:#f7f2e9;font-size:12.5px;line-height:1.55}
+.live .message-markdown pre code{display:block;min-width:max-content;padding:0;border:0;border-radius:0;background:none;font-size:inherit;white-space:pre;overflow-wrap:normal}
+.live .message-markdown .md-table-scroll{margin:.65em 0;max-width:100%;overflow-x:auto;border:1px solid #e7dfd3;border-radius:6px}
+.live .message-markdown table{width:100%;border-collapse:collapse;font-size:.9em;line-height:1.5}
+.live .message-markdown th,.live .message-markdown td{padding:6px 9px;border-right:1px solid #f0ebe1;border-bottom:1px solid #f0ebe1;text-align:left;vertical-align:top}
+.live .message-markdown th:last-child,.live .message-markdown td:last-child{border-right:0}
+.live .message-markdown tr:last-child td{border-bottom:0}
+.live .message-markdown thead th{background:#f7f1e7;font-weight:600;white-space:nowrap}
+.live .message-markdown .md-image-link{font-weight:500}
+
+/* Execution process: one subdued line per real tool record; no output or script body. */
+.live .process-list{display:flex;flex-direction:column;gap:2px;min-width:0;max-width:100%;padding:2px 0 4px 20px}
+.live .process-line{display:flex;align-items:baseline;gap:8px;min-width:0;margin:0;font-size:12px;line-height:1.65;color:#6b645b}
+.live .process-command{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-family:'Space Mono',ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px}
+.live .process-state{flex:0 0 auto;font-size:11px;color:#9e968b;white-space:nowrap}
+.live .process-line[data-state="failed"] .process-command{color:#8a4b36}
+.live .process-line[data-state="failed"] .process-state{color:#b84b2e}
+.live .process-line[data-state="stopped"] .process-state{color:#8c7f6e}
+
+@media(max-width:540px){.live main footer{flex-wrap:wrap;gap:8px}.live main section [data-task]{min-width:0}.live .process-list{padding-left:14px}}
+
+/* Route preparation stays outside the old page and never uses incoming theme classes. */
+.page-boot{box-sizing:border-box;display:flex;align-items:center;justify-content:center;width:100%;min-height:100dvh;margin:0;padding:24px;background:#fffcf7;color:#6b645b;font:13px/1.6 system-ui,sans-serif}
+.page-transition{position:fixed;right:16px;bottom:16px;z-index:100;display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);padding:8px 12px;border:1px solid #e7dfd3;border-radius:6px;background:#fffcf7;color:#6b645b;box-shadow:0 2px 8px #2b262114;font:12px/1.5 system-ui,sans-serif}
+.page-transition button{padding:2px 7px;border:1px solid #ded5c4;border-radius:4px;color:inherit;background:#fbf6ee;cursor:pointer;font:inherit}
+
+/* Bounded conversation chunks retain their measured height while outside the viewport. */
+.history-spacer{flex:none;pointer-events:none;overflow-anchor:none}
+.history-hint{font-size:12px;color:#938b80;margin:0 0 12px}
+.history-message-body{overflow-anchor:none}
+.history-text-chunk{display:block;overflow-wrap:anywhere}
+.history-process{max-height:260px;overflow:auto;overscroll-behavior:contain}
+.history-process .process-line{margin:4px 0}
+
+.live .message-markdown>.history-text-chunk:first-child>:first-child{margin-top:0}
+.live .message-markdown>.history-text-chunk:last-child>:last-child{margin-bottom:0}

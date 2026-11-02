@@ -1,0 +1,4 @@
+interface:
+  display_name: "初始化 Codex 小队"
+  short_description: "确认并融合五项核心原则，绑定当前会话，使用高效 Qoder 小队"
+  default_prompt: "使用 $initialize 核对当前项目的 AGENTS.md，展示五项核心原则的融合差异，待我确认后初始化 Codex 小队。"

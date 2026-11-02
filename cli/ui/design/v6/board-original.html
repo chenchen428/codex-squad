@@ -1,0 +1,845 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>小队任务看板 · Codex Squad</title>
+  <!-- Google Fonts: Space Grotesk, Space Mono, Noto Sans SC -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            paper: '#fff8f1',
+            'paper-subtle': '#fbf2e6',
+            'paper-card': '#ffffff',
+            'paper-hover': '#f7ede0',
+            'ink-deep': '#241a15',
+            'ink-muted': '#73665c',
+            'ink-subtle': '#9e9186',
+            'terracotta': '#b84b2e',
+            'terracotta-soft': '#fdf0ec',
+            'terracotta-border': '#f1c7bc',
+            'border-warm': '#e7ded3',
+            'border-subtle': '#ede5db',
+            'status-green': '#2e7d32',
+            'status-green-bg': '#e8f5e9',
+            'status-amber': '#b76e00',
+            'status-amber-bg': '#fff8e1',
+            'status-red': '#c62828',
+            'status-red-bg': '#ffebee',
+            'status-gray': '#5f6368',
+            'status-gray-bg': '#f1f3f4',
+            'status-blue': '#1565c0',
+            'status-blue-bg': '#e3f2fd'
+          },
+          fontFamily: {
+            sans: ['"Space Grotesk"', '"Noto Sans SC"', 'sans-serif'],
+            mono: ['"Space Mono"', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* Custom thin scrollbars for kanban feel */
+    .kanban-scroll::-webkit-scrollbar {
+      height: 5px;
+      width: 5px;
+    }
+    .kanban-scroll::-webkit-scrollbar-track {
+      background: #fbf2e6;
+      border-radius: 4px;
+    }
+    .kanban-scroll::-webkit-scrollbar-thumb {
+      background: #d8cdbf;
+      border-radius: 4px;
+    }
+    .kanban-scroll::-webkit-scrollbar-thumb:hover {
+      background: #b84b2e;
+    }
+
+    .column-scroll::-webkit-scrollbar {
+      width: 4px;
+    }
+    .column-scroll::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    .column-scroll::-webkit-scrollbar-thumb {
+      background: #e2d8cb;
+      border-radius: 4px;
+    }
+
+    .line-clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    /* Pulse dot */
+    @keyframes subtle-pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(0.9); }
+    }
+    .sync-dot {
+      animation: subtle-pulse 2.2s infinite ease-in-out;
+    }
+  </style>
+</head>
+<body class="bg-paper text-ink-deep font-sans antialiased min-h-screen flex flex-col selection:bg-terracotta selection:text-white">
+
+  <!-- Top bar / Primary Header -->
+  <header class="sticky top-0 z-30 bg-paper/95 backdrop-blur-md border-b border-border-warm px-4 pt-2.5 pb-2.5 shrink-0">
+    <!-- Row 1: Session context & auto-sync info -->
+    <div class="flex items-center justify-between gap-2 text-xs">
+      <div class="flex items-center gap-1.5 overflow-hidden">
+        <span class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-paper-subtle text-ink-muted border border-border-warm whitespace-nowrap">示例数据 · 设计预览</span>
+        <span class="text-ink-subtle">/</span>
+        <span class="font-mono text-[11px] text-ink-muted truncate font-medium">Codex 小队 · codex-squad</span>
+      </div>
+      <div class="flex items-center gap-2 shrink-0">
+        <span class="inline-flex items-center gap-1 text-[11px] font-mono text-status-green bg-status-green-bg px-1.5 py-0.5 rounded border border-status-green/20">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-green sync-dot"></span>
+          <span>3秒自动同步</span>
+        </span>
+        <button id="refreshBtn" title="手动刷新看板" class="p-1 rounded text-ink-muted hover:text-ink-deep hover:bg-paper-subtle active:scale-95 transition-all">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Row 2: Navigation & high-level counts -->
+    <div class="mt-2.5 flex items-center justify-between gap-3">
+      <!-- Main Nav: Only 2 items as specified -->
+      <nav class="flex items-center gap-2">
+        <h1 class="text-sm font-bold text-terracotta border-b-2 border-terracotta pb-0.5 flex items-center gap-1.5 cursor-default">
+          <svg class="w-4 h-4 text-terracotta" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 17V7m0 10a2 2 0 01-2 2H5a2 2 0 01-2-2V7a2 2 0 012-2h2a2 2 0 012 2m0 10a2 2 0 002 2h2a2 2 0 002-2M9 7a2 2 0 012-2h2a2 2 0 012 2m0 10V7m0 10a2 2 0 002 2h2a2 2 0 002-2V7a2 2 0 00-2-2h-2a2 2 0 00-2 2"/></svg>
+          <span>小队任务看板</span>
+        </h1>
+        <a href="#analytics" class="text-sm font-medium text-ink-muted hover:text-ink-deep transition-colors px-1.5 py-0.5 rounded hover:bg-paper-subtle">
+          分析
+        </a>
+      </nav>
+
+      <!-- Key metric capsules -->
+      <div class="flex items-center gap-1.5 font-mono text-[11px] shrink-0">
+        <span class="px-2 py-0.5 rounded bg-paper-subtle text-ink-muted border border-border-warm" title="任务总计">
+          总计 <strong class="text-ink-deep font-semibold" id="totalCount">16</strong>
+        </span>
+        <span class="px-2 py-0.5 rounded bg-status-green-bg text-status-green border border-status-green/20" title="正在执行中">
+          运行 <strong class="font-semibold">3</strong>
+        </span>
+        <span class="px-2 py-0.5 rounded bg-status-amber-bg text-status-amber border border-status-amber/20" title="等待主会话验收">
+          待验收 <strong class="font-semibold">4</strong>
+        </span>
+      </div>
+    </div>
+
+    <!-- Row 3: Search filter & Swimlane quick jumper -->
+    <div class="mt-2.5 pt-2 border-t border-border-subtle flex flex-col gap-2">
+      <div class="flex items-center gap-2">
+        <div class="relative flex-1">
+          <span class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-ink-subtle">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <input 
+            type="text" 
+            id="searchInput"
+            placeholder="搜索任务标题、编号或命令..." 
+            class="w-full pl-8 pr-7 py-1 text-xs rounded bg-white border border-border-warm text-ink-deep placeholder-ink-subtle focus:outline-none focus:border-terracotta focus:ring-1 focus:ring-terracotta/30 transition-all font-sans"
+          >
+          <button id="clearSearch" class="hidden absolute inset-y-0 right-0 pr-2 flex items-center text-ink-subtle hover:text-ink-deep">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+        <div class="text-[11px] text-ink-subtle flex items-center gap-1 shrink-0 font-mono hidden sm:flex">
+          <svg class="w-3 h-3 text-ink-subtle" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4"/></svg>
+          <span>左右滑动浏览泳道</span>
+        </div>
+      </div>
+
+      <!-- Swimlane Jump Nav Buttons (Horizontally scrollable on narrow widths) -->
+      <div class="flex items-center gap-1.5 overflow-x-auto kanban-scroll pb-1 text-xs -mx-1 px-1">
+        <button onclick="scrollToColumn('col-pending')" class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-paper-subtle text-ink-muted border border-border-warm hover:border-terracotta hover:text-terracotta transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-ink-subtle"></span>
+          <span>待执行</span>
+          <span class="font-mono text-[10px] text-ink-subtle bg-white px-1 rounded-full">2</span>
+        </button>
+
+        <button onclick="scrollToColumn('col-running')" class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-status-green-bg text-status-green border border-status-green/30 hover:shadow-xs transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-green sync-dot"></span>
+          <span>处理中</span>
+          <span class="font-mono text-[10px] text-status-green bg-white px-1 rounded-full">3</span>
+        </button>
+
+        <button onclick="scrollToColumn('col-review')" class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-status-amber-bg text-status-amber border border-status-amber/30 hover:shadow-xs transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-amber"></span>
+          <span>待验收</span>
+          <span class="font-mono text-[10px] text-status-amber bg-white px-1 rounded-full">4</span>
+        </button>
+
+        <button onclick="scrollToColumn('col-attention')" class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-status-red-bg text-status-red border border-status-red/30 hover:shadow-xs transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-red"></span>
+          <span>需关注</span>
+          <span class="font-mono text-[10px] text-status-red bg-white px-1 rounded-full">2</span>
+        </button>
+
+        <button onclick="scrollToColumn('col-completed')" class="shrink-0 flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-medium bg-paper-subtle text-ink-muted border border-border-warm hover:border-terracotta hover:text-terracotta transition-all">
+          <span class="w-1.5 h-1.5 rounded-full bg-status-blue"></span>
+          <span>已验收</span>
+          <span class="font-mono text-[10px] text-ink-subtle bg-white px-1 rounded-full">5</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Horizontal Swimlane Canvas Container -->
+  <!-- 
+    Layout Rules:
+    - On 640px viewport (and 480px), columns maintain ~280px width, horizontal overflow with clean scrolling.
+    - On >1200px widescreen, all 5 columns spread naturally across viewport without squishing.
+    - Never scale down font sizes.
+  -->
+  <main id="boardCanvas" class="flex-1 kanban-scroll overflow-x-auto p-3 flex gap-3.5 items-start">
+
+    <!-- ==================== COLUMN 1: 待执行 (2 tasks) ==================== -->
+    <section id="col-pending" class="w-[280px] shrink-0 flex flex-col bg-paper-subtle/80 rounded-lg border border-border-warm max-h-[calc(100vh-175px)]">
+      <!-- Column Sticky Header -->
+      <div class="p-2.5 border-b border-border-warm flex items-center justify-between sticky top-0 bg-paper-subtle rounded-t-lg z-10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-ink-subtle"></span>
+          <h2 class="text-xs font-bold text-ink-deep tracking-wide">待执行</h2>
+          <span class="text-[11px] font-mono text-ink-muted bg-white px-1.5 py-0.2 rounded border border-border-warm">2</span>
+        </div>
+        <span class="text-[10px] text-ink-subtle font-mono">排队等待</span>
+      </div>
+
+      <!-- Card List -->
+      <div class="p-2 flex flex-col gap-2 overflow-y-auto column-scroll flex-1">
+        
+        <!-- Task Card #01 -->
+        <article onclick="openTaskDetail('#01')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="统一CLI模块与页面资源" data-id="#01">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-terracotta">#01</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-ink-muted bg-paper-subtle px-1 rounded">排队中</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            统一CLI模块与页面资源
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            等待当前构建流解构完成
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>就绪待命</span>
+              <span class="text-ink-muted">未上报</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #02 -->
+        <article onclick="openTaskDetail('#02')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="候选发布包来源核验" data-id="#02">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-terracotta">#02</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-ink-muted bg-paper-subtle px-1 rounded">依赖前置</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            候选发布包来源核验
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            待主会话下发 SHA256 签名清单
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 0</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>就绪待命</span>
+              <span class="text-ink-muted">未上报</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==================== COLUMN 2: 处理中 (3 tasks) ==================== -->
+    <section id="col-running" class="w-[280px] shrink-0 flex flex-col bg-paper-subtle/80 rounded-lg border border-status-green/30 max-h-[calc(100vh-175px)]">
+      <!-- Column Sticky Header -->
+      <div class="p-2.5 border-b border-status-green/20 flex items-center justify-between sticky top-0 bg-paper-subtle rounded-t-lg z-10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-status-green sync-dot"></span>
+          <h2 class="text-xs font-bold text-ink-deep tracking-wide">处理中</h2>
+          <span class="text-[11px] font-mono text-status-green bg-status-green-bg px-1.5 py-0.2 rounded border border-status-green/20">3</span>
+        </div>
+        <span class="text-[10px] text-status-green font-mono">活跃进程</span>
+      </div>
+
+      <!-- Card List -->
+      <div class="p-2 flex flex-col gap-2 overflow-y-auto column-scroll flex-1">
+        
+        <!-- Task Card #03 (Running) -->
+        <article onclick="openTaskDetail('#03')" class="task-card group cursor-pointer bg-paper-card border border-status-green/40 rounded-md p-2.5 shadow-[0_1px_2px_rgba(46,125,50,0.06)] hover:border-status-green hover:shadow-sm transition-all active:scale-[0.99]" data-title="公开对话与Qoder执行聚焦回归" data-id="#03">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-green">#03</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded border border-status-green/30 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-green sync-dot"></span> 运行中
+            </span>
+          </div>
+          <h3 class="text-xs font-semibold text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            公开对话与Qoder执行聚焦回归
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate font-mono text-[10.5px] bg-paper-subtle/80 px-1 py-0.5 rounded border border-border-subtle" title="node --test tests/regression/dialogue.test.js">
+            node --test tests/regression/dialogue.test.js
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 2</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-status-green font-medium flex items-center gap-0.5">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <span class="timer-tick" data-start="192">03:12</span>
+              </span>
+              <span class="text-ink-deep font-semibold">21.4k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #04 (Running) -->
+        <article onclick="openTaskDetail('#04')" class="task-card group cursor-pointer bg-paper-card border border-status-green/40 rounded-md p-2.5 shadow-[0_1px_2px_rgba(46,125,50,0.06)] hover:border-status-green hover:shadow-sm transition-all active:scale-[0.99]" data-title="轮询状态与执行计时更新" data-id="#04">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-green">#04</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded border border-status-green/30 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-green sync-dot"></span> 运行中
+            </span>
+          </div>
+          <h3 class="text-xs font-semibold text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            轮询状态与执行计时更新
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate font-mono text-[10.5px] bg-paper-subtle/80 px-1 py-0.5 rounded border border-border-subtle" title="pnpm exec vite-node sync-daemon.ts">
+            pnpm exec vite-node sync-daemon.ts
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-status-green font-medium flex items-center gap-0.5">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <span class="timer-tick" data-start="48">00:48</span>
+              </span>
+              <span class="text-ink-deep font-semibold">8.6k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #05 (Running) -->
+        <article onclick="openTaskDetail('#05')" class="task-card group cursor-pointer bg-paper-card border border-status-green/40 rounded-md p-2.5 shadow-[0_1px_2px_rgba(46,125,50,0.06)] hover:border-status-green hover:shadow-sm transition-all active:scale-[0.99]" data-title="Markdown与长代码块显示" data-id="#05">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-green">#05</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded border border-status-green/30 font-semibold">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-green sync-dot"></span> 运行中
+            </span>
+          </div>
+          <h3 class="text-xs font-semibold text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            Markdown与长代码块显示
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate font-mono text-[10.5px] bg-paper-subtle/80 px-1 py-0.5 rounded border border-border-subtle" title="git diff --check core/markdown.ts">
+            git diff --check core/markdown.ts
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 3</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-status-green font-medium flex items-center gap-0.5">
+                <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+                <span class="timer-tick" data-start="380">06:20</span>
+              </span>
+              <span class="text-ink-deep font-semibold">31.2k tok</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==================== COLUMN 3: 待验收 (4 tasks) ==================== -->
+    <section id="col-review" class="w-[280px] shrink-0 flex flex-col bg-paper-subtle/80 rounded-lg border border-status-amber/30 max-h-[calc(100vh-175px)]">
+      <!-- Column Sticky Header -->
+      <div class="p-2.5 border-b border-status-amber/20 flex items-center justify-between sticky top-0 bg-paper-subtle rounded-t-lg z-10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-status-amber"></span>
+          <h2 class="text-xs font-bold text-ink-deep tracking-wide">待验收</h2>
+          <span class="text-[11px] font-mono text-status-amber bg-status-amber-bg px-1.5 py-0.2 rounded border border-status-amber/20">4</span>
+        </div>
+        <span class="text-[10px] text-status-amber font-mono">交回主会话</span>
+      </div>
+
+      <!-- Card List -->
+      <div class="p-2 flex flex-col gap-2 overflow-y-auto column-scroll flex-1">
+        
+        <!-- Task Card #06 -->
+        <article onclick="openTaskDetail('#06')" class="task-card group cursor-pointer bg-paper-card border border-status-amber/30 rounded-md p-2.5 shadow-[0_1px_2px_rgba(183,110,0,0.04)] hover:border-status-amber hover:shadow-sm transition-all active:scale-[0.99]" data-title="技能统计口径核对" data-id="#06">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-amber">#06</span>
+            <span class="text-[10px] text-status-amber bg-status-amber-bg px-1 py-0.2 rounded font-medium">已返回</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            技能统计口径核对
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            已返回，待主会话验收
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink-muted">耗时 02:45</span>
+              <span class="text-ink-deep font-medium">14.1k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #07 -->
+        <article onclick="openTaskDetail('#07')" class="task-card group cursor-pointer bg-paper-card border border-status-amber/30 rounded-md p-2.5 shadow-[0_1px_2px_rgba(183,110,0,0.04)] hover:border-status-amber hover:shadow-sm transition-all active:scale-[0.99]" data-title="保留报错前的输入并恢复草稿" data-id="#07">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-amber">#07</span>
+            <span class="text-[10px] text-status-amber bg-status-amber-bg px-1 py-0.2 rounded font-medium">已返回</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            保留报错前的输入并恢复草稿
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            已返回，待主会话验收
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 2</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink-muted">耗时 04:10</span>
+              <span class="text-ink-deep font-medium">30.8k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #08 -->
+        <article onclick="openTaskDetail('#08')" class="task-card group cursor-pointer bg-paper-card border border-status-amber/30 rounded-md p-2.5 shadow-[0_1px_2px_rgba(183,110,0,0.04)] hover:border-status-amber hover:shadow-sm transition-all active:scale-[0.99]" data-title="只读沙箱环境端口探测防御" data-id="#08">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-amber">#08</span>
+            <span class="text-[10px] text-status-amber bg-status-amber-bg px-1 py-0.2 rounded font-medium">已返回</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            只读沙箱环境端口探测防御
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            已返回，待主会话验收
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink-muted">耗时 01:15</span>
+              <span class="text-ink-deep font-medium">6.2k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #09 -->
+        <article onclick="openTaskDetail('#09')" class="task-card group cursor-pointer bg-paper-card border border-status-amber/30 rounded-md p-2.5 shadow-[0_1px_2px_rgba(183,110,0,0.04)] hover:border-status-amber hover:shadow-sm transition-all active:scale-[0.99]" data-title="多维报表空状态图表自检" data-id="#09">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-amber">#09</span>
+            <span class="text-[10px] text-status-amber bg-status-amber-bg px-1 py-0.2 rounded font-medium">已返回</span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            多维报表空状态图表自检
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            已返回，待主会话验收
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink-muted">耗时 03:02</span>
+              <span class="text-ink-deep font-medium">18.5k tok</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==================== COLUMN 4: 需关注 (2 tasks: 真实失败 / 状态待核实 / 已停止) ==================== -->
+    <section id="col-attention" class="w-[280px] shrink-0 flex flex-col bg-paper-subtle/80 rounded-lg border border-status-red/30 max-h-[calc(100vh-175px)]">
+      <!-- Column Sticky Header -->
+      <div class="p-2.5 border-b border-status-red/20 flex items-center justify-between sticky top-0 bg-paper-subtle rounded-t-lg z-10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-status-red"></span>
+          <h2 class="text-xs font-bold text-ink-deep tracking-wide">需关注</h2>
+          <span class="text-[11px] font-mono text-status-red bg-status-red-bg px-1.5 py-0.2 rounded border border-status-red/20">2</span>
+        </div>
+        <span class="text-[10px] text-status-red font-mono">异常与核实</span>
+      </div>
+
+      <!-- Card List -->
+      <div class="p-2 flex flex-col gap-2 overflow-y-auto column-scroll flex-1">
+        
+        <!-- Task Card #10 (Execution Failed) -->
+        <article onclick="openTaskDetail('#10')" class="task-card group cursor-pointer bg-paper-card border border-status-red/40 rounded-md p-2.5 shadow-[0_1px_2px_rgba(198,40,40,0.06)] hover:border-status-red hover:shadow-sm transition-all active:scale-[0.99]" data-title="修复报表筛选多维联动异常" data-id="#10">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-red">#10</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-status-red bg-status-red-bg px-1.5 py-0.2 rounded border border-status-red/30 font-semibold">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+              执行失败
+            </span>
+          </div>
+          <h3 class="text-xs font-semibold text-ink-deep leading-snug line-clamp-2 group-hover:text-status-red transition-colors">
+            修复报表筛选多维联动异常
+          </h3>
+          <p class="text-[11px] text-status-red mt-1 truncate">
+            422 参数校验异常，子任务提前中断
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-deep font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta"></span>Qoder
+              </span>
+              <span class="text-status-red font-medium">尝试 2 (失败)</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-ink-muted">耗时 01:42</span>
+              <span class="text-ink-deep font-medium">19.2k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #11 (Status Verification Needed / Disconnected / Not executing) -->
+        <article onclick="openTaskDetail('#11')" class="task-card group cursor-pointer bg-paper-card border border-status-gray/40 rounded-md p-2.5 shadow-[0_1px_2px_rgba(95,99,104,0.06)] hover:border-status-gray hover:shadow-sm transition-all active:scale-[0.99]" data-title="遥测心跳超时检测代理" data-id="#11">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-status-gray">#11</span>
+            <span class="inline-flex items-center gap-1 text-[10px] text-status-gray bg-status-gray-bg px-1.5 py-0.2 rounded border border-status-gray/30 font-medium">
+              <span class="w-1.5 h-1.5 rounded-full bg-status-gray"></span>
+              状态待核实
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            遥测心跳超时检测代理
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            超过 90s 无心跳反馈，非执行中状态
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span class="text-status-gray">失联待查</span>
+              <span class="text-ink-muted">未上报</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+    <!-- ==================== COLUMN 5: 已验收 (5 tasks) ==================== -->
+    <section id="col-completed" class="w-[280px] shrink-0 flex flex-col bg-paper-subtle/80 rounded-lg border border-border-warm max-h-[calc(100vh-175px)]">
+      <!-- Column Sticky Header -->
+      <div class="p-2.5 border-b border-border-warm flex items-center justify-between sticky top-0 bg-paper-subtle rounded-t-lg z-10">
+        <div class="flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-status-blue"></span>
+          <h2 class="text-xs font-bold text-ink-deep tracking-wide">已验收</h2>
+          <span class="text-[11px] font-mono text-status-blue bg-status-blue-bg px-1.5 py-0.2 rounded border border-status-blue/20">5</span>
+        </div>
+        <span class="text-[10px] text-ink-subtle font-mono">归档入库</span>
+      </div>
+
+      <!-- Card List -->
+      <div class="p-2 flex flex-col gap-2 overflow-y-auto column-scroll flex-1">
+        
+        <!-- Task Card #12 -->
+        <article onclick="openTaskDetail('#12')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="修复清空后的页码回到第一页" data-id="#12">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-ink-muted">#12</span>
+            <span class="inline-flex items-center gap-0.5 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              已验收
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            修复清空后的页码回到第一页
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            主会话核验通过，参数重置无歧义
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>总耗时 01:20</span>
+              <span class="text-ink-deep font-medium">12.4k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #13 -->
+        <article onclick="openTaskDetail('#13')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="补充空状态与边界自检用例" data-id="#13">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-ink-muted">#13</span>
+            <span class="inline-flex items-center gap-0.5 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              已验收
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            补充空状态与边界自检用例
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            覆盖空数组与全选清空双向断言
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 3</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>总耗时 10:38</span>
+              <span class="text-ink-deep font-medium">29.4k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #14 -->
+        <article onclick="openTaskDetail('#14')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="AST差异分析树修剪与缓存提速" data-id="#14">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-ink-muted">#14</span>
+            <span class="inline-flex items-center gap-0.5 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              已验收
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            AST差异分析树修剪与缓存提速
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            节点指纹比对提升 40% 解析速度
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>总耗时 02:18</span>
+              <span class="text-ink-deep font-medium">16.0k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #15 -->
+        <article onclick="openTaskDetail('#15')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="只读演示状态徽标与路由声明" data-id="#15">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-ink-muted">#15</span>
+            <span class="inline-flex items-center gap-0.5 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              已验收
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            只读演示状态徽标与路由声明
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            完成 #session 与 #usage 锚点统合
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>总耗时 00:54</span>
+              <span class="text-ink-deep font-medium">4.8k tok</span>
+            </div>
+          </div>
+        </article>
+
+        <!-- Task Card #16 -->
+        <article onclick="openTaskDetail('#16')" class="task-card group cursor-pointer bg-paper-card border border-border-warm rounded-md p-2.5 shadow-[0_1px_2px_rgba(36,26,21,0.03)] hover:border-terracotta hover:shadow-sm transition-all active:scale-[0.99]" data-title="单测试例轻量Mock注入规范" data-id="#16">
+          <div class="flex items-center justify-between gap-1 mb-1 text-[11px] font-mono text-ink-subtle">
+            <span class="font-semibold text-ink-muted">#16</span>
+            <span class="inline-flex items-center gap-0.5 text-[10px] text-status-green bg-status-green-bg px-1.5 py-0.2 rounded">
+              <svg class="w-2.5 h-2.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              已验收
+            </span>
+          </div>
+          <h3 class="text-xs font-medium text-ink-deep leading-snug line-clamp-2 group-hover:text-terracotta transition-colors">
+            单测试例轻量Mock注入规范
+          </h3>
+          <p class="text-[11px] text-ink-muted mt-1 truncate">
+            去除非必要外部依赖，回归沙箱执行
+          </p>
+          <div class="mt-2 pt-1.5 border-t border-border-subtle flex flex-col gap-1 text-[10px] font-mono text-ink-subtle">
+            <div class="flex items-center justify-between">
+              <span class="flex items-center gap-1 text-ink-muted">
+                <span class="w-1.5 h-1.5 rounded-full bg-terracotta/70"></span>Qoder
+              </span>
+              <span>尝试 1</span>
+            </div>
+            <div class="flex items-center justify-between">
+              <span>总耗时 01:05</span>
+              <span class="text-ink-deep font-medium">7.9k tok</span>
+            </div>
+          </div>
+        </article>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Sticky Bottom Footer Note -->
+  <footer class="sticky bottom-0 z-20 bg-paper/95 backdrop-blur-md border-t border-border-warm px-4 py-2 flex items-center justify-between text-[11px] text-ink-muted shrink-0">
+    <div class="flex items-center gap-1.5">
+      <span class="w-1.5 h-1.5 rounded-full bg-ink-subtle"></span>
+      <span>只读 · 点击任务查看对话与执行记录</span>
+    </div>
+    <div class="flex items-center gap-2 font-mono text-[10px] text-ink-subtle">
+      <span>最近同步: <span id="syncTime">14:38:02</span></span>
+    </div>
+  </footer>
+
+  <!-- Interactive Logic for Real Feel & Navigation -->
+  <script>
+    // 1. Navigation to task detail (Existing Continuous Conversation Task Detail)
+    function openTaskDetail(taskId) {
+      // In Stitch, jumps to the established session view anchor
+      window.location.hash = 'session';
+    }
+
+    // 2. Smooth column scroll on button click
+    function scrollToColumn(colId) {
+      const el = document.getElementById(colId);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      }
+    }
+
+    // 3. Real-time Search Filtering
+    const searchInput = document.getElementById('searchInput');
+    const clearBtn = document.getElementById('clearSearch');
+    const cards = document.querySelectorAll('.task-card');
+
+    searchInput.addEventListener('input', (e) => {
+      const q = e.target.value.trim().toLowerCase();
+      if (q.length > 0) {
+        clearBtn.classList.remove('hidden');
+      } else {
+        clearBtn.classList.add('hidden');
+      }
+
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const title = (card.getAttribute('data-title') || '').toLowerCase();
+        const id = (card.getAttribute('data-id') || '').toLowerCase();
+        const text = card.innerText.toLowerCase();
+        if (title.includes(q) || id.includes(q) || text.includes(q)) {
+          card.style.display = '';
+          visibleCount++;
+        } else {
+          card.style.display = 'none';
+        }
+      });
+      document.getElementById('totalCount').innerText = visibleCount;
+    });
+
+    clearBtn.addEventListener('click', () => {
+      searchInput.value = '';
+      clearBtn.classList.add('hidden');
+      cards.forEach(c => c.style.display = '');
+      document.getElementById('totalCount').innerText = cards.length;
+      searchInput.focus();
+    });
+
+    // 4. Manual Refresh Simulation
+    const refreshBtn = document.getElementById('refreshBtn');
+    refreshBtn.addEventListener('click', () => {
+      refreshBtn.classList.add('animate-spin');
+      setTimeout(() => {
+        refreshBtn.classList.remove('animate-spin');
+        const now = new Date();
+        const timeStr = [now.getHours(), now.getMinutes(), now.getSeconds()]
+          .map(n => n.toString().padStart(2, '0')).join(':');
+        document.getElementById('syncTime').innerText = timeStr;
+      }, 500);
+    });
+
+    // 5. Dynamic Stopwatch for running tasks
+    const timerElements = document.querySelectorAll('.timer-tick');
+    setInterval(() => {
+      timerElements.forEach(el => {
+        let sec = parseInt(el.getAttribute('data-start') || '0', 10);
+        sec++;
+        el.setAttribute('data-start', sec);
+        const m = Math.floor(sec / 60).toString().padStart(2, '0');
+        const s = (sec % 60).toString().padStart(2, '0');
+        el.innerText = `${m}:${s}`;
+      });
+    }, 1000);
+  </script>
+</body>
+</html>
